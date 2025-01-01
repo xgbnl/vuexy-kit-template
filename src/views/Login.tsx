@@ -3,9 +3,13 @@
 // React Imports
 import { useState } from 'react'
 
+
 // Next Imports
 import Link from 'next/link'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
+
+import { signIn } from "next-auth/react"
+
 
 // MUI Imports
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -20,7 +24,6 @@ import Divider from '@mui/material/Divider'
 import Alert from '@mui/material/Alert'
 
 // Third-party Imports
-import { signIn } from 'next-auth/react'
 import { Controller, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { email, object, minLength, string, pipe, nonEmpty } from 'valibot'
@@ -136,7 +139,7 @@ const Login = ({ mode }: { mode: SystemMode }) => {
       redirect: false
     })
 
-    console.log('lgin.......',res)
+    console.log(res)
 
     if (res && res.ok && res.error === null) {
       // Vars
@@ -183,7 +186,6 @@ const Login = ({ mode }: { mode: SystemMode }) => {
           <form
             noValidate
             autoComplete='off'
-            action={() => {}}
             onSubmit={handleSubmit(onSubmit)}
             className='flex flex-col gap-6'
           >

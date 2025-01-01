@@ -3,7 +3,7 @@ import qs from 'qs'
 
 import { isPlainObject } from '@mui/utils'
 
-import { responseInterceptor } from '@/libs/fetch/reader'
+import { interceptors } from '@/libs/fetch/reader'
 
 import { ensurePrefix } from '@/utils/string'
 
@@ -35,13 +35,12 @@ class HttpClient<T extends Response> {
           })
         }
 
-        return responseInterceptor(this.responseType).read(response)
+        return interceptors[this.responseType].read(response)
       })
       .catch(error => {
         console.log(error.message, error.code)
       })
-      .finally(() => {
-      }) as Promise<T>
+      .finally(() => {}) as Promise<T>
   }
 
   private requestInterceptor(option: HttpRequestOption): void {
@@ -66,7 +65,6 @@ class HttpClient<T extends Response> {
           typeof pathVar.value === 'string' ? pathVar.value : String(pathVar.value)
         )
       })
-
     }
 
     this.options = Object.assign(option, {

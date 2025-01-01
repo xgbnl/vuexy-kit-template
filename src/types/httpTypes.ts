@@ -1,6 +1,7 @@
 // Interface Imports
-import { RequestBody, type ResponseInterface } from '@/types/requestTypes'
-import { Blob } from 'node:buffer'
+import type { Blob } from 'node:buffer'
+
+import { type RequestBody, type ResponseInterface } from '@/types/requestTypes'
 
 // Define base response
 export type Response = string | ArrayBuffer | Blob | ResponseInterface | any

@@ -11,7 +11,7 @@ import HttpClient from '@/libs/fetch/client'
 import type { HttpRequestOption, Response, ResponseType } from '@/types/httpTypes'
 
 // Import interface.
-import PendingRequest from '@/libs/fetch/pending'
+import type PendingRequest from '@/libs/fetch/pending'
 
 class Fetch implements Request, PendingRequest {
   public delete<T extends DeleteRequestBody, R extends Response>(url: string, req: T): Promise<R> {
