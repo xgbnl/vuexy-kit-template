@@ -1,15 +1,18 @@
 'use client'
 
 // Import custom type.
-import type { JSXElement } from '@types/elementTypes'
+import type { ReactElement} from 'react';
 
-import type { GetRequestBody, ResponseInterface } from '@types/requestTypes'
+// import { useEffect } from 'react'
+
+// import type { JSXElement } from '@types/elementTypes'
+
+// import type { GetRequestBody, ResponseInterface } from '@types/requestTypes'
 
 // Import react element.
-import { ReactElement, useEffect } from 'react'
 
 // Import request.
-import { useFetch } from '@/libs/fetch/fetch'
+// import { useFetch } from '@/libs/fetch/fetch'
 
 // type CustomRequest = {
 //   params: {
@@ -18,16 +21,16 @@ import { useFetch } from '@/libs/fetch/fetch'
 //   }
 // } & GetRequestBody
 
-const Test: JSXElement = (): ReactElement => {
+const Test = (): ReactElement => {
 
-  const { fetch } = useFetch()
+  // const { fetch } = useFetch()
 
-  useEffect((): void => {
-    fetch.get<GetRequestBody, ResponseInterface>('regions',{})
-      .then((response: ResponseInterface) => {
-      console.log(response)
-    })
-  }, [])
+  // useEffect((): void => {
+  //   fetch.get<GetRequestBody, ResponseInterface>('regions',{})
+  //     .then((response: ResponseInterface) => {
+  //     console.log(response)
+  //   })
+  // }, [])
 
   return <div>
     <h1>Hello,Next.js</h1>

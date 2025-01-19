@@ -7,17 +7,20 @@ const nextConfig: NextConfig = {
       {
         source: '/',
         destination: '/zh/crm',
-        permanent: false
+        permanent: true,
+        locale: false
       },
       {
         source: '/:lang(en|zh)',
         destination: '/:lang/crm',
-        permanent: false
+        permanent: true,
+        locale: false
       },
       {
-        source: '/((?!(?:en|zh)\\b)):path',
-        destination: '/en/:path',
-        permanent: false
+        source: '/((?!(?:en|zh|front-pages|favicon.ico)\\b)):path',
+        destination: '/:lang/:path',
+        permanent: true,
+        locale: false
       }
     ]
   }

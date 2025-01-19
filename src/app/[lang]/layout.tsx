@@ -1,9 +1,12 @@
 // MUI Imports
+import { headers } from 'next/headers'
+
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript'
 
 // I18n Imports
 import { i18n } from '@/configs/i18n'
-import { headers } from 'next/headers'
+
+
 import type { Locale } from '@/configs/i18n'
 import TranslationWrapper from '@/hocs/TranslationWrapper'
 
