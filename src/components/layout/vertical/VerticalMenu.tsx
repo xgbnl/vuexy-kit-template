@@ -9,7 +9,7 @@ import type { VerticalMenuContextProps } from '@menu/components/vertical-menu/Me
 import type { getDictionary } from '@/utils/getDictionary'
 
 // Component Imports
-import { Menu, MenuItem } from '@menu/vertical-menu'
+import { Menu } from '@menu/vertical-menu'
 
 // Hook Imports
 import useVerticalNav from '@menu/hooks/useVerticalNav'

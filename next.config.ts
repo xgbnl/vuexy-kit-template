@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/((?!(?:en|zh|front-pages|favicon.ico)\\b)):path',
-        destination: '/:lang/:path',
+        destination: '/zh/:path',
         permanent: true,
         locale: false
       }
