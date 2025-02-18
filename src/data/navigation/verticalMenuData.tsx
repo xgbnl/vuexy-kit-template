@@ -9,16 +9,6 @@ const verticalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>>)
     icon: 'tabler-smart-home'
   },
   {
-    label: dictionary['navigation'].home,
-    href: `/${dictionary['locale']}/home`,
-    icon: 'tabler-smart-home'
-  },
-  {
-    label: dictionary['navigation'].about,
-    href: `/${dictionary['locale']}/about`,
-    icon: 'tabler-info-circle'
-  },
-  {
     label: dictionary['navigation'].test,
     href: `/${dictionary['locale']}/test`,
     icon: 'tabler-info-circle'
