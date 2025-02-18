@@ -1,9 +1,8 @@
 // Import types.
 import type { Blob } from 'node:buffer'
 
-import type { ResponseInterface } from '@/types/requestTypes'
-
-import type { Response, ResponseType } from '@/types/httpTypes'
+// Type Imports
+import type { Response, ResponseType, ResponseInterface } from '@types/fetchTypes'
 
 interface ResponseReader<T extends Response> {
   read(response: Response): Promise<T>
@@ -27,8 +26,8 @@ const BlobReader: ResponseReader<Blob> = {
   }
 }
 
-const JsonReader: ResponseReader<ResponseInterface | any> = {
-  read(response: Response): Promise<string | ResponseInterface> {
+const JsonReader: ResponseReader<ResponseInterface<unknown> | any> = {
+  read(response: Response): Promise<string | ResponseInterface<unknown>> {
     return response.json()
   }
 }
