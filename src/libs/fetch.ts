@@ -110,13 +110,17 @@ function httpClient<RValue>(options: HttpRequestOption<RValue>): Promise<string 
     method: options.method,
     headers: ((): object => {
       if (!isPlainObject(options.headers)) {
-        return {
-          'Content-Type': options.method === 'GET' ? 'application/x-www-form-urlencoded' : 'application/json;charset=UTF-8',
-          'Accept': 'application/json'
+        const headers = {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + 'token'
         }
-      }
 
-      return options.headers
+        if (isPlainObject(options.body) && !(options.body instanceof FormData)) {
+          headers['Content-Type'] = 'application/{type}'.replace('{type}', options.method === 'GET' ? 'x-www-form-urlencoded' : 'json;charset=UTF-8')
+        }
+
+        return headers
+      }
     })(),
     mode: 'cors',
     cache: 'no-cache',
