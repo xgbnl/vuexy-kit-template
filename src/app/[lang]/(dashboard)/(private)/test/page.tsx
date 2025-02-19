@@ -1,36 +1,30 @@
 'use client'
 
-// Import custom type.
-import type { ReactElement} from 'react';
+import { useEffect } from 'react'
+import { HttpRequest, ResponseInterface, useReactFetch } from '@/libs/fetch'
+import { toast } from 'react-toastify'
 
-// import { useEffect } from 'react'
+type User = {
+  id: string
+}
 
-// import type { JSXElement } from '@types/elementTypes'
+const Test = () => {
 
-// import type { GetRequestBody, ResponseInterface } from '@types/requestTypes'
+  const fetch: HttpRequest = useReactFetch()
 
-// Import react element.
+  useEffect(() => {
+    fetch.post<ResponseInterface<null>>('auth', {
+      body:{
+        username: 'admin',
+        password: '123456'
+      }
+    }).then(res => {
+      if (res.code === 201) {
+        toast.success(res.msg)
+      }
+    }).catch(err => console.log(err))
 
-// Import request.
-// import { useFetch } from '@/libs/fetch/fetch'
-
-// type CustomRequest = {
-//   params: {
-//     name: string
-//     email: string
-//   }
-// } & GetRequestBody
-
-const Test = (): ReactElement => {
-
-  // const { fetch } = useFetch()
-
-  // useEffect((): void => {
-  //   fetch.get<GetRequestBody, ResponseInterface>('regions',{})
-  //     .then((response: ResponseInterface) => {
-  //     console.log(response)
-  //   })
-  // }, [])
+  }, [])
 
   return <div>
     <h1>Hello,Next.js</h1>

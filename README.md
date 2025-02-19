@@ -36,3 +36,89 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Fetch Guide
+
+Initial fetch:
+```ts
+'use client'
+
+import { HttpRequest, ResponseInterface, useReactFetch } from '@/libs/fetch'
+
+const fetch: HttpRequest = useReactFetch()
+```
+Request Methods:
+
+```ts
+
+// Var
+import { Paginator } from './fetchTypes'
+
+type User = {
+  id: number,
+  email: string,
+  avatar: string,
+  username: string,
+}
+
+type GetUserResponse = {
+  details: User
+}
+
+// Get user details
+// Request to https://api.com/api/users/1
+fetch.get<ResponseInterface<User>>('users/:id', {
+  pathVariables: [
+    { key: 'id', value: 1 }
+  ]
+}).then((res): void => {
+  console.log(res.data.details) // User
+})
+
+// Get user list
+// Request to https://api.com/api/users?page=1&pageSize=10
+fetch.get<ResponseInterface<Paginator<User>>>('users', {
+  params: {
+    page: 1,
+    pageSize: 10
+  }
+}).then((res): void => {
+  console.log(res.data.total)
+  console.log(res.data.perPage)
+  console.log(res.data.currentPage)
+  console.log(res.data.list) // User[]
+})
+
+// Post created
+fetch.post<ResponseInterface<null>>('users', {
+  body: {
+    username: 'test',
+    email: 'test@test.com'
+  }
+}).then((res): void => {
+  console.log(res.msg)
+})
+
+// Patch updated
+fetch.patch<ResponseInterface<null>>('users/:id', {
+  body: {
+    username: 'test',
+    email: 'test@test.com'
+  },
+  pathVariables: [
+    { key: 'id', value: 1 }
+  ]
+}).then((res): void => {
+  console.log(res.msg)
+})
+
+// Delete
+fetch.delete<ResponseInterface<null>>('users/:id', {
+  pathVariables: [
+    { key: 'id', value: 1 }
+  ]
+}).then(res => {
+  console.log(res.msg)
+});
+
+```

@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 
-import { useFetch } from '@/libs/fetch/fetch'
+import { useReactFetch } from '@/libs/fetch'
 
 import type { ResponseInterface } from '@types/requestTypes'
 
 const Example = (): ReactNode => {
-  const { fetch } = useFetch()
+  const { fetch } = useReactFetch()
 
   // Get method.
   fetch
