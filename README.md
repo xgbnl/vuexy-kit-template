@@ -43,9 +43,9 @@ Initial fetch:
 ```ts
 'use client'
 
-import { HttpRequest, ResponseInterface, useReactFetch } from '@/libs/fetch'
+import {  ResponseInterface, useReactFetch } from '@/libs/fetch'
 
-const fetch: HttpRequest = useReactFetch()
+const fetch = useReactFetch()
 ```
 Request Methods:
 

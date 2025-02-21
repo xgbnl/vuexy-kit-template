@@ -31,7 +31,7 @@ export interface ResponseInterface<RValue> {
 
 type FetchResponse<RValue> = string | ArrayBuffer | Blob | ResponseInterface<RValue>
 
-export interface HttpRequest {
+interface HttpRequest {
   get<R extends FetchResponse<R>>(url: string, params: Partial<RequestParams>): Promise<R>
 
   post<R extends FetchResponse<R>>(url: string, params: Partial<Pick<RequestParams, 'body'>>): Promise<R>
