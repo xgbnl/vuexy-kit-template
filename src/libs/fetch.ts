@@ -162,7 +162,7 @@ function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer
           return Promise.reject(new Error(response.msg))
         }
 
-        return promise.json()
+        return Promise.resolve(response)
       })(response)
     })
     .catch(err => {
