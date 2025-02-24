@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 // Utils Imports
 import { isPlainObject } from '@mui/utils'
 import { ensurePrefix } from '@utils/string'
+import { getLanguageFromPathname } from '@utils/getLanguage'
 
 interface PathVariables {
   key: string
@@ -148,13 +149,24 @@ function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer
         const response: SymfonyResponse<T> = await promise.json()
 
         if ([400, 401, 403, 404, 419, 422, 500].includes(response.code)) {
+
+          if (response.code === 401) {
+            const language: string | null = getLanguageFromPathname()
+            toast.error(response.msg, {
+              delay: 1000,
+              onClose: () => window.location = `/${language}/login`
+            })
+            return
+          }
+
           return Promise.reject(new Error(response.msg))
         }
 
         return promise.json()
-      })()
+      })(response)
     })
     .catch(err => {
+      console.log(err)
       toast.error(err.message)
     }).finally(() => {
     })
