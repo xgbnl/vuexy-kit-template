@@ -39,19 +39,19 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ## Fetch Guide
 
-Initial fetch:
-```ts
-'use client'
-
-import {  ResponseInterface, useReactFetch } from '@/libs/fetch'
-
-const fetch = useReactFetch()
+Edit `.env.local`
+```dotenv
+NEXT_API_PREFIX=/api
+NEXT_PUBLIC_API_URL=https://myapi.test${NEXT_API_PREFIX}
 ```
+
 Request Methods:
 
 ```ts
+// Fetch Imports
+import { get, post, patch, destroy, SymfonyResponse } from '@/libs/fetch'
 
-// Var
+// Type Imports
 import { Paginator } from './fetchTypes'
 
 type User = {
@@ -67,7 +67,7 @@ type GetUserResponse = {
 
 // Get user details
 // Request to https://api.com/api/users/1
-fetch.get<ResponseInterface<User>>('users/:id', {
+get<SymfonyResponse<User>>('users/:id', {
   pathVariables: [
     { key: 'id', value: 1 }
   ]
@@ -77,7 +77,7 @@ fetch.get<ResponseInterface<User>>('users/:id', {
 
 // Get user list
 // Request to https://api.com/api/users?page=1&pageSize=10
-fetch.get<ResponseInterface<Paginator<User>>>('users', {
+get<SymfonyResponse<Paginator<User>>>('users', {
   params: {
     page: 1,
     pageSize: 10
@@ -90,7 +90,7 @@ fetch.get<ResponseInterface<Paginator<User>>>('users', {
 })
 
 // Post created
-fetch.post<ResponseInterface<null>>('users', {
+post<SymfonyResponse<User>>('users', {
   body: {
     username: 'test',
     email: 'test@test.com'
@@ -100,7 +100,7 @@ fetch.post<ResponseInterface<null>>('users', {
 })
 
 // Patch updated
-fetch.patch<ResponseInterface<null>>('users/:id', {
+patch<SymfonyResponse<User>>('users/:id', {
   body: {
     username: 'test',
     email: 'test@test.com'
@@ -113,12 +113,12 @@ fetch.patch<ResponseInterface<null>>('users/:id', {
 })
 
 // Delete
-fetch.delete<ResponseInterface<null>>('users/:id', {
+destroy<SymfonyResponse<User>>('users/:id', {
   pathVariables: [
     { key: 'id', value: 1 }
   ]
 }).then(res => {
   console.log(res.msg)
-});
+})
 
 ```

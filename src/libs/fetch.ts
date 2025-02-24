@@ -1,6 +1,7 @@
 // ThirdParty Imports
 import qs from 'qs'
 import type { Blob } from 'node:buffer'
+
 // React Imports
 import { toast } from 'react-toastify'
 
@@ -19,80 +20,59 @@ interface RequestParams {
   body: {}
 }
 
-export interface PendingRequest {
-  accept(contentType: ResponseType): HttpRequest
-}
-
-export interface ResponseInterface<RValue> {
+export interface SymfonyResponse<T> {
   msg: string
   code: number
-  data: RValue
+  data: T
 }
 
-type FetchResponse<RValue> = string | ArrayBuffer | Blob | ResponseInterface<RValue>
+type Resource = 'json' | 'blob' | 'text' | 'buffer'
 
-interface HttpRequest {
-  get<R extends FetchResponse<R>>(url: string, params: Partial<RequestParams>): Promise<R>
-
-  post<R extends FetchResponse<R>>(url: string, params: Partial<Pick<RequestParams, 'body'>>): Promise<R>
-
-  patch<R extends FetchResponse<R>>(url: string, params: Partial<Omit<RequestParams, 'params'>>): Promise<R>
-
-  delete<R extends FetchResponse<R>>(url: string, params: Partial<Pick<RequestParams, 'pathVariables'>>): Promise<R>
+export const get = <T>(url: string, params: Partial<RequestParams> = {}, resource: Resource = 'json'): Promise<T> => {
+  return httpClient({
+    method: 'GET',
+    params: params.params,
+    pathVariables: params.pathVariables,
+    body: params.body,
+    url,
+    resource
+  })
 }
 
-export class Client implements HttpRequest, PendingRequest {
-
-  public delete<R extends FetchResponse<R>>(url: string, params: Partial<Pick<RequestParams, 'pathVariables'>>): Promise<R> {
-    return httpClient<R>({
-      method: 'DELETE',
-      pathVariables: params.pathVariables,
-      url: url,
-      responseType: 'json'
-    })
-  }
-
-  public get<R extends FetchResponse<R>>(url: string, params: RequestParams): Promise<R> {
-    return httpClient({
-      method: 'GET',
-      params: params.params,
-      pathVariables: params.pathVariables,
-      body: params.body,
-      url: url,
-      responseType: 'json'
-    })
-  }
-
-  public patch<R extends FetchResponse<R>>(url: string, params: Partial<Omit<RequestParams, 'params'>>): Promise<R> {
-    return httpClient<R>({
-      method: 'PATCH',
-      body: params.body,
-      pathVariables: params.pathVariables,
-      url: url,
-      responseType: 'json'
-    })
-  }
-
-  public post<R extends FetchResponse<R>>(url: string, params: RequestParams): Promise<R> {
-    return httpClient<R>({
-      method: 'POST',
-      body: params.body,
-      url: url,
-      responseType: 'json'
-    })
-  }
-
-  accept(contentType: ResponseType): HttpRequest {
-    return this
-  }
+export const post = <T>(url: string, params: Pick<RequestParams, 'body'>, resource: Resource = 'json'): Promise<T> => {
+  return httpClient<T>({
+    method: 'POST',
+    body: params.body,
+    url,
+    resource
+  })
 }
 
-interface HttpRequestOption<RValue> extends Partial<RequestParams> {
+export const patch = <T>(url: string, params: Partial<Omit<RequestParams, 'params'>>, resource: Resource = 'json'): Promise<T> => {
+  return httpClient<T>({
+    method: 'PATCH',
+    body: params.body,
+    pathVariables: params.pathVariables,
+    url,
+    resource
+  })
+}
+
+export const destroy = <T>(url: string, params: Partial<Pick<RequestParams, 'pathVariables'>>, resource: Resource = 'json'): Promise<T> => {
+  return httpClient<T>({
+    method: 'DELETE',
+    pathVariables: params.pathVariables,
+    url,
+    resource
+  })
+}
+
+interface HttpRequestOption extends Partial<RequestParams> {
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   headers?: object
   signal?: any
   url: string,
-  responseType?: 'json' | 'text' | 'blob' | 'arrayBuffer' | ResponseInterface<RValue>
+  resource: Resource
 }
 
 interface Error {
@@ -101,12 +81,12 @@ interface Error {
   code: number
 }
 
-function httpClient<RValue>(options: HttpRequestOption<RValue>): Promise<string | ArrayBuffer | Blob | ResponseInterface<RValue> | never> {
+function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer | Blob | SymfonyResponse<T>> {
 
   const fetchOption: {
     mode?: string
     cache?: string
-  } & Pick<HttpRequestOption<RValue>, 'method' | 'headers' | 'url' | 'body'> = {
+  } & Pick<HttpRequestOption, 'method' | 'headers' | 'url' | 'body'> = {
     method: options.method,
     headers: ((): object => {
       if (!isPlainObject(options.headers)) {
@@ -130,7 +110,9 @@ function httpClient<RValue>(options: HttpRequestOption<RValue>): Promise<string 
         : options.url
 
       if (options.pathVariables?.length) {
-        url = options.pathVariables?.reduce((url: string, pathVar: PathVariables) => url.replace(`:${pathVar.key}`, String(pathVar.value)), url)
+        url = options.pathVariables.reduce<string>((accUrl: string, pathVar: PathVariables): string => {
+          return accUrl.replace(`:${pathVar.key}`, String(pathVar.value))
+        }, url)
       }
 
       return process.env.NEXT_PUBLIC_API_URL + ensurePrefix(url, '/')
@@ -141,46 +123,39 @@ function httpClient<RValue>(options: HttpRequestOption<RValue>): Promise<string 
     fetchOption.body = isPlainObject(options.body) ? JSON.stringify(options.body) : {}
   }
 
+  const { resource } = options
+
   return fetch(fetchOption.url, fetchOption as RequestInit)
-    .then((res) => {
-
-      if (!res.ok) {
-        return Promise.reject<Error>({
-          code: 500,
-          status: res.status,
-          message: res.statusText
-        })
+    .then((response: Response): Promise<string | ArrayBuffer | Blob | SymfonyResponse<T> | Error> => {
+      if (!response.ok) {
+        return Promise.reject<Error>(new Error(`HTTP error: ${response.status}`))
       }
 
-      if (options.responseType === 'json') {
-        return resolveJsonResponse<RValue>(res) as ReturnType<Promise<ResponseInterface<RValue>>>
+      if (resource === 'blob') {
+        return response.blob() as Promise<Blob>
       }
 
-      if (options.responseType === 'arrayBuffer') {
-        return res.arrayBuffer()
+      if (resource === 'buffer') {
+        return response.arrayBuffer() as Promise<Blob>
       }
 
-      if (options.responseType === 'blob') {
-        return res.blob()
+      if (resource === 'text') {
+        return response.text() as Promise<string>
       }
 
-      return res.text()
+      return (async <T>(promise: Response): Promise<SymfonyResponse<T>> => {
+
+        const response: SymfonyResponse<T> = await promise.json()
+
+        if ([400, 401, 403, 404, 419, 422, 500].includes(response.code)) {
+          return Promise.reject(new Error(response.msg))
+        }
+
+        return promise.json()
+      })()
     })
     .catch(err => {
       toast.error(err.message)
     }).finally(() => {
     })
 }
-
-async function resolveJsonResponse<RValue>(res: Response): Promise<ResponseInterface<RValue>> {
-
-  const response: ResponseInterface<RValue> = await res.json()
-
-  if ([400, 401, 403, 404, 419, 422, 500].includes(response.code)) {
-    return Promise.reject(new Error(response.msg))
-  }
-
-  return Promise.resolve(response)
-}
-
-export const useReactFetch = (): HttpRequest => new Client()

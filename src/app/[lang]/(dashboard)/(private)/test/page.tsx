@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { HttpRequest, ResponseInterface, useReactFetch } from '@/libs/fetch'
+import { get, post, SymfonyResponse } from '@/libs/fetch'
 import { toast } from 'react-toastify'
 
 type User = {
@@ -10,20 +10,12 @@ type User = {
 
 const Test = () => {
 
-  const fetch: HttpRequest = useReactFetch()
+
 
   useEffect(() => {
-    fetch.post<ResponseInterface<null>>('auth', {
-      body:{
-        username: 'admin',
-        password: '123456'
-      }
-    }).then(res => {
-      if (res.code === 201) {
-        toast.success(res.msg)
-      }
-    }).catch(err => console.log(err))
+    get<SymfonyResponse<User[]>>('auth').then(res => {
 
+    })
   }, [])
 
   return <div>
