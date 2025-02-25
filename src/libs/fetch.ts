@@ -1,12 +1,16 @@
+// Node Imports
+import type { Blob } from 'node:buffer'
+
 // ThirdParty Imports
 import qs from 'qs'
-import type { Blob } from 'node:buffer'
 
 // React Imports
 import { toast } from 'react-toastify'
 
-// Utils Imports
+// MUI Imports
 import { isPlainObject } from '@mui/utils'
+
+// Utils Imports
 import { ensurePrefix } from '@utils/string'
 import { getLanguageFromPathname } from '@utils/getLanguage'
 
@@ -30,7 +34,7 @@ export interface SymfonyResponse<T> {
 type Resource = 'json' | 'blob' | 'text' | 'buffer'
 
 export const get = <T>(url: string, params: Partial<RequestParams> = {}, resource: Resource = 'json'): Promise<T> => {
-  return httpClient({
+  return httpClient<T>({
     method: 'GET',
     params: params.params,
     pathVariables: params.pathVariables,
@@ -49,7 +53,11 @@ export const post = <T>(url: string, params: Pick<RequestParams, 'body'>, resour
   })
 }
 
-export const patch = <T>(url: string, params: Partial<Omit<RequestParams, 'params'>>, resource: Resource = 'json'): Promise<T> => {
+export const patch = <T>(
+  url: string,
+  params: Partial<Omit<RequestParams, 'params'>>,
+  resource: Resource = 'json'
+): Promise<T> => {
   return httpClient<T>({
     method: 'PATCH',
     body: params.body,
@@ -59,7 +67,11 @@ export const patch = <T>(url: string, params: Partial<Omit<RequestParams, 'param
   })
 }
 
-export const destroy = <T>(url: string, params: Partial<Pick<RequestParams, 'pathVariables'>>, resource: Resource = 'json'): Promise<T> => {
+export const destroy = <T>(
+  url: string,
+  params: Partial<Pick<RequestParams, 'pathVariables'>>,
+  resource: Resource = 'json'
+): Promise<T> => {
   return httpClient<T>({
     method: 'DELETE',
     pathVariables: params.pathVariables,
@@ -70,38 +82,51 @@ export const destroy = <T>(url: string, params: Partial<Pick<RequestParams, 'pat
 
 interface HttpRequestOption extends Partial<RequestParams> {
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  headers?: object
-  signal?: any
-  url: string,
+  headers?: Record<string, string>
+  url: string
   resource: Resource
 }
 
-interface Error {
-  message: string
-  status: number
-  code: number
-}
+const pendingRequests: Record<string, null | AbortController> = {}
+
+const ABORT_WHITELIST: string[] = []
 
 function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer | Blob | SymfonyResponse<T>> {
+  let controller: AbortController | null = null
+
+  if (!ABORT_WHITELIST.includes(options.url)) {
+    const previousController = pendingRequests[options.url]
+
+    if (previousController) {
+      previousController.abort()
+    }
+
+    controller = new AbortController()
+
+    pendingRequests[options.url] = controller
+  }
 
   const fetchOption: {
+    signal: AbortSignal | null
     mode?: string
     cache?: string
   } & Pick<HttpRequestOption, 'method' | 'headers' | 'url' | 'body'> = {
+    signal: controller ? controller.signal : null,
     method: options.method,
-    headers: ((): object => {
+    headers: ((): Record<string, string> => {
+      const headers: Record<string, string> = {}
+
       if (!isPlainObject(options.headers)) {
-        const headers = {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ' + 'token'
-        }
+        headers['Accept'] = 'application/json'
 
         if (isPlainObject(options.body) && !(options.body instanceof FormData)) {
-          headers['Content-Type'] = 'application/{type}'.replace('{type}', options.method === 'GET' ? 'x-www-form-urlencoded' : 'json;charset=UTF-8')
-        }
+          const contentType: string = options.method === 'GET' ? 'x-www-form-urlencoded' : 'json;charset=UTF-8'
 
-        return headers
+          headers['Content-Type'] = 'application/{type}'.replace('{type}', contentType)
+        }
       }
+
+      return headers
     })(),
     mode: 'cors',
     cache: 'no-cache',
@@ -124,20 +149,20 @@ function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer
     fetchOption.body = isPlainObject(options.body) ? JSON.stringify(options.body) : {}
   }
 
-  const { resource } = options
-
   return fetch(fetchOption.url, fetchOption as RequestInit)
     .then((response: Response): Promise<string | ArrayBuffer | Blob | SymfonyResponse<T> | Error> => {
       if (!response.ok) {
         return Promise.reject<Error>(new Error(`HTTP error: ${response.status}`))
       }
 
+      const { resource } = options
+
       if (resource === 'blob') {
         return response.blob() as Promise<Blob>
       }
 
       if (resource === 'buffer') {
-        return response.arrayBuffer() as Promise<Blob>
+        return response.arrayBuffer() as Promise<ArrayBuffer>
       }
 
       if (resource === 'text') {
@@ -145,29 +170,28 @@ function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer
       }
 
       return (async <T>(promise: Response): Promise<SymfonyResponse<T>> => {
-
         const response: SymfonyResponse<T> = await promise.json()
 
         if ([400, 401, 403, 404, 419, 422, 500].includes(response.code)) {
-
           if (response.code === 401) {
             const language: string | null = getLanguageFromPathname()
+
             toast.error(response.msg, {
               delay: 1000,
-              onClose: () => window.location = `/${language}/login`
+              onClose: () => window.location.replace(`/${language}/login`)
             })
-            return
+          } else {
+            return Promise.reject(new Error(response.msg))
           }
-
-          return Promise.reject(new Error(response.msg))
         }
 
         return Promise.resolve(response)
       })(response)
     })
     .catch(err => {
-      console.log(err)
       toast.error(err.message)
-    }).finally(() => {
+    })
+    .finally(() => {
+      delete pendingRequests[options.url]
     })
 }
