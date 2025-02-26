@@ -120,9 +120,9 @@ function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer
 
       const headers: Record<string, string> = {}
 
-      if (hasAccessToken()) {
-        headers['Authorization'] = `Bearer ${useAccessToken()}`
-      }
+      // if (hasAccessToken()) {
+      //   headers['Authorization'] = `Bearer ${useAccessToken()}`
+      // }
 
       if (!isPlainObject(options.headers)) {
         headers['Accept'] = 'application/json'

@@ -4,6 +4,7 @@ import GoogleProvider from 'next-auth/providers/google'
 
 // Type Imports.
 import type { NextAuthConfig } from 'next-auth'
+import { post } from '@/libs/fetch'
 
 export const nextConfig: NextAuthConfig = {
   // debug: true,
@@ -16,12 +17,23 @@ export const nextConfig: NextAuthConfig = {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' }
       },
-      authorize: credentials => {
+      authorize: async credentials => {
         const { email, password } = credentials as { email: string; password: string }
 
         if (email === null || password === null) {
           return null
         }
+
+        const response = await fetch('http://api.dto.test/api/oa/auth', {
+          mode: 'cors',
+          body: JSON.stringify({ email, password }),
+          method: 'POST',
+          cache: 'no-cache'
+        })
+
+        const json = await response.json()
+
+        console.log(json)
 
         return {
           name: 'tom',
