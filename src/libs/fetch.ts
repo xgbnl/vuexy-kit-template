@@ -14,6 +14,9 @@ import { isPlainObject } from '@mui/utils'
 import { ensurePrefix } from '@utils/string'
 import { getLanguageFromPathname } from '@utils/getLanguage'
 
+// Utils Imports
+import { useAccessToken, hasAccessToken, revokeAccessToken } from '@utils/passport'
+
 interface PathVariables {
   key: string
   value: string | number
@@ -114,15 +117,19 @@ function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer
     signal: controller ? controller.signal : null,
     method: options.method,
     headers: ((): Record<string, string> => {
+
       const headers: Record<string, string> = {}
+
+      if (hasAccessToken()) {
+        headers['Authorization'] = `Bearer ${useAccessToken()}`
+      }
 
       if (!isPlainObject(options.headers)) {
         headers['Accept'] = 'application/json'
 
         if (isPlainObject(options.body) && !(options.body instanceof FormData)) {
-          const contentType: string = options.method === 'GET' ? 'x-www-form-urlencoded' : 'json;charset=UTF-8'
-
-          headers['Content-Type'] = 'application/{type}'.replace('{type}', contentType)
+          const CONTENT_TYPE: string = options.method === 'GET' ? 'x-www-form-urlencoded' : 'json;charset=UTF-8'
+          headers['Content-Type'] = `application/${CONTENT_TYPE}`
         }
       }
 
@@ -174,6 +181,9 @@ function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer
 
         if ([400, 401, 403, 404, 419, 422, 500].includes(response.code)) {
           if (response.code === 401) {
+
+            revokeAccessToken()
+
             const language: string | null = getLanguageFromPathname()
 
             toast.error(response.msg, {
