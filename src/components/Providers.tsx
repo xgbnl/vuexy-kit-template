@@ -14,13 +14,16 @@ import { getMode, getSettingsFromCookie, getSystemMode } from '@core/utils/serve
 // Redux Imports
 import ReduxStoreProvider from '@/hocs/ReduxStoreProvider'
 
+// Guard Imports
+import GuardMiddleware from '@/hocs/GuardMiddleware'
+
 type Props = ChildrenType & {
-  direction: Direction
+  direction: Direction,
 }
 
 const Providers = async (props: Props) => {
   // Props
-  const { children, direction } = props
+  const { children, direction} = props
 
   // Vars
   const mode = await getMode()
@@ -32,7 +35,11 @@ const Providers = async (props: Props) => {
       <VerticalNavProvider>
         <SettingsProvider settingsCookie={settingsCookie} mode={mode}>
           <ThemeProvider direction={direction} systemMode={systemMode}>
-            <ReduxStoreProvider>{children}</ReduxStoreProvider>
+            <ReduxStoreProvider>
+              <GuardMiddleware>
+                {children}
+              </GuardMiddleware>
+            </ReduxStoreProvider>
             <AppReactToastify direction={direction} hideProgressBar />
           </ThemeProvider>
         </SettingsProvider>

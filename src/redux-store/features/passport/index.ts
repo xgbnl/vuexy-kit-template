@@ -1,17 +1,15 @@
 // Redux Imports
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-// Store Imports
-import { useAppSelector } from '@/redux-store/hooks'
+// Type Imports
+import { RootState } from '@/redux-store/store'
 
 export interface PassportState {
   token: string
 }
 
-const { localStorage } = window
-
 const initialState: PassportState = {
-  token: localStorage.getItem('access-token') || ''
+  token:  ''
 }
 
 export const passportSlice = createSlice({
@@ -31,5 +29,10 @@ export const passportSlice = createSlice({
 
 // Exports
 export const { revokeAccessToken, setToken } = passportSlice.actions
+
+// Hooks
+export const useAccessToken = (state: RootState & { passport: PassportState }): string => state.passport.token
+
+export const hasAccessToken = (state: RootState & { passport: PassportState }): boolean => state.passport.token !== ''
 
 export default passportSlice.reducer
