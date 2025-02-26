@@ -11,6 +11,9 @@ import AppReactToastify from '@/libs/styles/AppReactToastify'
 // Util Imports
 import { getMode, getSettingsFromCookie, getSystemMode } from '@core/utils/serverHelpers'
 
+// Redux Imports
+import ReduxStoreProvider from '@/hocs/ReduxStoreProvider'
+
 type Props = ChildrenType & {
   direction: Direction
 }
@@ -29,8 +32,8 @@ const Providers = async (props: Props) => {
       <VerticalNavProvider>
         <SettingsProvider settingsCookie={settingsCookie} mode={mode}>
           <ThemeProvider direction={direction} systemMode={systemMode}>
-            {children}
-            <AppReactToastify direction={direction} hideProgressBar/>
+            <ReduxStoreProvider>{children}</ReduxStoreProvider>
+            <AppReactToastify direction={direction} hideProgressBar />
           </ThemeProvider>
         </SettingsProvider>
       </VerticalNavProvider>
