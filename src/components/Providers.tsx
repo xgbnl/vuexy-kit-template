@@ -14,9 +14,6 @@ import { getMode, getSettingsFromCookie, getSystemMode } from '@core/utils/serve
 // Redux Imports
 import ReduxStoreProvider from '@/hocs/ReduxStoreProvider'
 
-// Guard Imports
-import GuardMiddleware from '@/hocs/GuardMiddleware'
-
 type Props = ChildrenType & {
   direction: Direction,
 }
@@ -36,9 +33,7 @@ const Providers = async (props: Props) => {
         <SettingsProvider settingsCookie={settingsCookie} mode={mode}>
           <ThemeProvider direction={direction} systemMode={systemMode}>
             <ReduxStoreProvider>
-              <GuardMiddleware>
                 {children}
-              </GuardMiddleware>
             </ReduxStoreProvider>
             <AppReactToastify direction={direction} hideProgressBar />
           </ThemeProvider>

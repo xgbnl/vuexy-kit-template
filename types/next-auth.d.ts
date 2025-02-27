@@ -1,21 +1,16 @@
-import NextAuth, { type DefaultSession, Session, User } from 'next-auth'
-import { AdapterUser } from '@auth/core/adapters'
+// eslint-disable-next-line import/named
+// NextAuth Imports
+import NextAuth, { type DefaultSession } from 'next-auth'
+
+export interface Passport {
+  passport: string
+}
 
 declare module 'next-auth' {
-  /**
-   * Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
-   */
+
   interface Session {
-    user: User
+    user: Passport & DefaultSession['user']
   }
 
-  interface User {
-    avatar: string
-    name: string
-    passport: string
-  }
-
-  interface AdapterUser  extends User{
-
-  }
+  interface User extends Passport {}
 }

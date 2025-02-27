@@ -16,7 +16,7 @@ export const nextConfig: NextAuthConfig = {
         username: { label: '用户名', type: 'text' },
         password: { label: '密码', type: 'password' }
       },
-      authorize: async (credentials) => {
+      authorize: async credentials => {
         const { username, password } = credentials as { username: string | null; password: string | null }
 
         // try {
@@ -36,9 +36,11 @@ export const nextConfig: NextAuthConfig = {
         //
         // const json = await response.json()
         // console.log(json)
+        console.log(process.env.NEXT_PUBLIC_API_URL)
+
         return {
           name: 'jack',
-          avatar: 'https://avatar.jpg',
+          image: 'https://avatar.jpg',
           passport: 'xxx'
         }
       }
@@ -88,18 +90,21 @@ export const nextConfig: NextAuthConfig = {
          * For adding custom parameters to user in session, we first need to add those parameters
          * in token which then will be available in the `session()` callback
          */
-        token.username = user.username
-        token.avatar = user.avatar
+        token.name = user.name
+        token.avatar = user.image as string
         token.passport = user.passport
       }
 
       return token
     },
     async session({ session, token }) {
-      console.log('token', token,session.user)
+      console.log('token', token, session.user)
+
       if (session.user) {
         // ** Add custom params to user in session which are added in `jwt()` callback via `token` parameter
         session.user.name = token.name
+        session.user.image = token.avatar
+        session.user.passport = token.passport
       }
 
       return session
