@@ -3,41 +3,43 @@ import Credentials from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 
 // Type Imports.
-import type { NextAuthConfig } from 'next-auth'
-import { post } from '@/libs/fetch'
+import { type NextAuthConfig } from 'next-auth'
 
 export const nextConfig: NextAuthConfig = {
-  // debug: true,
+  debug: true,
 
   // ** Configure one or more authentication providers
   // ** Please refer to https://next-auth.js.org/configuration/options#providers for more `providers` options
   providers: [
     Credentials({
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' }
+        username: { label: '用户名', type: 'text' },
+        password: { label: '密码', type: 'password' }
       },
-      authorize: async credentials => {
-        const { email, password } = credentials as { email: string; password: string }
+      authorize: async (credentials) => {
+        const { username, password } = credentials as { username: string | null; password: string | null }
 
-        if (email === null || password === null) {
-          return null
-        }
+        // try {
+        //   const response = await fetch('http://api.dto.test/api/oa/auth', {
+        //     mode: 'cors',
+        //     body: JSON.stringify({ email, password }),
+        //     method: 'POST',
+        //     cache: 'no-cache'
+        //   })
+        // }catch (error) {
+        //   throw new Error('Unable to connect to PHP Server.')
+        // }
 
-        const response = await fetch('http://api.dto.test/api/oa/auth', {
-          mode: 'cors',
-          body: JSON.stringify({ email, password }),
-          method: 'POST',
-          cache: 'no-cache'
-        })
-
-        const json = await response.json()
-
-        console.log(json)
-
+        // if (!response.ok) {
+        //   throw new Error('Server Error')
+        // }
+        //
+        // const json = await response.json()
+        // console.log(json)
         return {
-          name: 'tom',
-          email: email
+          name: 'jack',
+          avatar: 'https://avatar.jpg',
+          passport: 'xxx'
         }
       }
     }),
@@ -86,12 +88,15 @@ export const nextConfig: NextAuthConfig = {
          * For adding custom parameters to user in session, we first need to add those parameters
          * in token which then will be available in the `session()` callback
          */
-        token.name = user.name
+        token.username = user.username
+        token.avatar = user.avatar
+        token.passport = user.passport
       }
 
       return token
     },
     async session({ session, token }) {
+      console.log('token', token,session.user)
       if (session.user) {
         // ** Add custom params to user in session which are added in `jwt()` callback via `token` parameter
         session.user.name = token.name

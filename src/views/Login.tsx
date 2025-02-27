@@ -139,6 +139,8 @@ const Login = ({ mode }: { mode: SystemMode }) => {
       redirect: false
     }) as SignInResponse
 
+    console.log('signIn', res)
+
     if (res && res.ok && res.error === null) {
       // Vars
       const redirectURL = searchParams.get('redirectTo') ?? '/'
