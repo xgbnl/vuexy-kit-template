@@ -12,10 +12,7 @@ import { isPlainObject } from '@mui/utils'
 
 // Utils Imports
 import { ensurePrefix } from '@utils/string'
-import { getLanguageFromPathname } from '@utils/getLanguage'
-
-// Utils Imports
-import { revokeAccessToken } from '@utils/passport'
+import { getLocale } from '@utils/getLocale'
 
 interface PathVariables {
   key: string
@@ -36,11 +33,7 @@ export interface SymfonyResponse<T> {
 
 type Resource = 'json' | 'blob' | 'text' | 'buffer'
 
-export const get = <T>(
-  url: string,
-  params: Partial<RequestParams> = {},
-  resource: Resource = 'json'
-): Promise<string | ArrayBuffer | Blob | SymfonyResponse<T>> => {
+export const get = <T>(url: string, params: Partial<RequestParams> = {}, resource: Resource = 'json'): Promise<T> => {
   return httpClient<T>({
     method: 'GET',
     params: params.params,
@@ -51,11 +44,7 @@ export const get = <T>(
   })
 }
 
-export const post = <T>(
-  url: string,
-  params: Pick<RequestParams, 'body'>,
-  resource: Resource = 'json'
-): Promise<string | ArrayBuffer | Blob | SymfonyResponse<T>> => {
+export const post = <T>(url: string, params: Pick<RequestParams, 'body'>, resource: Resource = 'json'): Promise<T> => {
   return httpClient<T>({
     method: 'POST',
     body: params.body,
@@ -68,7 +57,7 @@ export const patch = <T>(
   url: string,
   params: Partial<Omit<RequestParams, 'params'>>,
   resource: Resource = 'json'
-): Promise<string | ArrayBuffer | Blob | SymfonyResponse<T>> => {
+): Promise<T> => {
   return httpClient<T>({
     method: 'PATCH',
     body: params.body,
@@ -82,7 +71,7 @@ export const destroy = <T>(
   url: string,
   params: Partial<Pick<RequestParams, 'pathVariables'>>,
   resource: Resource = 'json'
-): Promise<string | ArrayBuffer | Blob | SymfonyResponse<T>> => {
+): Promise<T> => {
   return httpClient<T>({
     method: 'DELETE',
     pathVariables: params.pathVariables,
@@ -127,12 +116,15 @@ function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer
     headers: ((): Record<string, string> => {
       const headers: Record<string, string> = {}
 
+      // if (hasAccessToken()) {
+      //   headers['Authorization'] = `Bearer ${useAccessToken()}`
+      // }
+
       if (!isPlainObject(options.headers)) {
         headers['Accept'] = 'application/json'
 
         if (isPlainObject(options.body) && !(options.body instanceof FormData)) {
           const CONTENT_TYPE: string = options.method === 'GET' ? 'x-www-form-urlencoded' : 'json;charset=UTF-8'
-
           headers['Content-Type'] = `application/${CONTENT_TYPE}`
         }
       }
@@ -187,7 +179,7 @@ function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer
           if (response.code === 401) {
             revokeAccessToken()
 
-            const language: string | null = getLanguageFromPathname()
+            const language: string | null = getLocale()
 
             toast.error(response.msg, {
               delay: 1000,
