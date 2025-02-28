@@ -5,6 +5,7 @@ import GoogleProvider from 'next-auth/providers/google'
 // Type Imports.
 import { type NextAuthConfig } from 'next-auth'
 
+// @ts-ignore
 export const nextConfig: NextAuthConfig = {
   debug: true,
 
@@ -16,7 +17,13 @@ export const nextConfig: NextAuthConfig = {
         username: { label: '用户名', type: 'text' },
         password: { label: '密码', type: 'password' }
       },
-      authorize: async credentials => {
+      authorize: async (
+        credentials: Partial<Record<'username' | 'password', unknown>>
+      ): Promise<{
+        name: string
+        image: string
+        passport: string
+      }> => {
         const { username, password } = credentials as { username: string | null; password: string | null }
 
         // try {
@@ -101,8 +108,8 @@ export const nextConfig: NextAuthConfig = {
       if (session.user) {
         // ** Add custom params to user in session which are added in `jwt()` callback via `token` parameter
         session.user.name = token.name
-        session.user.image = token.avatar
-        session.user.passport = token.passport
+        session.user.image = token.avatar as string
+        session.user.passport = token.passport as string
       }
 
       return session

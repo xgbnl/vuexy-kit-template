@@ -1,3 +1,6 @@
+// @ts-ignore
+import NextAuth from 'next-auth'
+
 interface Passport {
   passport: string | null
 }
