@@ -14,6 +14,7 @@ import { isPlainObject } from '@mui/utils'
 import { ensurePrefix } from '@utils/string'
 import { getLocale } from '@utils/getLocale'
 
+// Interfaces
 interface PathVariables {
   key: string
   value: string | number
@@ -25,7 +26,7 @@ interface RequestParams {
   body: {}
 }
 
-export interface SymfonyResponse<T> {
+export interface Responder<T> {
   msg: string
   code: number
   data: T
@@ -91,7 +92,7 @@ const pendingRequests: Record<string, null | AbortController> = {}
 
 const ABORT_WHITELIST: string[] = []
 
-function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer | Blob | SymfonyResponse<T>> {
+function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer | Blob | Responder<T>> {
   let controller: AbortController | null = null
 
   if (!ABORT_WHITELIST.includes(options.url)) {
@@ -153,50 +154,67 @@ function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer
   }
 
   return fetch(fetchOption.url, fetchOption as RequestInit)
-    .then((response: Response): Promise<string | ArrayBuffer | Blob | SymfonyResponse<T> | Error> => {
+    .then((response: Response): Promise<string | ArrayBuffer | Blob | Responder<T> | Error> => {
       if (!response.ok) {
         return Promise.reject<Error>(new Error(`HTTP error: ${response.status}`))
       }
 
-      const { resource } = options
-
-      if (resource === 'blob') {
-        return response.blob() as Promise<Blob>
+      switch (options.resource) {
+        case 'text':
+          return response.text() as Promise<string>
+        case 'blob':
+          return response.blob() as Promise<Blob>
+        case 'buffer':
+          return response.arrayBuffer() as Promise<ArrayBuffer>
       }
 
-      if (resource === 'buffer') {
-        return response.arrayBuffer() as Promise<ArrayBuffer>
-      }
-
-      if (resource === 'text') {
-        return response.text() as Promise<string>
-      }
-
-      return (async <T>(promise: Response): Promise<SymfonyResponse<T>> => {
-        const response: SymfonyResponse<T> = await promise.json()
+      return (async <T>(promise: Response): Promise<Responder<T>> => {
+        const response: Responder<T> = await promise.json()
 
         if ([400, 401, 403, 404, 419, 422, 500].includes(response.code)) {
-          if (response.code === 401) {
-            revokeAccessToken()
-
-            const language: string | null = getLocale()
-
-            toast.error(response.msg, {
-              delay: 1000,
-              onClose: () => window.location.replace(`/${language}/login`)
-            })
-          } else {
-            return Promise.reject(new Error(response.msg))
-          }
         }
 
         return Promise.resolve(response)
       })(response)
     })
     .catch(err => {
-      toast.error(err.message)
+      withExceptions({
+        server: (): void => {
+          console.log(err)
+        },
+        renderAble: (): void => {
+          toast.error(err.message)
+        }
+      })
     })
     .finally(() => {
       delete pendingRequests[options.url]
     })
+}
+
+const handelExceptionResponse = <T>(response: Responder<T>) => {
+  if (response.code !== 401) {
+    return isClient() ? Promise.reject(new Error(response.msg)) : Promise.resolve(response)
+  }
+  withExceptions({
+    server: () => {
+      console.log(response.msg)
+    },
+    renderAble: () => {
+      const locale: string = getLocale() as string
+      toast.error(response.msg, {
+        delay: 1000,
+        onClose: () => window.location.replace(`/${locale}/login`)
+      })
+    }
+  })
+}
+
+const withExceptions = (callable: { server: () => void; renderAble: () => void }): void => {
+  const { renderAble, server } = callable
+  return isClient() ? renderAble() : server()
+}
+
+const isClient: () => boolean = (): boolean => {
+  return typeof window !== 'undefined'
 }

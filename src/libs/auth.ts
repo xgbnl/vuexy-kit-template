@@ -4,10 +4,11 @@ import GoogleProvider from 'next-auth/providers/google'
 
 // Type Imports.
 import { type NextAuthConfig } from 'next-auth'
+import { post, Responder } from '@/libs/fetch'
 
 // @ts-ignore
 export const nextConfig: NextAuthConfig = {
-  debug: true,
+  debug: false,
 
   // ** Configure one or more authentication providers
   // ** Please refer to https://next-auth.js.org/configuration/options#providers for more `providers` options
@@ -17,33 +18,16 @@ export const nextConfig: NextAuthConfig = {
         username: { label: '用户名', type: 'text' },
         password: { label: '密码', type: 'password' }
       },
-      authorize: async (
-        credentials: Partial<Record<'username' | 'password', unknown>>
-      ): Promise<{
-        name: string
-        image: string
-        passport: string
-      }> => {
-        const { username, password } = credentials as { username: string | null; password: string | null }
+      authorize: async (credentials: Partial<Record<'username' | 'password', unknown>>) => {
+        let res: Responder<{ name: string; avatar: string; passport: string }> | null = null
 
-        // try {
-        //   const response = await fetch('http://api.dto.test/api/oa/auth', {
-        //     mode: 'cors',
-        //     body: JSON.stringify({ email, password }),
-        //     method: 'POST',
-        //     cache: 'no-cache'
-        //   })
-        // }catch (error) {
-        //   throw new Error('Unable to connect to PHP Server.')
-        // }
+        try {
+          res = await post('auth', { body: credentials })
+        } catch (e) {
+          throw new Error(JSON.stringify({ error: 'Something went wrong' }))
+        }
 
-        // if (!response.ok) {
-        //   throw new Error('Server Error')
-        // }
-        //
-        // const json = await response.json()
-        // console.log(json)
-        console.log(process.env.NEXT_PUBLIC_API_URL)
+        console.log(res)
 
         return {
           name: 'jack',
