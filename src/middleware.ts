@@ -23,11 +23,9 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   }
 
   if (guest && !isAuthPage) {
-    const locale: string | null = getLocale(pathname)
+    const locale: string = getLocale(pathname) ?? 'zh'
 
-    const redirect: string = !locale ? `/${locale}/login` : '/zh/login'
-
-    return NextResponse.redirect(new URL(redirect, url))
+    return NextResponse.redirect(new URL(`/${locale}/login`, url))
   }
 
   return NextResponse.next()
