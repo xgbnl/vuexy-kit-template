@@ -4,9 +4,9 @@ import { NextRequest, NextResponse } from 'next/server'
 // NextAuth Imports
 import { auth } from '@/app/api/auth/[...nextauth]/route'
 import { Session } from 'next-auth'
-import { getLocale } from '@utils/getLocale'
 
 // Hooks Imports
+import { getLocale } from '@utils/getLocale'
 
 export async function middleware(request: NextRequest): Promise<NextResponse> {
   // Hooks
