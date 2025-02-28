@@ -1,9 +1,10 @@
-export const getLanguageFromPathname = (): string | null => {
-  if (typeof window === 'undefined') {
+export const getLocale = (pathName: string | null = null): string | null => {
+  const pathname: string = pathName ?? (typeof window !== 'undefined' ? window.location.pathname : '')
+
+  if (!pathname) {
     return null
   }
 
-  const pathname: string = window.location.pathname
   const pathParts = pathname.split('/')
 
   if (pathParts.length > 1) {

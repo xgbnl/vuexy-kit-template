@@ -10,5 +10,6 @@ import { nextConfig } from '@/libs/auth'
  */
 
 export const {
+  auth,
   handlers: { GET, POST }
 } = NextAuth(nextConfig)

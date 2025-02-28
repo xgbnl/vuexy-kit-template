@@ -1,11 +1,11 @@
 'use client'
 
+import type { MouseEvent } from 'react'
 // React Imports
 import { useRef, useState } from 'react'
-import type { MouseEvent } from 'react'
 
 // Next Imports
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
 // MUI Imports
 import { styled } from '@mui/material/styles'
@@ -23,6 +23,10 @@ import Button from '@mui/material/Button'
 
 // Hook Imports
 import { useSettings } from '@core/hooks/useSettings'
+import { Locale } from '@configs/i18n'
+
+// Auth Imports
+import { signOut } from 'next-auth/react'
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
@@ -43,6 +47,7 @@ const UserDropdown = () => {
 
   // Hooks
   const router = useRouter()
+  const { lang } = useParams<{ lang: Locale }>()
 
   const { settings } = useSettings()
 
@@ -64,7 +69,10 @@ const UserDropdown = () => {
 
   const handleUserLogout = async () => {
     // Redirect to login page
-    router.push('/login')
+    return await signOut<true>({
+      redirectTo: `/${lang}/login`,
+      redirect: true
+    })
   }
 
   return (
