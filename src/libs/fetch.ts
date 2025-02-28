@@ -32,54 +32,15 @@ export interface Responder<T> {
   data: T
 }
 
-type Resource = 'json' | 'blob' | 'text' | 'buffer'
-
-export const get = <T>(url: string, params: Partial<RequestParams> = {}, resource: Resource = 'json'): Promise<T> => {
-  return httpClient<T>({
-    method: 'GET',
-    params: params.params,
-    pathVariables: params.pathVariables,
-    body: params.body,
-    url,
-    resource
-  })
-}
-
-export const post = <T>(url: string, params: Pick<RequestParams, 'body'>, resource: Resource = 'json'): Promise<T> => {
-  return httpClient<T>({
-    method: 'POST',
-    body: params.body,
-    url,
-    resource
-  })
-}
-
-export const patch = <T>(
-  url: string,
-  params: Partial<Omit<RequestParams, 'params'>>,
-  resource: Resource = 'json'
-): Promise<T> => {
-  return httpClient<T>({
-    method: 'PATCH',
-    body: params.body,
-    pathVariables: params.pathVariables,
-    url,
-    resource
-  })
-}
-
-export const destroy = <T>(
-  url: string,
-  params: Partial<Pick<RequestParams, 'pathVariables'>>,
-  resource: Resource = 'json'
-): Promise<T> => {
-  return httpClient<T>({
-    method: 'DELETE',
-    pathVariables: params.pathVariables,
-    url,
-    resource
-  })
-}
+type HttpResponse<T> = T extends string
+  ? string
+  : T extends Blob
+    ? Blob
+    : T extends ArrayBuffer
+      ? ArrayBuffer
+      : T extends Responder<infer U>
+        ? Responder<U>
+        : never
 
 interface HttpRequestOption extends Partial<RequestParams> {
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
@@ -88,11 +49,13 @@ interface HttpRequestOption extends Partial<RequestParams> {
   resource: Resource
 }
 
+// Controllers
 const pendingRequests: Record<string, null | AbortController> = {}
 
 const ABORT_WHITELIST: string[] = []
 
-function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer | Blob | Responder<T>> {
+// Hooks
+function httpClient<T>(options: HttpRequestOption): Promise<HttpResponse<T>> {
   let controller: AbortController | null = null
 
   if (!ABORT_WHITELIST.includes(options.url)) {
@@ -114,39 +77,10 @@ function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer
   } & Pick<HttpRequestOption, 'method' | 'headers' | 'url' | 'body'> = {
     signal: controller ? controller.signal : null,
     method: options.method,
-    headers: ((): Record<string, string> => {
-      const headers: Record<string, string> = {}
-
-      // if (hasAccessToken()) {
-      //   headers['Authorization'] = `Bearer ${useAccessToken()}`
-      // }
-
-      if (!isPlainObject(options.headers)) {
-        headers['Accept'] = 'application/json'
-
-        if (isPlainObject(options.body) && !(options.body instanceof FormData)) {
-          const CONTENT_TYPE: string = options.method === 'GET' ? 'x-www-form-urlencoded' : 'json;charset=UTF-8'
-          headers['Content-Type'] = `application/${CONTENT_TYPE}`
-        }
-      }
-
-      return headers
-    })(),
+    headers: prepareHeaders(options),
     mode: 'cors',
     cache: 'no-cache',
-    url: ((): string => {
-      let url: string = isPlainObject(options.params)
-        ? options.url + `${options.url.indexOf('?') === -1 ? '?' : '&'}` + qs.stringify(options.params)
-        : options.url
-
-      if (options.pathVariables?.length) {
-        url = options.pathVariables.reduce<string>((accUrl: string, pathVar: PathVariables): string => {
-          return accUrl.replace(`:${pathVar.key}`, String(pathVar.value))
-        }, url)
-      }
-
-      return process.env.NEXT_PUBLIC_API_URL + ensurePrefix(url, '/')
-    })()
+    url: buildUrl(options)
   }
 
   if (options.method !== 'GET') {
@@ -154,67 +88,146 @@ function httpClient<T>(options: HttpRequestOption): Promise<string | ArrayBuffer
   }
 
   return fetch(fetchOption.url, fetchOption as RequestInit)
-    .then((response: Response): Promise<string | ArrayBuffer | Blob | Responder<T> | Error> => {
+    .then((response: Response): Promise<HttpResponse<T> | Error> => {
       if (!response.ok) {
         return Promise.reject<Error>(new Error(`HTTP error: ${response.status}`))
       }
 
       switch (options.resource) {
         case 'text':
-          return response.text() as Promise<string>
+          return response.text() as Promise<HttpResponse<T>>
         case 'blob':
-          return response.blob() as Promise<Blob>
+          return response.blob() as Promise<HttpResponse<T>>
         case 'buffer':
-          return response.arrayBuffer() as Promise<ArrayBuffer>
+          return response.arrayBuffer() as Promise<HttpResponse<T>>
       }
 
-      return (async <T>(promise: Response): Promise<Responder<T>> => {
-        const response: Responder<T> = await promise.json()
-
-        if ([400, 401, 403, 404, 419, 422, 500].includes(response.code)) {
-        }
-
-        return Promise.resolve(response)
-      })(response)
+      return handelJsonResponse(response)
     })
     .catch(err => {
-      withExceptions({
-        server: (): void => {
-          console.log(err)
-        },
-        renderAble: (): void => {
-          toast.error(err.message)
-        }
-      })
+      if (isNextEnv()) {
+        throw new Error(err.message)
+      }
+      toast.error(err.message)
     })
     .finally(() => {
       delete pendingRequests[options.url]
-    })
+    }) as Promise<HttpResponse<T>>
 }
 
-const handelExceptionResponse = <T>(response: Responder<T>) => {
-  if (response.code !== 401) {
-    return isClient() ? Promise.reject(new Error(response.msg)) : Promise.resolve(response)
+const buildUrl = (option: Pick<HttpRequestOption, 'params' | 'url' | 'pathVariables'>): string => {
+  const { url: path, pathVariables, params } = option
+
+  let url: string = path
+
+  if (isPlainObject(params)) {
+    const queryString: string = url.endsWith('?') ? '&' : '?' + qs.stringify(params)
+
+    url += queryString
   }
-  withExceptions({
-    server: () => {
-      console.log(response.msg)
-    },
-    renderAble: () => {
-      const locale: string = getLocale() as string
-      toast.error(response.msg, {
-        delay: 1000,
-        onClose: () => window.location.replace(`/${locale}/login`)
-      })
+
+  if (pathVariables?.length) {
+    url = pathVariables.reduce<string>((accUrl: string, pathVar: PathVariables): string => {
+      return accUrl.replace(':' + pathVar.key, String(pathVar.value))
+    }, url)
+  }
+
+  return process.env.NEXT_PUBLIC_API_URL + ensurePrefix(url, '/')
+}
+
+const prepareHeaders = (option: Pick<HttpRequestOption, 'headers' | 'body' | 'method'>): Record<string, string> => {
+  const { headers: header, body, method } = option
+
+  const headers: Record<string, string> = isPlainObject(header) ? header : {}
+
+  headers['Accept'] = 'application/json'
+
+  if (isPlainObject(body) && !(body instanceof FormData)) {
+    headers['Content-Type'] = 'application/' + method === 'GET' ? 'x-www-form-urlencoded' : 'json;charset=UTF-8'
+  }
+
+  return headers
+}
+
+const handelJsonResponse = async <T>(promise: Response): Promise<HttpResponse<T>> => {
+    const response: Responder<T> = await promise.json()
+
+    if ([400, 401, 403, 404, 419, 422, 500].includes(response.code)) {
+      if (isNextEnv()) {
+        return Promise.resolve(response) as Promise<HttpResponse<T>>
+      }
+
+      if (response.code !== 401) {
+        const locale: string = getLocale() as string
+         toast.error(response.msg, {
+          delay: 1000,
+          onClose: () => window.location.replace(`/${locale}/login`)
+        })
+      }
+      return Promise.reject(new Error(response.msg))
     }
+
+    return Promise.resolve(response) as Promise<HttpResponse<T>>
+}
+
+// Determine that the current environment is the Next server
+const isNextEnv = (): boolean => {
+  return typeof window === 'undefined'
+}
+
+type Resource = 'json' | 'blob' | 'text' | 'buffer'
+
+export const get = <T>(
+  url: string,
+  params: Partial<RequestParams> = {},
+  resource: Resource = 'json'
+): Promise<HttpResponse<T>> => {
+  return httpClient<T>({
+    method: 'GET',
+    params: params.params,
+    pathVariables: params.pathVariables,
+    body: params.body,
+    url,
+    resource
   })
 }
 
-const withExceptions = (callable: { server: () => void; renderAble: () => void }): void => {
-  const { renderAble, server } = callable
-  return isClient() ? renderAble() : server()
+export const post = <T>(
+  url: string,
+  params: Pick<RequestParams, 'body'>,
+  resource: Resource = 'json'
+): Promise<HttpResponse<T>> => {
+  return httpClient<T>({
+    method: 'POST',
+    body: params.body,
+    url,
+    resource
+  })
 }
 
-const isClient: () => boolean = (): boolean => {
-  return typeof window !== 'undefined'
+export const patch = <T>(
+  url: string,
+  params: Partial<Omit<RequestParams, 'params'>>,
+  resource: Resource = 'json'
+): Promise<HttpResponse<T>> => {
+  return httpClient<T>({
+    method: 'PATCH',
+    body: params.body,
+    pathVariables: params.pathVariables,
+    url,
+    resource
+  })
+}
+
+export const destroy = <T>(
+  url: string,
+  params: Partial<Pick<RequestParams, 'pathVariables'>>,
+  resource: Resource = 'json'
+): Promise<HttpResponse<T>> => {
+  return httpClient<T>({
+    method: 'DELETE',
+    pathVariables: params.pathVariables,
+    url,
+    resource
+  })
 }
