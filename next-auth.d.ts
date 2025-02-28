@@ -2,7 +2,7 @@
 import NextAuth from 'next-auth'
 
 interface Passport {
-  passport: string | null
+  passport?: string | null
 }
 
 declare module 'next-auth' {
