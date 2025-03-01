@@ -16,5 +16,5 @@ export default function ReduxStoreProvider({ children }: { children: ReactNode }
     storeRef.current = store
   }
 
-  return <Provider storeRef={storeRef} store={storeRef.current}>{children}</Provider>
+  return <Provider store={storeRef.current}>{children}</Provider>
 }
