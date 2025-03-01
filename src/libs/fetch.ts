@@ -102,7 +102,7 @@ function httpClient<T>(options: HttpRequestOption): Promise<HttpResponse<T>> {
           return response.arrayBuffer() as Promise<HttpResponse<T>>
       }
 
-      return handelJsonResponse(response)
+      return handelJsonResponse<T>(response) as Promise<HttpResponse<T>>
     })
     .catch(err => {
       if (isNextEnv()) {
@@ -149,25 +149,25 @@ const prepareHeaders = (option: Pick<HttpRequestOption, 'headers' | 'body' | 'me
   return headers
 }
 
-const handelJsonResponse = async <T>(promise: Response): Promise<HttpResponse<T>> => {
-    const response: Responder<T> = await promise.json()
+const handelJsonResponse = async <T>(promise: Response): Promise<Responder<T>> => {
+  const response: Responder<T> = await promise.json()
 
-    if ([400, 401, 403, 404, 419, 422, 500].includes(response.code)) {
-      if (isNextEnv()) {
-        return Promise.resolve(response) as Promise<HttpResponse<T>>
-      }
-
-      if (response.code !== 401) {
-        const locale: string = getLocale() as string
-         toast.error(response.msg, {
-          delay: 1000,
-          onClose: () => window.location.replace(`/${locale}/login`)
-        })
-      }
-      return Promise.reject(new Error(response.msg))
+  if ([400, 401, 403, 404, 419, 422, 500].includes(response.code)) {
+    if (isNextEnv()) {
+      return response
     }
 
-    return Promise.resolve(response) as Promise<HttpResponse<T>>
+    if (response.code !== 401) {
+      const locale: string = getLocale() as string
+      toast.error(response.msg, {
+        delay: 1000,
+        onClose: () => window.location.replace(`/${locale}/login`)
+      })
+    }
+    new Error(response.msg)
+  }
+
+  return response
 }
 
 // Determine that the current environment is the Next server
