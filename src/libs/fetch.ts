@@ -106,7 +106,7 @@ function httpClient<T>(options: HttpRequestOption): Promise<HttpResponse<T>> {
     })
     .catch(err => {
       if (isNextEnv()) {
-        throw new Error(err.message)
+        return Promise.reject(err.message || err)
       }
       toast.error(err.message)
     })
