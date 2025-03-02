@@ -2,17 +2,17 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 // Slice Imports
-import PassportSlice from '@/redux-store/features/passport'
+import MessageSlice from './features/message'
 
 export const store = configureStore({
   reducer: {
-    passport: PassportSlice
+    message: MessageSlice
   }
 })
 
-// Exports
+// Infer the `RootState`,  `AppDispatch`, and `AppStore` types from the store itself
 export type RootState = ReturnType<typeof store.getState>
+// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+export type AppDispatch = typeof store.dispatch
+export type AppStore = typeof store
 
-export type AppDispatch = ReturnType<typeof store.dispatch>
-
-export type Appstore = ReturnType<typeof store>
