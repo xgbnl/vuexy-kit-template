@@ -7,12 +7,16 @@ import qs from 'qs'
 // React Imports
 import { toast } from 'react-toastify'
 
+// NEXT Imports
+import { getSession } from 'next-auth/react'
+
 // MUI Imports
 import { isPlainObject } from '@mui/utils'
 
 // Utils Imports
 import { ensurePrefix } from '@utils/string'
 import { getLocale } from '@utils/getLocale'
+import { Session } from 'next-auth'
 
 // Interfaces
 interface PathVariables {
@@ -55,7 +59,7 @@ const pendingRequests: Record<string, null | AbortController> = {}
 const ABORT_WHITELIST: string[] = []
 
 // Hooks
-function httpClient<T>(options: HttpRequestOption): Promise<HttpResponse<T>> {
+async function httpClient<T>(options: HttpRequestOption): Promise<HttpResponse<T>> {
   let controller: AbortController | null = null
 
   if (!ABORT_WHITELIST.includes(options.url)) {
@@ -77,7 +81,7 @@ function httpClient<T>(options: HttpRequestOption): Promise<HttpResponse<T>> {
   } & Pick<HttpRequestOption, 'method' | 'headers' | 'url' | 'body'> = {
     signal: controller ? controller.signal : null,
     method: options.method,
-    headers: prepareHeaders(options),
+    headers: await prepareHeaders(options),
     mode: 'cors',
     cache: 'no-cache',
     url: buildUrl(options)
@@ -135,18 +139,26 @@ const buildUrl = (option: Pick<HttpRequestOption, 'params' | 'url' | 'pathVariab
   return process.env.NEXT_PUBLIC_API_URL + ensurePrefix(url, '/')
 }
 
-const prepareHeaders = (option: Pick<HttpRequestOption, 'headers' | 'body' | 'method'>): Record<string, string> => {
+const prepareHeaders = async (
+  option: Pick<HttpRequestOption, 'headers' | 'body' | 'method'>
+): Promise<Record<string, string>> => {
   const { headers: header, body, method } = option
 
   const headers: Record<string, string> = isPlainObject(header) ? header : {}
 
   headers['Accept'] = 'application/json'
 
+  const session: Session | null = await getSession()
+
+  if (session?.user?.passport) {
+    headers['Authorization'] = 'Bearer ' + session.user.passport
+  }
+
   if (isPlainObject(body) && !(body instanceof FormData)) {
     headers['Content-Type'] = 'application/' + method === 'GET' ? 'x-www-form-urlencoded' : 'json;charset=UTF-8'
   }
 
-  return headers
+  return Promise.resolve(headers)
 }
 
 const handelJsonResponse = async <T>(promise: Response): Promise<Responder<T>> => {
