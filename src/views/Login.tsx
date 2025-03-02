@@ -131,19 +131,12 @@ const Login = ({ mode }: { mode: SystemMode }) => {
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
 
   const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
-    let res: SignInResponse | null = null
 
-    try {
-      res = await signIn('credentials', {
-        email: data.email,
-        password: data.password,
-        redirect: false
-      })
-
-      console.log(res)
-    } catch (e) {
-      console.log('xxx', e)
-    }
+    const res = await signIn('credentials', {
+      email: data.email,
+      password: data.password,
+      redirect: false
+    }) as SignInResponse
 
     if (res && res.ok && res.error === null) {
       // Vars
