@@ -3,10 +3,21 @@ import Credentials from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 
 // Type Imports.
-import { type NextAuthConfig } from 'next-auth'
+import { AuthError, type NextAuthConfig, User } from 'next-auth'
 import { post, Responder } from '@/libs/fetch'
 
-// @ts-ignore
+class RuntimeError extends AuthError {
+  message: string
+
+  code: string
+
+  constructor(message: string) {
+    super()
+    this.message = message
+    this.code = message
+  }
+}
+
 export const nextConfig: NextAuthConfig = {
   debug: false,
 
@@ -18,16 +29,14 @@ export const nextConfig: NextAuthConfig = {
         username: { label: '用户名', type: 'text' },
         password: { label: '密码', type: 'password' }
       },
-      authorize: async (credentials: Partial<Record<'username' | 'password', unknown>>) => {
+      authorize: async (credentials: Partial<Record<'username' | 'password', unknown>>): Promise<User | null> => {
         let res: Responder<{ name: string; avatar: string; passport: string }> | null = null
-
-        try {
-          res = await post('auth', { body: credentials })
-        } catch (e) {
-          throw new Error(JSON.stringify({ error: 'Something went wrong' }))
-        }
-
-        console.log(res)
+        // console.log('prepre')
+        // try {
+        //   res = await post<{ name: string; avatar: string; passport: string }>('auth', { body: credentials })
+        // } catch (error) {
+        //   throw new RuntimeError('xxx')
+        // }
 
         return {
           name: 'jack',
