@@ -161,7 +161,7 @@ const prepareHeaders = async (
   return Promise.resolve(headers)
 }
 
-const handelJsonResponse = async <T>(promise: Response): Promise<Responder<T>> => {
+const handelJsonResponse = async <T>(promise: Response): Promise<Responder<T> | Error> => {
   const response: Responder<T> = await promise.json()
 
   if ([400, 401, 403, 404, 419, 422, 500].includes(response.code)) {
@@ -176,7 +176,7 @@ const handelJsonResponse = async <T>(promise: Response): Promise<Responder<T>> =
         onClose: () => window.location.replace(`/${locale}/login`)
       })
     }
-    new Error(response.msg)
+    return Promise.reject(new Error(response.msg))
   }
 
   return response
