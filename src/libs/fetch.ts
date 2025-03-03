@@ -9,6 +9,7 @@ import { toast } from 'react-toastify'
 
 // NEXT Imports
 import { getSession } from 'next-auth/react'
+import { Session } from 'next-auth'
 
 // MUI Imports
 import { isPlainObject } from '@mui/utils'
@@ -16,7 +17,6 @@ import { isPlainObject } from '@mui/utils'
 // Utils Imports
 import { ensurePrefix } from '@utils/string'
 import { getLocale } from '@utils/getLocale'
-import { Session } from 'next-auth'
 
 // Interfaces
 interface PathVariables {
