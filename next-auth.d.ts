@@ -1,5 +1,6 @@
-// @ts-ignore
+// AUTH Imports
 import NextAuth from 'next-auth'
+import type {jWT} from 'next-auth/jwt'
 
 interface Passport {
   passport?: string | null
