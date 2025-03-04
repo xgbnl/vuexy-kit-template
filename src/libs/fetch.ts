@@ -39,12 +39,14 @@ export interface Responder<T> {
 type HttpResponse<T> = T extends string
   ? string
   : T extends Blob
-    ? Blob
-    : T extends ArrayBuffer
-      ? ArrayBuffer
-      : T extends Responder<infer U>
-        ? Responder<U>
-        : never
+  ? Blob
+  : T extends ArrayBuffer
+  ? ArrayBuffer
+  : T extends Responder<infer U>
+  ? Responder<U>
+  : never
+
+type Resource = 'json' | 'blob' | 'text' | 'buffer'
 
 interface HttpRequestOption extends Partial<RequestParams> {
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
@@ -186,8 +188,6 @@ const handelJsonResponse = async <T>(promise: Response): Promise<Responder<T> | 
 const isNextEnv = (): boolean => {
   return typeof window === 'undefined'
 }
-
-type Resource = 'json' | 'blob' | 'text' | 'buffer'
 
 export const get = <T>(
   url: string,
