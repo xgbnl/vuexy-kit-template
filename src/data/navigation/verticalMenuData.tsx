@@ -4,8 +4,8 @@ import type { getDictionary } from '@/utils/getDictionary'
 
 const verticalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>>): VerticalMenuDataType[] => [
   {
-    label: dictionary['navigation'].crm,
-    href: `/${dictionary['locale']}/crm`,
+    label: dictionary['navigation'].dashboard,
+    href: `/${dictionary['locale']}/dashboard`,
     icon: 'tabler-smart-home'
   },
   {
