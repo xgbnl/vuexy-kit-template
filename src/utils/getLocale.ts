@@ -1,5 +1,5 @@
 // Hooks Imports
-import { Locale } from '@configs/i18n'
+import type { Locale } from '@configs/i18n'
 
 export const getLocale = (pathName: string | null = null): Locale | null => {
   const pathname: string = pathName ?? (typeof window !== 'undefined' ? window.location.pathname : '')
