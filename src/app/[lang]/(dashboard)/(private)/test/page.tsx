@@ -2,14 +2,19 @@
 
 import { useEffect } from 'react'
 import { get, Responder } from '@/libs/fetch'
+import { Paginator } from '@/types/fetchTypes'
 
 type User = {
-  id: string
+  id: number
 }
 
 const Test = () => {
   useEffect(() => {
-    get<Responder<User[]>>('auth').then(res => {})
+    get<Responder<Paginator<User>>>('auth')
+      .then(res => {
+        console.log(res);
+
+      })
   }, [])
 
   return (
