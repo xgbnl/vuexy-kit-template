@@ -28,6 +28,7 @@ import { valibotResolver } from '@hookform/resolvers/valibot'
 import type { InferInput } from 'valibot'
 import { email, minLength, nonEmpty, object, pipe, string } from 'valibot'
 import classnames from 'classnames'
+import { toast } from 'react-toastify'
 
 // Type Imports
 import type { SystemMode } from '@core/types'
@@ -131,12 +132,11 @@ const Login = ({ mode }: { mode: SystemMode }) => {
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
 
   const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
-
-    const res = await signIn('credentials', {
+    const res = (await signIn('credentials', {
       email: data.email,
       password: data.password,
       redirect: false
-    }) as SignInResponse
+    })) as SignInResponse
 
     if (res && res.ok && res.error === null) {
       // Vars
@@ -145,7 +145,13 @@ const Login = ({ mode }: { mode: SystemMode }) => {
       router.replace(getLocalizedUrl(redirectURL, locale as Locale))
     } else {
       if (res?.error) {
-        console.log(res)
+        const throwable: { code: number; msg: string } = JSON.parse(res.code as string)
+
+        if (throwable.code === 500) {
+            toast.error<string>(throwable.msg)
+            return
+        }
+
         const error = JSON.parse(res.error)
 
         setErrorState(error)

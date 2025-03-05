@@ -10,7 +10,6 @@ import { post, type Responder } from '@/libs/fetch'
 
 class InvalidLoginError extends CredentialsSignin {
   code: string
-
   constructor(message: string) {
     super()
     this.code = message
@@ -40,11 +39,12 @@ export const nextConfig: NextAuthConfig = {
         try {
           res = await post<Model>('oa/auth', { body: credentials })
         } catch (error) {
-          throw new InvalidLoginError('Connect to server error.')
+          throw new InvalidLoginError(JSON.stringify({ code: 500, msg: 'Connect to server error.' }))
         }
 
         if ([422, 500, 403].includes(res.code)) {
-          throw new InvalidLoginError(res.msg)
+
+          throw new InvalidLoginError(JSON.stringify({ code: res.code, msg: res.msg }))
         }
 
         return {
@@ -83,7 +83,7 @@ export const nextConfig: NextAuthConfig = {
 
   // ** Please refer to https://next-auth.js.org/configuration/options#pages for more `pages` options
   pages: {
-    signIn: ':lang/login'
+    signIn: '/:lang/login'
   },
 
   // ** Please refer to https://next-auth.js.org/configuration/options#callbacks for more `callbacks` options
