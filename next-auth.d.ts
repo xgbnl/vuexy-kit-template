@@ -1,5 +1,5 @@
 // AUTH Imports
-import NextAuth, { type User } from 'next-auth'
+import 'next-auth'
 import type { jWT } from 'next-auth/jwt'
 import type { AdapterUser } from '@auth/core/adapters'
 
