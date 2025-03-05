@@ -3,10 +3,25 @@ import Credentials from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 
 // Type Imports.
-import { type NextAuthConfig, type User } from 'next-auth'
+import { CredentialsSignin, type NextAuthConfig, type User } from 'next-auth'
 
 // Libs Imports
 import { post, type Responder } from '@/libs/fetch'
+
+class InvalidLoginError extends CredentialsSignin {
+  code: string
+
+  constructor(message: string) {
+    super()
+    this.code = message
+  }
+}
+
+interface Model {
+  name: string
+  avatar: string
+  passport: string
+}
 
 export const nextConfig: NextAuthConfig = {
   debug: false,
@@ -20,19 +35,22 @@ export const nextConfig: NextAuthConfig = {
         password: { label: '密码', type: 'password' }
       },
       authorize: async (credentials: Partial<Record<'username' | 'password', unknown>>): Promise<User | null> => {
-        let res: Responder<{ name: string; avatar: string; passport: string }> | null = null
+        let res: Responder<Model>
 
-        // console.log('prepre')
-        // try {
-        //   res = await post<{ name: string; avatar: string; passport: string }>('auth', { body: credentials })
-        // } catch (error) {
-        //   throw new RuntimeError('xxx')
-        // }
+        try {
+          res = await post<Model>('oa/auth', { body: credentials })
+        } catch (error) {
+          throw new InvalidLoginError('Connect to server error.')
+        }
+
+        if ([422, 500, 403].includes(res.code)) {
+          throw new InvalidLoginError(res.msg)
+        }
 
         return {
-          name: 'jack',
-          image: 'https://avatar.jpg',
-          passport: 'xxx'
+          name: res.data.name,
+          image: res.data.avatar,
+          passport: res.data.passport
         }
       }
     }),
