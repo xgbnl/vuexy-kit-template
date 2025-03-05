@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { get, Responder } from '@/libs/fetch'
-import { Paginator } from '@/types/fetchTypes'
+import { Paginator } from '@/types/paginationTypes'
 
 type User = {
   id: number
