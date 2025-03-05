@@ -9,7 +9,7 @@ import { toast } from 'react-toastify'
 
 // NEXT Imports
 import { getSession } from 'next-auth/react'
-import { Session } from 'next-auth'
+import type { Session } from 'next-auth'
 
 // MUI Imports
 import { isPlainObject } from '@mui/utils'
@@ -17,6 +17,9 @@ import { isPlainObject } from '@mui/utils'
 // Utils Imports
 import { ensurePrefix } from '@utils/string'
 import { getLocale } from '@utils/getLocale'
+
+// Hooks Imports
+import type { Locale } from '@/configs/i18n'
 
 // Interfaces
 interface PathVariables {
@@ -26,8 +29,8 @@ interface PathVariables {
 
 interface RequestParams {
   pathVariables: PathVariables[]
-  params: {}
-  body: {}
+  params: Record<string, any>
+  body: Record<string, any>
 }
 
 export interface Responder<T> {
@@ -76,24 +79,25 @@ async function httpClient<T>(options: HttpRequestOption): Promise<HttpResponse<T
     pendingRequests[options.url] = controller
   }
 
-  const fetchOption: {
+  const FETCH_REQUEST_CONFIG: {
     signal: AbortSignal | null
     mode?: string
     cache?: string
-  } & Pick<HttpRequestOption, 'method' | 'headers' | 'url' | 'body'> = {
+    body?: string | object
+  } & Pick<HttpRequestOption, 'method' | 'headers' | 'url'> = {
     signal: controller ? controller.signal : null,
     method: options.method,
     headers: await prepareHeaders(options),
     mode: 'cors',
     cache: 'no-cache',
-    url: buildUrl(options)
+    url: buildUrl(options),
   }
 
   if (options.method !== 'GET') {
-    fetchOption.body = isPlainObject(options.body) ? JSON.stringify(options.body) : {}
+    FETCH_REQUEST_CONFIG.body = isPlainObject(options.body) ? JSON.stringify(options.body) : {}
   }
 
-  return fetch(fetchOption.url, fetchOption as RequestInit)
+  return fetch(FETCH_REQUEST_CONFIG.url, FETCH_REQUEST_CONFIG as RequestInit)
     .then((response: Response): Promise<HttpResponse<T> | Error> => {
       if (!response.ok) {
         return Promise.reject<Error>(new Error(`HTTP error: ${response.status}`))
@@ -114,7 +118,8 @@ async function httpClient<T>(options: HttpRequestOption): Promise<HttpResponse<T
       if (isNextEnv()) {
         return Promise.reject(err.message || err)
       }
-      toast.error(err.message)
+
+      toast.error<string>(err.message)
     })
     .finally(() => {
       delete pendingRequests[options.url]
@@ -172,12 +177,14 @@ const handelJsonResponse = async <T>(promise: Response): Promise<Responder<T> | 
     }
 
     if (response.code !== 401) {
-      const locale: string = getLocale() as string
-      toast.error(response.msg, {
+      const locale: Locale = getLocale() as Locale
+
+      toast.error<string>(response.msg, {
         delay: 1000,
         onClose: () => window.location.replace(`/${locale}/login`)
       })
     }
+
     return Promise.reject(new Error(response.msg))
   }
 
