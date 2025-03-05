@@ -1,13 +1,14 @@
 // AUTH Imports
-import NextAuth from 'next-auth'
-import type {jWT} from 'next-auth/jwt'
+import NextAuth, { type User } from 'next-auth'
+import type { jWT } from 'next-auth/jwt'
+import type { AdapterUser } from '@auth/core/adapters'
 
 interface Passport {
   passport?: string | null
 }
 
 declare module 'next-auth' {
-  interface User extends Passport {}
+  interface User extends Passport { }
 }
 
 declare module 'next-auth/jwt' {
@@ -17,5 +18,5 @@ declare module 'next-auth/jwt' {
 }
 
 declare module '@auth/core/adapters' {
-  interface AdapterUser extends Passport {}
+  interface AdapterUser extends Passport { }
 }

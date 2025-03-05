@@ -3,20 +3,10 @@ import Credentials from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 
 // Type Imports.
-import { AuthError, type NextAuthConfig, User } from 'next-auth'
-import { post, Responder } from '@/libs/fetch'
+import { type NextAuthConfig, type User } from 'next-auth'
 
-class RuntimeError extends AuthError {
-  message: string
-
-  code: string
-
-  constructor(message: string) {
-    super()
-    this.message = message
-    this.code = message
-  }
-}
+// Libs Imports
+import { post, type Responder } from '@/libs/fetch'
 
 export const nextConfig: NextAuthConfig = {
   debug: false,
@@ -31,6 +21,7 @@ export const nextConfig: NextAuthConfig = {
       },
       authorize: async (credentials: Partial<Record<'username' | 'password', unknown>>): Promise<User | null> => {
         let res: Responder<{ name: string; avatar: string; passport: string }> | null = null
+
         // console.log('prepre')
         // try {
         //   res = await post<{ name: string; avatar: string; passport: string }>('auth', { body: credentials })
