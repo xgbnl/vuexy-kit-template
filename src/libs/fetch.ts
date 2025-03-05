@@ -11,11 +11,9 @@ import { toast } from 'react-toastify'
 import { getSession } from 'next-auth/react'
 import type { Session } from 'next-auth'
 
-// MUI Imports
-import { isPlainObject } from '@mui/utils'
-
 // Utils Imports
 import { ensurePrefix } from '@utils/string'
+import { isPlainObject } from '@utils/isPlainObject'
 import { getLocale } from '@utils/getLocale'
 
 // Hooks Imports
@@ -151,9 +149,20 @@ const prepareHeaders = async (
 ): Promise<Record<string, string>> => {
   const { headers: header, body, method } = option
 
-  const headers: Record<string, string> = isPlainObject(header) ? header : {}
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+    'Content-Type': 'application/json;charset=UTF-8'
+  }
 
-  headers['Accept'] = 'application/json'
+  if (isPlainObject(body)) {
+    if (method === 'GET') {
+      headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    }
+
+    if (body instanceof FormData) {
+      delete headers['Content-Type']
+    }
+  }
 
   const session: Session | null = await getSession()
 
@@ -161,11 +170,7 @@ const prepareHeaders = async (
     headers['Authorization'] = 'Bearer ' + session.user.passport
   }
 
-  if (isPlainObject(body) && !(body instanceof FormData)) {
-    headers['Content-Type'] = 'application/' + method === 'GET' ? 'x-www-form-urlencoded' : 'json;charset=UTF-8'
-  }
-
-  return Promise.resolve(headers)
+  return Promise.resolve(Object.assign(headers, header))
 }
 
 const handelJsonResponse = async <T>(promise: Response): Promise<Responder<T> | Error> => {
