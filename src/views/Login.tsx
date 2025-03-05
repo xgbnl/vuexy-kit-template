@@ -149,6 +149,7 @@ const Login = ({ mode }: { mode: SystemMode }) => {
 
         if (throwable.code === 500) {
             toast.error<string>(throwable.msg)
+            
             return
         }
 
