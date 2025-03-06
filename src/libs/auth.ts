@@ -33,7 +33,7 @@ export const nextConfig: NextAuthConfig = {
         username: { label: '用户名', type: 'text' },
         password: { label: '密码', type: 'password' }
       },
-      authorize: async (credentials: Partial<Record<'username' | 'password', unknown>>): Promise<User | null> => {
+      authorize: async (credentials: Partial<Record<'username' | 'password', unknown>>): Promise<User | null | never> => {
         let res: Responder<Model>
 
         try {
