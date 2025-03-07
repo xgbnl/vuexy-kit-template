@@ -27,8 +27,8 @@ interface PathVariables {
 
 interface RequestParams {
   pathVariables: PathVariables[]
-  params: Record<string, any>
-  body: Record<string, any>
+  params: Record<string, unknown>
+  body: Record<string, unknown>
 }
 
 export interface Responder<T> {
