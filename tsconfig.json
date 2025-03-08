@@ -64,7 +64,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "next-auth.d.ts"
+    "next-auth.d.ts",
+    "eslint.config.mjs"
   ],
   "exclude": [
     "node_modules"
