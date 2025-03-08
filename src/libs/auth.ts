@@ -33,17 +33,18 @@ export const nextConfig: NextAuthConfig = {
         username: { label: '用户名', type: 'text' },
         password: { label: '密码', type: 'password' }
       },
-      authorize: async (credentials: Partial<Record<'username' | 'password', unknown>>): Promise<User | null | never> => {
+      authorize: async (
+        credentials: Partial<Record<'username' | 'password', unknown>>
+      ): Promise<User | null | never> => {
         let res: Responder<Model>
 
         try {
           res = await post<Model>('oa/auth', { body: credentials })
         } catch (error) {
-          throw new InvalidLoginError(JSON.stringify({ code: 500, msg: 'Connect to server error.' }))
+          throw new InvalidLoginError(JSON.stringify({ code: 500, msg: 'Connect to server error:' + error }))
         }
 
         if ([422, 500, 403].includes(res.code)) {
-
           throw new InvalidLoginError(JSON.stringify({ code: res.code, msg: res.msg }))
         }
 
