@@ -138,5 +138,13 @@ export default [
   ...configs.recommended,
   pluginReact.configs.flat.recommended,
   pluginImport.flatConfigs.recommended,
-  pluginPrettierRecommended
+  pluginPrettierRecommended,
+  // Override
+  {
+    files: ['*.ts', '*.tsx', 'src/iconify-bundle/*'],
+    rules: {
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-var-requires': 'off'
+    }
+  }
 ]
