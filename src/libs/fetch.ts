@@ -27,7 +27,7 @@ interface PathVariables {
 
 interface RequestParams {
   pathVariables: PathVariables[]
-  params: Record<string, unknown>
+  params: Record<string, string | number>
   body: Record<string, unknown>
 }
 
