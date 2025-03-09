@@ -17,7 +17,7 @@
  */
 
 // Type Imports
-import type {ToastPosition} from 'react-toastify'
+import type { ToastPosition } from 'react-toastify'
 
 import type { Mode, Skin, Layout, LayoutComponentPosition, LayoutComponentWidth } from '@core/types'
 
@@ -50,7 +50,7 @@ export type Config = {
   contentWidth: LayoutComponentWidth
   compactContentWidth: number
   footer: Footer
-  disableRipple: boolean,
+  disableRipple: boolean
   toastPosition: ToastPosition
 }
 
@@ -77,7 +77,7 @@ const themeConfig: Config = {
     contentWidth: 'compact', // 'compact', 'wide'
     detached: true //! true, false (This will not work in the Horizontal Layout)
   },
-  disableRipple: false ,// true, false
+  disableRipple: false, // true, false
   toastPosition: 'top-center'
 }
 

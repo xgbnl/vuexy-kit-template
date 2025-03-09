@@ -22,7 +22,7 @@ const horizontalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>
     label: dictionary['navigation'].test,
     href: '/test',
     icon: 'tabler-info-circle'
-  },
+  }
 ]
 
 export default horizontalMenuData

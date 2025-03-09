@@ -40,12 +40,12 @@ export interface Responder<T> {
 type HttpResponse<T> = T extends string
   ? string
   : T extends Blob
-  ? Blob
-  : T extends ArrayBuffer
-  ? ArrayBuffer
-  : T extends Responder<infer U>
-  ? Responder<U>
-  : never
+    ? Blob
+    : T extends ArrayBuffer
+      ? ArrayBuffer
+      : T extends Responder<infer U>
+        ? Responder<U>
+        : never
 
 type Resource = 'json' | 'blob' | 'text' | 'buffer'
 
@@ -88,7 +88,7 @@ async function httpClient<T>(options: HttpRequestOption): Promise<HttpResponse<T
     headers: await prepareHeaders(options),
     mode: 'cors',
     cache: 'no-cache',
-    url: buildUrl(options),
+    url: buildUrl(options)
   }
 
   if (options.method !== 'GET') {

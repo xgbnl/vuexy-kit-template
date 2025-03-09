@@ -1,28 +1,25 @@
-export function isPlainObject(o: any): boolean {
-    let ctor: Function | undefined;
-    let prot: Object | undefined;
+export function isPlainObject(o: object | unknown): boolean {
+  if (!isObject(o)) {
+    return false
+  }
 
-    if (!isObject(o)) {
-        return false;
-    }
+  if (o?.constructor === undefined) {
+    return true
+  }
 
-    ctor = o.constructor;
-    if (ctor === undefined) {
-        return true;
-    }
+  const prot = o?.constructor?.prototype
 
-    prot = ctor.prototype;
-    if (!isObject(prot)) {
-        return false;
-    }
+  if (!isObject(prot)) {
+    return false
+  }
 
-    if (!Object.prototype.hasOwnProperty.call(prot, 'isPrototypeOf')) {
-        return false;
-    }
+  if (!Object.prototype.hasOwnProperty.call(prot, 'isPrototypeOf')) {
+    return false
+  }
 
-    return true;
+  return true
 }
 
-function isObject(o: any): boolean {
-    return Object.prototype.toString.call(o) === '[object Object]';
+function isObject(o: object | unknown): boolean {
+  return Object.prototype.toString.call(o) === '[object Object]'
 }

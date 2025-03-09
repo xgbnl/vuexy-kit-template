@@ -2,7 +2,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 
 // NextAuth Imports
-import type {  Session } from 'next-auth'
+import type { Session } from 'next-auth'
 
 // NextAuthSession Imports
 import { auth } from '@/app/api/auth/[...nextauth]/route'
@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     nextUrl: { pathname },
     url
   } = request
-  
+
   const session: Session | null = await auth()
   const guest: boolean = !session?.user?.passport
   const isAuthPage: boolean = pathname.endsWith('/login')
@@ -30,7 +30,6 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     const locale: Locale = getLocale(pathname) ?? 'zh'
 
     return NextResponse.redirect(new URL(`/${locale}/login`, url))
-  
   }
 
   return NextResponse.next()
