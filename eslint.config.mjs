@@ -25,6 +25,8 @@ export default [
       'jsx-a11y/alt-text': 'off',
       'react/display-name': 'off',
       'react/no-children-prop': 'off',
+      'react/jsx-uses-react': 'off',
+      'react/react-in-jsx-scope': 'off',
       '@next/next/no-img-element': 'off',
       '@next/next/no-page-custom-font': 'off',
       '@typescript-eslint/consistent-type-imports': 'error',
@@ -32,12 +34,7 @@ export default [
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': 'error',
       '@typescript-eslint/no-non-null-assertion': 'off',
-      '@typescript-eslint/no-empty-object-type': [
-        'error',
-        {
-          allowInterfaces: true
-        }
-      ],
+      '@typescript-eslint/no-empty-object-type': 'error',
       '@typescript-eslint/no-unsafe-function-type': 'error',
       '@typescript-eslint/no-wrapper-object-types': 'error',
       'lines-around-comment': [
