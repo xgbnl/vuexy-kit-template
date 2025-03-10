@@ -1,8 +1,9 @@
 'use client'
 
 import { useEffect } from 'react'
-import { get, Responder } from '@/libs/fetch'
-import { Paginator } from '@/types/paginationTypes'
+
+import { get, type Responder } from '@/libs/fetch'
+import type { Paginator } from '@/types/paginationTypes'
 
 type User = {
   id: number
@@ -10,11 +11,9 @@ type User = {
 
 const Test = () => {
   useEffect(() => {
-    get<Responder<Paginator<User>>>('auth')
-      .then(res => {
-        console.log(res);
-
-      })
+    get<Responder<Paginator<User>>>('auth').then(res => {
+      console.log(res)
+    })
   }, [])
 
   return (
