@@ -1,9 +1,9 @@
 export const i18n = {
   defaultLocale: 'zh',
-  locales: ['en','zh'],
+  locales: ['en', 'zh'],
   langDirection: {
     en: 'ltr',
-    zh: 'ltr',
+    zh: 'ltr'
   }
 } as const
 
