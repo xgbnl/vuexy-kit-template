@@ -8,7 +8,7 @@ interface Passport {
 }
 
 declare module 'next-auth' {
-  interface User extends Passport { }
+  interface User extends Passport {}
 }
 
 declare module 'next-auth/jwt' {
@@ -18,5 +18,5 @@ declare module 'next-auth/jwt' {
 }
 
 declare module '@auth/core/adapters' {
-  interface AdapterUser extends Passport { }
+  interface AdapterUser extends Passport {}
 }
