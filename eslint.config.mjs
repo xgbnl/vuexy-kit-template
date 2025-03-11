@@ -2,6 +2,7 @@
 import globals from 'globals'
 import pluginJs from '@eslint/js'
 import { parser, configs } from 'typescript-eslint'
+import { FlatCompat } from '@eslint/eslintrc'
 
 // Plugins Imports
 import pluginImport from 'eslint-plugin-import'
@@ -10,8 +11,16 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import pluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import pluginNext from '@next/eslint-plugin-next'
 
+const compat = new FlatCompat()
+
 /** @type {import('eslint').Linter.Config[]} */
 export default [
+
+  pluginJs.configs.recommended,
+  ...configs.recommended,
+  pluginReact.configs.flat.recommended,
+  pluginImport.flatConfigs.recommended,
+  pluginPrettierRecommended,
   {
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
     plugins: {
@@ -25,8 +34,8 @@ export default [
       'jsx-a11y/alt-text': 'off',
       'react/display-name': 'off',
       'react/no-children-prop': 'off',
-      'react/jsx-uses-react': 'off',
-      'react/react-in-jsx-scope': 'off',
+      'react/jsx-uses-react': 'error',
+      'react/react-in-jsx-scope': 'error',
       '@next/next/no-img-element': 'off',
       '@next/next/no-page-custom-font': 'off',
       '@typescript-eslint/consistent-type-imports': 'error',
@@ -138,13 +147,12 @@ export default [
           project: './tsconfig.json'
         }
       }
+    },
+    rules:{
+      'react/jsx-uses-react': 'off',
+      'react/react-in-jsx-scope': 'off',
     }
   },
-  pluginJs.configs.recommended,
-  ...configs.recommended,
-  pluginReact.configs.flat.recommended,
-  pluginImport.flatConfigs.recommended,
-  pluginPrettierRecommended,
   // Override
   {
     files: ['*.ts', '*.tsx', 'src/iconify-bundle/*'],
