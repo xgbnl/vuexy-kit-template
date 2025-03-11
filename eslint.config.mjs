@@ -5,7 +5,6 @@ import { parser, configs } from 'typescript-eslint'
 import { FlatCompat } from '@eslint/eslintrc'
 
 // Plugins Imports
-import pluginImport from 'eslint-plugin-import'
 import pluginReact from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import pluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
@@ -14,12 +13,11 @@ import pluginNext from '@next/eslint-plugin-next'
 const compat = new FlatCompat()
 
 /** @type {import('eslint').Linter.Config[]} */
-export default [
-
+const eslintConfig = [
+  ...compat.extends('next/core-web-vitals', 'next/typescript'),
   pluginJs.configs.recommended,
   ...configs.recommended,
   pluginReact.configs.flat.recommended,
-  pluginImport.flatConfigs.recommended,
   pluginPrettierRecommended,
   {
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
@@ -148,11 +146,12 @@ export default [
         }
       }
     },
-    rules:{
+    rules: {
       'react/jsx-uses-react': 'off',
-      'react/react-in-jsx-scope': 'off',
+      'react/react-in-jsx-scope': 'off'
     }
   },
+
   // Override
   {
     files: ['*.ts', '*.tsx', 'src/iconify-bundle/*'],
@@ -169,3 +168,5 @@ export default [
     }
   }
 ]
+
+export default eslintConfig
