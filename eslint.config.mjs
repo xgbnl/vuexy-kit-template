@@ -19,7 +19,7 @@ const eslintConfig = [
   ...configs.recommended,
   pluginReact.configs.flat.recommended,
   pluginPrettierRecommended,
-  { ignores: ['src/@*/**'] },
+  { ignores: ['src/@*/**', 'next-auth.d.ts'] },
   {
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
     plugins: {
@@ -159,13 +159,6 @@ const eslintConfig = [
     rules: {
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-var-requires': 'off'
-    }
-  },
-  {
-    files: ['next-auth.d.ts'],
-    rules: {
-      '@typescript-eslint/no-empty-object-type': 'off',
-      '@typescript-eslint/no-unused-vars': 'off'
     }
   }
 ]
