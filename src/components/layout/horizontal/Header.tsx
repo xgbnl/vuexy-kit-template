@@ -10,7 +10,7 @@ import LayoutHeader from '@layouts/components/horizontal/Header'
 import useHorizontalNav from '@menu/hooks/useHorizontalNav'
 import type { getDictionary } from '@utils/getDictionary'
 
-const Header = ({dictionary}:{dictionary:Awaited<ReturnType<typeof getDictionary>>}) => {
+const Header = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof getDictionary>> }) => {
   // Hooks
   const { isBreakpointReached } = useHorizontalNav()
 

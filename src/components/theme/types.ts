@@ -18,8 +18,6 @@ import type {
 } from '@core/components/custom-inputs/types'
 
 declare module '@mui/material/styles' {
-  // eslint-disable-next-line lines-around-comment
-  // Theme
   interface Theme {
     shape: {
       borderRadius: number

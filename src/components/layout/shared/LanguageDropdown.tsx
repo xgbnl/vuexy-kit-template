@@ -45,7 +45,7 @@ const languageData: LanguageDataType[] = [
   {
     langCode: 'zh',
     langName: '中文'
-  },
+  }
 ]
 
 const LanguageDropdown = () => {

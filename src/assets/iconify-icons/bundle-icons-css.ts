@@ -30,7 +30,6 @@ async function generateIconsCSS() {
    * Script configuration
    */
   interface BundleScriptCustomSVGConfig {
-    // eslint-disable-next-line lines-around-comment
     // Path to SVG files
     dir: string
 

@@ -9,6 +9,7 @@ import pluginReact from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import pluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import pluginNext from '@next/eslint-plugin-next'
+import stylisticJs from '@stylistic/eslint-plugin-js'
 
 const compat = new FlatCompat()
 
@@ -24,7 +25,8 @@ const eslintConfig = [
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
     plugins: {
       'react-hooks': reactHooks,
-      '@next/next': pluginNext
+      '@next/next': pluginNext,
+      '@stylistic/js': stylisticJs
     },
     rules: {
       'react-hooks/rules-of-hooks': 'error',
@@ -45,16 +47,7 @@ const eslintConfig = [
       '@typescript-eslint/no-empty-object-type': 'error',
       '@typescript-eslint/no-unsafe-function-type': 'error',
       '@typescript-eslint/no-wrapper-object-types': 'error',
-      'lines-around-comment': [
-        'error',
-        {
-          beforeBlockComment: true,
-          beforeLineComment: true,
-          allowBlockStart: true,
-          allowObjectStart: true,
-          allowArrayStart: true
-        }
-      ],
+      '@stylistic/js/indent': ['error', 2],
       'padding-line-between-statements': [
         'error',
         {

@@ -37,7 +37,7 @@ const StyledDiv = styled.div<StyledDivProps>`
   `}
 `
 
-const Navigation = ({dictionary}:{dictionary:Awaited<ReturnType<typeof getDictionary>>}) => {
+const Navigation = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof getDictionary>> }) => {
   // Hooks
   const { settings } = useSettings()
   const { isBreakpointReached } = useHorizontalNav()

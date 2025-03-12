@@ -88,7 +88,7 @@ const HorizontalMenu = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof 
       {/*    About*/}
       {/*  </MenuItem>*/}
       {/*</Menu>*/}
-     <Menu
+      <Menu
         rootStyles={menuRootStyles(theme)}
         renderExpandIcon={({ level }) => <RenderExpandIcon level={level} />}
         menuItemStyles={menuItemStyles(theme, 'tabler-circle')}

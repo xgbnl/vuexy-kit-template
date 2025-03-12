@@ -7,7 +7,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 
-import { signIn, SignInResponse } from 'next-auth/react'
+import { signIn, type SignInResponse } from 'next-auth/react'
 
 // MUI Imports
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -22,6 +22,7 @@ import Divider from '@mui/material/Divider'
 import Alert from '@mui/material/Alert'
 
 import type { SubmitHandler } from 'react-hook-form'
+
 // Third-party Imports
 import { Controller, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
@@ -148,9 +149,9 @@ const Login = ({ mode }: { mode: SystemMode }) => {
         const throwable: { code: number; msg: string } = JSON.parse(res.code as string)
 
         if (throwable.code === 500) {
-            toast.error<string>(throwable.msg)
-            
-            return
+          toast.error<string>(throwable.msg)
+
+          return
         }
 
         const error = JSON.parse(res.error)
@@ -203,7 +204,10 @@ const Login = ({ mode }: { mode: SystemMode }) => {
                   placeholder='Enter your email'
                   onChange={e => {
                     field.onChange(e.target.value)
-                    errorState !== null && setErrorState(null)
+
+                    if (errorState !== null) {
+                      setErrorState(null)
+                    }
                   }}
                   {...((errors.email || errorState !== null) && {
                     error: true,
@@ -226,7 +230,10 @@ const Login = ({ mode }: { mode: SystemMode }) => {
                   type={isPasswordShown ? 'text' : 'password'}
                   onChange={e => {
                     field.onChange(e.target.value)
-                    errorState !== null && setErrorState(null)
+
+                    if (errorState !== null) {
+                      setErrorState(null)
+                    }
                   }}
                   slotProps={{
                     input: {

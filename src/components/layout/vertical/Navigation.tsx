@@ -28,7 +28,7 @@ import navigationCustomStyles from '@core/styles/vertical/navigationCustomStyles
 import type { getDictionary } from '@/utils/getDictionary'
 
 type Props = {
-  mode: Mode,
+  mode: Mode
   dictionary: Awaited<ReturnType<typeof getDictionary>>
 }
 
@@ -95,31 +95,31 @@ const Navigation = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.layout])
 
+  // Sidebar Vertical Menu
   return (
-    // eslint-disable-next-line lines-around-comment
-    // Sidebar Vertical Menu
     <VerticalNav
       customStyles={navigationCustomStyles(verticalNavOptions, theme)}
       collapsedWidth={71}
-      backgroundColor="var(--mui-palette-background-paper)"
-      // eslint-disable-next-line lines-around-comment
-      // The following condition adds the data-dark attribute to the VerticalNav component
-      // when semiDark is enabled and the mode or systemMode is light
-      {...(isSemiDark &&
-        !isDark && {
-          'data-dark': ''
-        })}
+      backgroundColor='var(--mui-palette-background-paper)'
+      {
+        // The following condition adds the data-dark attribute to the VerticalNav component
+        // when semiDark is enabled and the mode or systemMode is light
+        ...(isSemiDark &&
+          !isDark && {
+            'data-dark': ''
+        })
+      }
     >
       {/* Nav Header including Logo & nav toggle icons  */}
       <NavHeader>
-        <Link href="/">
+        <Link href='/'>
           <Logo />
         </Link>
         {!(isCollapsed && !isHovered) && (
           <NavCollapseIcons
-            lockedIcon={<i className="tabler-circle-dot text-xl" />}
-            unlockedIcon={<i className="tabler-circle text-xl" />}
-            closeIcon={<i className="tabler-x text-xl" />}
+            lockedIcon={<i className='tabler-circle-dot text-xl' />}
+            unlockedIcon={<i className='tabler-circle text-xl' />}
+            closeIcon={<i className='tabler-x text-xl' />}
             onClick={() => updateSettings({ layout: !isCollapsed ? 'collapsed' : 'vertical' })}
           />
         )}
