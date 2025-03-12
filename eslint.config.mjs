@@ -19,6 +19,7 @@ const eslintConfig = [
   ...configs.recommended,
   pluginReact.configs.flat.recommended,
   pluginPrettierRecommended,
+  { ignores: ['src/@*/**'] },
   {
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
     plugins: {
