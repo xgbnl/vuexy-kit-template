@@ -41,7 +41,6 @@ async function generateIconsCSS() {
   }
 
   interface BundleScriptCustomJSONConfig {
-    // eslint-disable-next-line lines-around-comment
     // Path to JSON file
     filename: string
 
@@ -50,7 +49,6 @@ async function generateIconsCSS() {
   }
 
   interface BundleScriptConfig {
-    // eslint-disable-next-line lines-around-comment
     // Custom SVG to import and bundle
     svg?: BundleScriptCustomSVGConfig[]
 
@@ -117,7 +115,7 @@ async function generateIconsCSS() {
       recursive: true
     })
   } catch (err) {
-    //
+    console.log('bundle-icons-css: line 120.' + err)
   }
 
   const allIcons: IconifyJSON[] = []

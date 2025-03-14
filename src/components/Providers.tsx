@@ -15,12 +15,12 @@ import { getMode, getSettingsFromCookie, getSystemMode } from '@core/utils/serve
 import ReduxStoreProvider from '@/hocs/ReduxStoreProvider'
 
 type Props = ChildrenType & {
-  direction: Direction,
+  direction: Direction
 }
 
 const Providers = async (props: Props) => {
   // Props
-  const { children, direction} = props
+  const { children, direction } = props
 
   // Vars
   const mode = await getMode()

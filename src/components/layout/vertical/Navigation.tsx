@@ -107,7 +107,7 @@ const Navigation = (props: Props) => {
         ...(isSemiDark &&
           !isDark && {
             'data-dark': ''
-        })
+          })
       }
     >
       {/* Nav Header including Logo & nav toggle icons  */}
