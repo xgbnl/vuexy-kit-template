@@ -34,12 +34,12 @@ export const nextConfig: NextAuthConfig = {
         password: { label: '密码', type: 'password' }
       },
       authorize: async (
-        credentials: Partial<Record<'username' | 'password', unknown>>
+        credentials: Partial<Record<'username' | 'password' | 'redirect' | 'callbackUrl' | 'csrfToken', unknown>>
       ): Promise<User | null | never> => {
         let res: Responder<Model>
 
         try {
-          res = await post<Model>('oa/auth', { body: credentials })
+          res = await post<Model>('/auth', { body: { username: credentials.username, password: credentials.password } })
         } catch (error) {
           throw new InvalidLoginError(JSON.stringify({ code: 500, msg: 'Connect to server error:' + error }))
         }

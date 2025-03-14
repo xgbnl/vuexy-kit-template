@@ -11,6 +11,9 @@ import { toast } from 'react-toastify'
 import { getSession } from 'next-auth/react'
 import type { Session } from 'next-auth'
 
+// NextAuthSession Imports
+import { auth } from '@/app/api/auth/[...nextauth]/route'
+
 // Utils Imports
 import { ensurePrefix } from '@utils/string'
 import { isPlainObject } from '@utils/isPlainObject'
@@ -164,7 +167,7 @@ const prepareHeaders = async (
     }
   }
 
-  const session: Session | null = await getSession()
+  const session: Session | null = isNextEnv() ? await auth() : await getSession()
 
   if (session?.user?.passport) {
     headers['Authorization'] = 'Bearer ' + session.user.passport
