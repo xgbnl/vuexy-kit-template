@@ -25,7 +25,6 @@ import type { Locale } from '@configs/i18n'
 import { getDictionary } from '@/utils/getDictionary'
 
 const Layout = async (props: ChildrenType & { params: Promise<{ lang: Locale }> }) => {
-
   const params = await props.params
 
   const { children } = props
@@ -45,7 +44,8 @@ const Layout = async (props: ChildrenType & { params: Promise<{ lang: Locale }> 
             <VerticalLayout
               navigation={<Navigation dictionary={dictionary} mode={mode} />}
               navbar={<Navbar />}
-              footer={<VerticalFooter />}>
+              footer={<VerticalFooter />}
+            >
               {children}
             </VerticalLayout>
           }
@@ -55,10 +55,12 @@ const Layout = async (props: ChildrenType & { params: Promise<{ lang: Locale }> 
             </HorizontalLayout>
           }
         />
-        <ScrollToTop className="mui-fixed">
-          <Button variant="contained"
-                  className="is-10 bs-10 rounded-full p-0 min-is-0 flex items-center justify-center">
-            <i className="tabler-arrow-up" />
+        <ScrollToTop className='mui-fixed'>
+          <Button
+            variant='contained'
+            className='is-10 bs-10 rounded-full p-0 min-is-0 flex items-center justify-center'
+          >
+            <i className='tabler-arrow-up' />
           </Button>
         </ScrollToTop>
       </AuthGuard>

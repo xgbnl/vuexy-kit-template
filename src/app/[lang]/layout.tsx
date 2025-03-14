@@ -6,7 +6,6 @@ import InitColorSchemeScript from '@mui/material/InitColorSchemeScript'
 // I18n Imports
 import { i18n } from '@/configs/i18n'
 
-
 import type { Locale } from '@/configs/i18n'
 import TranslationWrapper from '@/hocs/TranslationWrapper'
 
@@ -32,7 +31,6 @@ export const metadata = {
 }
 
 const RootLayout = async (props: ChildrenType & { params: Promise<{ lang: Locale }> }) => {
-
   const params = await props.params
   const { children } = props
 
@@ -45,11 +43,11 @@ const RootLayout = async (props: ChildrenType & { params: Promise<{ lang: Locale
 
   return (
     <TranslationWrapper headersList={headersList} lang={params.lang}>
-      <html id="__next" lang={params.lang} dir={direction} suppressHydrationWarning>
-      <body className="flex is-full min-bs-full flex-auto flex-col">
-      <InitColorSchemeScript attribute="data" defaultMode={systemMode} />
-      {children}
-      </body>
+      <html id='__next' lang={params.lang} dir={direction} suppressHydrationWarning>
+        <body className='flex is-full min-bs-full flex-auto flex-col'>
+          <InitColorSchemeScript attribute='data' defaultMode={systemMode} />
+          {children}
+        </body>
       </html>
     </TranslationWrapper>
   )

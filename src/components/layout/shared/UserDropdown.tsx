@@ -21,12 +21,12 @@ import Divider from '@mui/material/Divider'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 
-// Hook Imports
-import { useSettings } from '@core/hooks/useSettings'
-import { Locale } from '@configs/i18n'
-
 // Auth Imports
 import { signOut } from 'next-auth/react'
+
+// Hook Imports
+import { useSettings } from '@core/hooks/useSettings'
+import type { Locale } from '@configs/i18n'
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
@@ -52,7 +52,7 @@ const UserDropdown = () => {
   const { settings } = useSettings()
 
   const handleDropdownOpen = () => {
-    !open ? setOpen(true) : setOpen(false)
+    setOpen(!open)
   }
 
   const handleDropdownClose = (event?: MouseEvent<HTMLLIElement> | (MouseEvent | TouchEvent), url?: string) => {
