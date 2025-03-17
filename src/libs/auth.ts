@@ -43,7 +43,7 @@ const nextConfig: NextAuthConfig = {
         try {
           res = await post<Model>('/auth', { body: { username: credentials.username, password: credentials.password } })
         } catch (error) {
-          throw new InvalidLoginError(JSON.stringify({ code: 500, msg: 'Connect to server error:' + error }))
+          throw new InvalidLoginError(JSON.stringify({ code: 500, msg: 'Unable to connect to server:' + error }))
         }
 
         if ([422, 500, 403].includes(res.code)) {
