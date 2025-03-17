@@ -11,8 +11,8 @@ import { toast } from 'react-toastify'
 import { getSession } from 'next-auth/react'
 import type { Session } from 'next-auth'
 
-// NextAuthSession Imports
-import { auth } from '@/app/api/auth/[...nextauth]/route'
+// Libs Imports
+import { auth } from '@/libs/auth'
 
 // Utils Imports
 import { ensurePrefix } from '@utils/string'

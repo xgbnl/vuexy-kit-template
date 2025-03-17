@@ -2,8 +2,10 @@
 import Credentials from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 
-// Type Imports.
-import { CredentialsSignin, type NextAuthConfig, type User } from 'next-auth'
+// Auth Imports.
+import type { NextAuthConfig, User } from 'next-auth'
+import { CredentialsSignin } from 'next-auth'
+import NextAuth from 'next-auth'
 
 // Libs Imports
 import { post, type Responder } from '@/libs/fetch'
@@ -22,7 +24,7 @@ interface Model {
   passport: string
 }
 
-export const nextConfig: NextAuthConfig = {
+const nextConfig: NextAuthConfig = {
   debug: false,
 
   // ** Configure one or more authentication providers
@@ -119,3 +121,5 @@ export const nextConfig: NextAuthConfig = {
     }
   }
 }
+
+export const { auth, handlers } = NextAuth(nextConfig)

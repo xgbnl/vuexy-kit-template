@@ -1,9 +1,9 @@
 // Redux Imports
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
-// Type Imports
-import { WritableDraft } from 'immer'
-import { RootState } from '@/redux-store/store'
+import type { WritableDraft } from 'immer'
+
+import type { RootState } from '@/redux-store/store'
 
 export interface MessageState {
   content: string | null

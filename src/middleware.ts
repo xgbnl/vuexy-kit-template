@@ -4,8 +4,8 @@ import { type NextRequest, NextResponse } from 'next/server'
 // NextAuth Imports
 import type { Session } from 'next-auth'
 
-// NextAuthSession Imports
-import { auth } from '@/app/api/auth/[...nextauth]/route'
+// Libs Imports
+import { auth } from '@/libs/auth'
 
 // Hooks Imports
 import { getLocale } from '@utils/getLocale'
