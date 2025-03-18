@@ -7,13 +7,16 @@ First, run the development server:
 ```bash
 npm install
 
-npm exec auth secret
-
 npm run dev
 # or
 yarn dev
 # or
 pnpm dev
+```
+
+Then, run commend add next-auth secret to `.env.local` file:
+```bash
+npm exec auth secret
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -37,10 +40,11 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
-## Fetch Guide
+## How to using Api Service in project
 
-Edit `.env.local`
+First, Edit the `.env.local` file and add the following content:
 ```dotenv
 NEXT_API_PREFIX=/api
 NEXT_PUBLIC_API_URL=https://myapi.test${NEXT_API_PREFIX}
 ```
+Then call the request method in the `libs/fetch.ts` file:
