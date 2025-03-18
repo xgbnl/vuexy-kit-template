@@ -18,6 +18,10 @@ import VerticalFooter from '@components/layout/vertical/Footer'
 import HorizontalFooter from '@components/layout/horizontal/Footer'
 import ScrollToTop from '@core/components/scroll-to-top'
 import AuthGuard from '@/hocs/AuthGuard'
+import Customizer from '@/@core/components/customizer'
+
+// Config Imports
+import { i18n } from '@configs/i18n'
 
 // Util Imports
 import { getMode, getSystemMode } from '@core/utils/serverHelpers'
@@ -30,8 +34,8 @@ const Layout = async (props: ChildrenType & { params: Promise<{ lang: Locale }> 
   const { children } = props
 
   // Vars
+  const direction = i18n.langDirection[params.lang]
   const dictionary = await getDictionary(params.lang)
-  const direction = 'ltr'
   const mode = await getMode()
   const systemMode = await getSystemMode()
 
@@ -63,6 +67,7 @@ const Layout = async (props: ChildrenType & { params: Promise<{ lang: Locale }> 
             <i className='tabler-arrow-up' />
           </Button>
         </ScrollToTop>
+        <Customizer dir={direction} />
       </AuthGuard>
     </Providers>
   )
