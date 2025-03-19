@@ -143,7 +143,12 @@ const Login = ({ mode }: { mode: SystemMode }) => {
       // Vars
       const redirectURL = searchParams.get('redirectTo') ?? '/'
 
-      router.replace(getLocalizedUrl(redirectURL, locale as Locale))
+      toast.success<string>('登录成功', {
+        position: 'top-center',
+        onClose: (): void => {
+          router.replace(getLocalizedUrl(redirectURL, locale as Locale))
+        }
+      })
     } else {
       if (res?.error) {
         const throwable: { code: number; msg: string } = JSON.parse(res.code as string)
