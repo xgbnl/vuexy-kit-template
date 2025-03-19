@@ -9,7 +9,7 @@ export interface Entity {
   updatedAt?: string
 }
 
-export interface HeadCell<T extends Entity> {
+export interface HeadCell<T> {
   disablePadding: boolean
   id: keyof T
   label: string
