@@ -154,7 +154,7 @@ export default function EnhancedTable<T extends Entity>(props: Props<T>) {
                 return (
                   <TableRow
                     hover
-                    onClick={event => handleClick(event, row.id as number)}
+                    onClick={event => chosen && handleClick(event, row.id as number)}
                     role='checkbox'
                     aria-checked={isItemSelected}
                     tabIndex={-1}
