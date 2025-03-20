@@ -1,6 +1,3 @@
-// React Imports
-import type { ReactNode } from 'react'
-
 // MUI Imports
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
@@ -10,14 +7,17 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { alpha } from '@mui/material/styles'
 
-interface EnhancedTableToolbarProps {
+// Type Imports
+import type { SlotProp } from './types'
+
+interface EnhancedTableToolbarProps<T> extends SlotProp<T> {
   numSelected: number
   onDelete?: () => void
-  ActionComponent?: () => ReactNode
+  selected: T[]
 }
 
-export default function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected, onDelete, ActionComponent } = props
+export default function EnhancedTableToolbar<T>(props: EnhancedTableToolbarProps<T>) {
+  const { numSelected, onDelete, slotProps, selected } = props
 
   return (
     <Toolbar
@@ -37,15 +37,19 @@ export default function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         </Typography>
       ) : (
         <Typography sx={{ flex: '1 1 100%' }} variant='h6' id='tableTitle' component='div'>
-          {ActionComponent ? <ActionComponent /> : 'Nutrition'}
+          {slotProps?.components ? slotProps.components() : 'Nutrition'}
         </Typography>
       )}
       {numSelected > 0 ? (
-        <Tooltip title='Delete'>
-          <IconButton onClick={onDelete}>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
+        slotProps?.effectComponents ? (
+          slotProps.effectComponents(selected)
+        ) : (
+          <Tooltip title='Delete'>
+            <IconButton onClick={onDelete}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        )
       ) : (
         <Tooltip title='Filter list'>
           <IconButton>

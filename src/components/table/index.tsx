@@ -22,7 +22,7 @@ import SimpleTableCell from './SimpleTableCell'
 import SortTableRow from './SortTableRow'
 
 // Type Imports
-import type { Order, HeadCell } from './types'
+import type { Order, HeadCell, Entity, SlotProp } from './types'
 
 // Utils Imports
 import { uuid } from '@/utils/uuid'
@@ -48,22 +48,21 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   return 0
 }
 
-interface Props<T> {
+interface Props<T> extends SlotProp<T> {
   rows: T[]
-  sortBy: keyof T
-  headCells: HeadCell<T>[]
-  chosen?: boolean | false
-  onDelete?: (rows: number[]) => void
-  ToolbarActionComponent?: () => ReactNode
+  sortBy: keyof T // Sort field.
+  headCells: HeadCell<T>[] // Column head.
+  multiple?: boolean | false // Enable row multiple selection.
+  onDelete?: (rows: T[]) => void // Enable default delete action.
 }
 
-export default function EnhancedTable<T>(props: Props<T>) {
-  const { rows, sortBy, headCells, chosen, onDelete, ToolbarActionComponent } = props
+export default function EnhancedTable<T extends Entity>(props: Props<T>) {
+  const { rows, sortBy, headCells, multiple: chosen, onDelete, slotProps } = props
 
   // States
   const [order, setOrder] = useState<Order>('asc')
   const [orderBy, setOrderBy] = useState<keyof T>(sortBy)
-  const [selected, setSelected] = useState<number[]>([])
+  const [selected, setSelected] = useState<T[]>([])
   const [page, setPage] = useState<number>(0)
   const [rowsPerPage, setRowsPerPage] = useState<number>(5)
 
@@ -77,9 +76,9 @@ export default function EnhancedTable<T>(props: Props<T>) {
 
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map(n => n[sortBy])
+      const newSelected = rows
 
-      setSelected(newSelected as number[])
+      setSelected(newSelected)
 
       return
     }
@@ -87,12 +86,12 @@ export default function EnhancedTable<T>(props: Props<T>) {
     setSelected([])
   }
 
-  const handleClick = (event: MouseEvent<unknown>, id: number) => {
-    const selectedIndex = selected.indexOf(id)
-    let newSelected: readonly number[] = []
+  const handleClick = (event: MouseEvent<unknown>, row: T) => {
+    const selectedIndex = selected.indexOf(row)
+    let newSelected: T[] = []
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id)
+      newSelected = newSelected.concat(selected, row)
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1))
     } else if (selectedIndex === selected.length - 1) {
@@ -101,7 +100,7 @@ export default function EnhancedTable<T>(props: Props<T>) {
       newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1))
     }
 
-    setSelected(newSelected as number[])
+    setSelected(newSelected)
   }
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -124,7 +123,7 @@ export default function EnhancedTable<T>(props: Props<T>) {
 
   const visibleRows = useMemo(
     () => [...rows].sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage]
+    [order, orderBy, page, rowsPerPage, rows]
   )
 
   return (
@@ -133,7 +132,8 @@ export default function EnhancedTable<T>(props: Props<T>) {
         <EnhancedTableToolbar
           numSelected={selected.length}
           onDelete={handleDelete}
-          ActionComponent={ToolbarActionComponent}
+          selected={selected}
+          slotProps={slotProps}
         />
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby='tableTitle' size={'medium'}>
@@ -152,7 +152,6 @@ export default function EnhancedTable<T>(props: Props<T>) {
                 ? visibleRows.map(
                     (row: T): ReactNode => (
                       <SortTableRow<T>
-                        sortBy={sortBy}
                         key={uuid()}
                         row={row}
                         selected={selected}

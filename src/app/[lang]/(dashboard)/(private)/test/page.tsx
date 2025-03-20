@@ -11,14 +11,11 @@ import Avatar from '@mui/material/Avatar'
 
 // Components Imports
 import EnhancedTable from '@/components/table'
-import type { HeadCell } from '@/components/table/types'
+import type { Entity, HeadCell } from '@/components/table/types'
 
-interface User {
+interface User extends Entity {
   name: string
   avatar: string
-  id?: number
-  createdAt?: string
-  updatedAt?: string
 }
 
 const users: User[] = [
@@ -62,11 +59,35 @@ export default function Page(): ReactNode {
           </Button>
         </CardActions>
       </Card>
+      {/* Default table for multiple selections to delete */}
       <EnhancedTable<User>
         rows={users}
         sortBy='id'
         headCells={headCells}
-        ToolbarActionComponent={() => <Button variant='contained'>Contained</Button>}
+        multiple={true}
+        onDelete={(rows: User[]) => {
+          console.log(rows)
+        }}
+      />
+      {/** Enable column multi-selection and override side-effect button group */}
+      <EnhancedTable<User>
+        rows={users}
+        sortBy='id'
+        headCells={headCells}
+        multiple={true}
+        slotProps={{
+          components: () => <Button variant='contained'>Contained</Button>,
+          effectComponents: (rows: User[]) => (
+            <Button
+              variant='contained'
+              onClick={() => {
+                console.log(rows)
+              }}
+            >
+              Contained
+            </Button>
+          )
+        }}
       />
     </>
   )

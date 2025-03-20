@@ -14,19 +14,18 @@ import { uuid } from '@/utils/uuid'
 
 interface Props<T> {
   row: T
-  selected: number[]
+  selected: T[]
   columns: HeadCell<T>[]
-  onClick: (envent: MouseEvent<unknown>, id: number) => void
-  sortBy: keyof T
+  onClick: (envent: MouseEvent<unknown>, row: T) => void
 }
 
-export default function SortTableRow<T>({ row, selected, columns, onClick, sortBy }: Props<T>): ReactNode {
-  const isItemSelected = selected.includes(row[sortBy] as number)
+export default function SortTableRow<T>({ row, selected, columns, onClick }: Props<T>): ReactNode {
+  const isItemSelected = selected.includes(row)
 
   return (
     <TableRow
       hover
-      onClick={event => onClick(event, row[sortBy] as number)}
+      onClick={event => onClick(event, row)}
       role='checkbox'
       aria-checked={isItemSelected}
       tabIndex={-1}
