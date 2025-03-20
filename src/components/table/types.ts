@@ -18,7 +18,7 @@ export interface HeadCell<T> {
 
 export type SlotProp<T> = {
   slotProps?: {
-    components?: () => ReactNode
-    effectComponents?: (rows: T[]) => ReactNode
+    root?: () => ReactNode
+    actions?: (rows: T[]) => ReactNode
   }
 }
