@@ -14,6 +14,7 @@ import TableBody from '@mui/material/TableBody'
 import Pagination from '@mui/material/Pagination'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
+import Grid from '@mui/material/Grid2'
 
 // Components Imports
 import EnhancedTableToolbar from './EnhancedTableToolbar'
@@ -184,7 +185,11 @@ export default function EnhancedTable<T extends Entity>(props: Props<T>) {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          ActionsComponent={() => <Pagination count={1} color='secondary' disabled={true} />}
+          ActionsComponent={() => (
+            <Grid container justifyContent='center' width='100%'>
+              <Pagination variant='outlined' shape='rounded' count={1} color='primary' disabled={true} />
+            </Grid>
+          )}
         />
       </Paper>
     </Box>
