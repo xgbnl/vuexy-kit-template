@@ -9,7 +9,6 @@ import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableRow from '@mui/material/TableRow'
-import Checkbox from '@mui/material/Checkbox'
 import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
 import Pagination from '@mui/material/Pagination'
@@ -19,14 +18,16 @@ import TablePagination from '@mui/material/TablePagination'
 // Components Imports
 import EnhancedTableToolbar from './EnhancedTableToolbar'
 import EnhancedTableHead from './EnhancedTableHead'
+import SimpleTableCell from './SimpleTableCell'
+import SortTableRow from './SortTableRow'
 
 // Type Imports
-import type { Order, Entity, HeadCell } from './types'
+import type { Order, HeadCell } from './types'
 
 // Utils Imports
 import { uuid } from '@/utils/uuid'
 
-function getComparator<T extends Entity, Key extends keyof T>(
+function getComparator<T, Key extends keyof T>(
   order: Order,
   orderBy: Key
 ): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
@@ -47,7 +48,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   return 0
 }
 
-interface Props<T extends Entity> {
+interface Props<T> {
   rows: T[]
   sortBy: keyof T
   headCells: HeadCell<T>[]
@@ -56,7 +57,7 @@ interface Props<T extends Entity> {
   ToolbarActionComponent?: () => ReactNode
 }
 
-export default function EnhancedTable<T extends Entity>(props: Props<T>) {
+export default function EnhancedTable<T>(props: Props<T>) {
   const { rows, sortBy, headCells, chosen, onDelete, ToolbarActionComponent } = props
 
   // States
@@ -76,7 +77,7 @@ export default function EnhancedTable<T extends Entity>(props: Props<T>) {
 
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map(n => n.id)
+      const newSelected = rows.map(n => n[sortBy])
 
       setSelected(newSelected as number[])
 
@@ -147,44 +148,26 @@ export default function EnhancedTable<T extends Entity>(props: Props<T>) {
               chosen={chosen as boolean}
             />
             <TableBody>
-              {visibleRows.map((row: T, index) => {
-                const isItemSelected = selected.includes(row.id as number)
-                const labelId = `enhanced-table-checkbox-${index}`
-
-                return (
-                  <TableRow
-                    hover
-                    onClick={event => chosen && handleClick(event, row.id as number)}
-                    role='checkbox'
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.id}
-                    selected={isItemSelected}
-                    sx={{ cursor: 'pointer' }}
-                  >
-                    {chosen && (
-                      <TableCell padding='checkbox'>
-                        <Checkbox
-                          color='primary'
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId
-                          }}
-                        />
-                      </TableCell>
-                    )}
-                    {headCells.map((headCell: HeadCell<T>) => (
-                      <TableCell id={labelId} key={uuid()} align={headCell.numeric ? 'right' : 'left'}>
-                        {headCell.format
-                          ? headCell.format(row)
-                          : headCell.action
-                            ? headCell.action(row)
-                            : row[headCell.id]}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                )
-              })}
+              {chosen
+                ? visibleRows.map(
+                    (row: T): ReactNode => (
+                      <SortTableRow<T>
+                        sortBy={sortBy}
+                        key={uuid()}
+                        row={row}
+                        selected={selected}
+                        columns={headCells}
+                        onClick={handleClick}
+                      />
+                    )
+                  )
+                : visibleRows.map(
+                    (row: T): ReactNode => (
+                      <TableRow hover role='checkbox' tabIndex={-1} key={uuid()} sx={{ cursor: 'pointer' }}>
+                        <SimpleTableCell row={row} columns={headCells} />
+                      </TableRow>
+                    )
+                  )}
               {emptyRows > 0 && (
                 <TableRow
                   style={{

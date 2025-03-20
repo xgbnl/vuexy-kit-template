@@ -11,11 +11,14 @@ import Avatar from '@mui/material/Avatar'
 
 // Components Imports
 import EnhancedTable from '@/components/table'
-import type { Entity, HeadCell } from '@/components/table/types'
+import type { HeadCell } from '@/components/table/types'
 
-interface User extends Entity {
+interface User {
   name: string
   avatar: string
+  id?: number
+  createdAt?: string
+  updatedAt?: string
 }
 
 const users: User[] = [

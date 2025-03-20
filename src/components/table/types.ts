@@ -3,12 +3,6 @@ import type { ReactNode } from 'react'
 
 export type Order = 'asc' | 'desc'
 
-export interface Entity {
-  id?: number
-  createdAt?: string
-  updatedAt?: string
-}
-
 export interface HeadCell<T> {
   disablePadding: boolean
   id: keyof T
