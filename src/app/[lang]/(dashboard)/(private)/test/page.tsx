@@ -12,6 +12,7 @@ import Avatar from '@mui/material/Avatar'
 // Components Imports
 import EnhancedTable from '@/components/table'
 import type { Entity, HeadCell } from '@/components/table/types'
+import TreeSelect, { Tree } from '@/components/form/tree-select'
 
 interface User extends Entity {
   name: string
@@ -51,6 +52,46 @@ const headCells: HeadCell<User>[] = [
   { disablePadding: false, id: 'updatedAt', label: 'UpdatedAt', numeric: false }
 ]
 
+const treeData: readonly Tree[] = [
+  {
+    id: 1,
+    extName: 'Front',
+    children: [
+      {
+        id: 3,
+        extName: 'JavaScript',
+        children: []
+      },
+      {
+        id: 4,
+        extName: 'TypeScript',
+        children: []
+      }
+    ]
+  },
+  {
+    id: 2,
+    extName: 'Backd',
+    children: [
+      {
+        id: 5,
+        extName: 'Java',
+        children: []
+      },
+      {
+        id: 6,
+        extName: 'PHP',
+        children: []
+      },
+      {
+        id: 7,
+        extName: 'Node.js',
+        children: []
+      }
+    ]
+  }
+]
+
 export default function Page(): ReactNode {
   return (
     <>
@@ -59,6 +100,7 @@ export default function Page(): ReactNode {
           <Button size='medium' variant='contained'>
             Learn More
           </Button>
+          <TreeSelect nodes={treeData} labelBy='extName' />
         </CardActions>
       </Card>
       {/* Default table for multiple selections to delete */}
@@ -78,8 +120,8 @@ export default function Page(): ReactNode {
         headCells={headCells}
         multiple={true}
         slotProps={{
-          components: () => <Button variant='contained'>Contained</Button>,
-          effectComponents: (rows: User[]) => (
+          root: () => <Button variant='contained'>Contained</Button>,
+          actions: (rows: User[]) => (
             <Button
               variant='contained'
               onClick={() => {
