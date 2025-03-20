@@ -16,6 +16,8 @@ import type { Entity, HeadCell } from '@/components/table/types'
 interface User extends Entity {
   name: string
   avatar: string
+  createdAt: string
+  updatedAt: string
 }
 
 const users: User[] = [

@@ -4,9 +4,7 @@ import type { ReactNode } from 'react'
 export type Order = 'asc' | 'desc'
 
 export interface Entity {
-  id?: number
-  createdAt?: string
-  updatedAt?: string
+  id: number | string
 }
 
 export interface HeadCell<T> {

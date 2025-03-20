@@ -27,10 +27,7 @@ import type { Order, HeadCell, Entity, SlotProp } from './types'
 // Utils Imports
 import { uuid } from '@/utils/uuid'
 
-function getComparator<T, Key extends keyof T>(
-  order: Order,
-  orderBy: Key
-): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
+function getComparator<T, Key extends keyof T>(order: Order, orderBy: Key): (a: T, b: T) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy)
