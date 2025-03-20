@@ -10,7 +10,6 @@ import SimpleTableCell from './SimpleTableCell'
 
 // Type Imports
 import type { HeadCell } from './types'
-import { uuid } from '@/utils/uuid'
 
 interface Props<T> {
   row: T
@@ -29,7 +28,6 @@ export default function SortTableRow<T>({ row, selected, columns, onClick }: Pro
       role='checkbox'
       aria-checked={isItemSelected}
       tabIndex={-1}
-      key={uuid()}
       selected={isItemSelected}
       sx={{ cursor: 'pointer' }}
     >
