@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useState, useMemo, type SyntheticEvent } from 'react'
+import { ReactNode, useMemo, type SyntheticEvent } from 'react'
 
 // MUI Imports
 import Box from '@mui/material/Box'
@@ -10,6 +10,7 @@ import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import Chip from '@mui/material/Chip'
+import type { InputBaseProps } from '@mui/material'
 
 // Components
 import AnimationTree from './AnimationTree'
@@ -29,7 +30,7 @@ const cacheable = (nodes: Nodes, map: Map<number, Node> = new Map()): Map<number
   return map
 }
 
-interface Props extends Omit<MultiTreeProps, 'onSelectedItemsChange' | 'selectedItems'> {
+interface Props extends Omit<MultiTreeProps, 'onSelectedItemsChange' | 'selectedItems'>, Pick<InputBaseProps, 'size'> {
   inputLabel?: string
   onSelectedItemsClick: (items: string[]) => void
   value: string[]
@@ -44,6 +45,7 @@ export default function MultipleAnimationSelect(props: Props) {
     multiSelect,
     checkboxSelection,
     value,
+    size,
     onSelectedItemsClick,
     rootNodeSelectable
   } = props
@@ -54,6 +56,8 @@ export default function MultipleAnimationSelect(props: Props) {
   // Hooks
   const handelSelectedItemsChange = (event: SyntheticEvent, items: string[] | string | null) => {
     const isStringble = items && typeof items === 'string'
+
+    console.log(items)
 
     if (isStringble && value.includes(items)) {
       const filters = value.filter((id: string): boolean => id !== items)
@@ -66,6 +70,24 @@ export default function MultipleAnimationSelect(props: Props) {
     }
   }
 
+  const renderValue = (selected: string[]): ReactNode => {
+    if (multiSelect === undefined || !multiSelect) {
+      const node = cache.get(Number(selected.at(0))) as Node
+
+      return node[labelBy]
+    }
+
+    return (
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+        {selected.map(value => {
+          const node = cache.get(Number(value)) as Node
+
+          return <Chip key={value} label={node[labelBy]} />
+        })}
+      </Box>
+    )
+  }
+
   return (
     <Box sx={{ minWidth: 200 }}>
       <FormControl fullWidth>
@@ -74,18 +96,10 @@ export default function MultipleAnimationSelect(props: Props) {
           labelId='multiple-chip-label'
           id='multiple-chip'
           multiple
-          size='small'
+          size={size}
           value={value}
           input={<OutlinedInput id='select-multiple-chip' label='Chip' />}
-          renderValue={selected => (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map(value => {
-                const node = cache.get(Number(value)) as Node
-
-                return <Chip key={value} label={node[labelBy]} />
-              })}
-            </Box>
-          )}
+          renderValue={renderValue}
         >
           <AnimationTree
             multiSelect={multiSelect}

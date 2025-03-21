@@ -13,9 +13,5 @@ export interface Node {
 export type MultiTreeProps = {
   nodes: Nodes
   labelBy: string
-} & Required<
-  Pick<
-    UseTreeViewSelectionParameters<any>,
-    'onSelectedItemsChange' | 'selectedItems' | 'multiSelect' | 'checkboxSelection'
-  >
->
+} & Required<Pick<UseTreeViewSelectionParameters<any>, 'onSelectedItemsChange' | 'selectedItems'>> &
+  Pick<UseTreeViewSelectionParameters<any>, 'multiSelect' | 'checkboxSelection'>
