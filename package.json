@@ -48,7 +48,7 @@
     "react-use": "17.6.0",
     "redux": "^5.0.1",
     "server-only": "0.0.1",
-    "valibot": "^1.0.0-beta.9"
+    "valibot": "^1.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.0",
@@ -82,7 +82,7 @@
     "tailwindcss-logical": "3.0.1",
     "tsx": "4.19.3",
     "typescript": "5.8.2",
-    "typescript-eslint": "^8.26.1"
+    "typescript-eslint": "^8.27.0"
   },
   "resolutions": {
     "rimraf": "^5.0.7"
