@@ -103,19 +103,29 @@ const treeData: readonly Node[] = [
 export default function Page(): ReactNode {
   // States
   const [values, setValues] = useState<string[]>([])
+  const [signValues, setSignValues] = useState<string[]>([])
 
   return (
     <>
       {/** Table filter Card */}
       <Card sx={{ minWidth: 275 }} className='mb-6'>
         <CardActions>
+          {/* Enable multiple selection, enable checkbox effect, and allow root node selection */}
           <MultipleAnimationSelect
             nodes={treeData}
             labelBy='extName'
-            multiSelect={false}
-            checkboxSelection={false}
+            multiSelect
+            checkboxSelection
             value={values}
             onSelectedItemsClick={items => setValues(items)}
+            rootNodeSelectable
+          />
+          {/* Disable multi-select and checkbox, and prohibit root node selection */}
+          <MultipleAnimationSelect
+            nodes={treeData}
+            labelBy='extName'
+            value={signValues}
+            onSelectedItemsClick={items => setSignValues(items)}
           />
           <Button size='medium' variant='contained'>
             Learn More

@@ -1,7 +1,8 @@
 'use client'
 
 // React Imports
-import { ReactNode, useMemo, type SyntheticEvent } from 'react'
+import type { ReactNode, SyntheticEvent } from 'react'
+import { useMemo } from 'react'
 
 // MUI Imports
 import Box from '@mui/material/Box'
@@ -18,23 +19,43 @@ import AnimationTree from './AnimationTree'
 // Type Imports
 import type { MultiTreeProps, Nodes, Node } from './types'
 
-const cacheable = (nodes: Nodes, map: Map<number, Node> = new Map()): Map<number, Node> => {
+type Cacheable = Map<number, Node>
+
+type Selectable = undefined | boolean
+
+interface Props extends Omit<MultiTreeProps, 'onSelectedItemsChange' | 'selectedItems'>, Pick<InputBaseProps, 'size'> {
+  inputLabel?: string
+  onSelectedItemsClick: (items: string[]) => void
+  value: string[]
+  rootNodeSelectable?: Selectable
+}
+
+// Store node information to map and cache it using useMemo.
+const storeCache = (nodes: Nodes, map: Cacheable = new Map()): Cacheable => {
   for (const node of nodes) {
     map.set(node.id, node)
 
     if (node.children.length > 0) {
-      cacheable(node.children, map)
+      storeCache(node.children, map)
     }
   }
 
   return map
 }
 
-interface Props extends Omit<MultiTreeProps, 'onSelectedItemsChange' | 'selectedItems'>, Pick<InputBaseProps, 'size'> {
-  inputLabel?: string
-  onSelectedItemsClick: (items: string[]) => void
-  value: string[]
-  rootNodeSelectable?: boolean
+// Confirm whether the node is selectable.
+const shouldAddItem = (selectable: Selectable, cacheable: Cacheable, id: string): boolean => {
+  if (selectable) {
+    return true
+  }
+
+  if (selectable === undefined || !selectable) {
+    const node = cacheable.get(Number(id))
+
+    return node?.deep !== 1
+  }
+
+  return true
 }
 
 export default function MultipleAnimationSelect(props: Props) {
@@ -51,22 +72,20 @@ export default function MultipleAnimationSelect(props: Props) {
   } = props
 
   // States
-  const cache = useMemo((): Map<number, Node> => cacheable(nodes), [nodes])
+  const cache = useMemo((): Map<number, Node> => storeCache(nodes), [nodes])
 
   // Hooks
   const handelSelectedItemsChange = (event: SyntheticEvent, items: string[] | string | null) => {
-    const isStringble = items && typeof items === 'string'
+    if (Array.isArray(items)) {
+      const filterble = items.filter((id: string): boolean => shouldAddItem(rootNodeSelectable, cache, id))
 
-    console.log(items)
+      onSelectedItemsClick([...filterble])
+    }
 
-    if (isStringble && value.includes(items)) {
-      const filters = value.filter((id: string): boolean => id !== items)
-
-      onSelectedItemsClick([...filters])
-    } else if (isStringble && !value.includes(items)) {
-      onSelectedItemsClick([...value, items])
-    } else if (Array.isArray(items)) {
-      onSelectedItemsClick([...items])
+    if (typeof items === 'string') {
+      if (!value.includes(items) && shouldAddItem(rootNodeSelectable, cache, items)) {
+        onSelectedItemsClick([items])
+      }
     }
   }
 
