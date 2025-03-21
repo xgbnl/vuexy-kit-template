@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 
 // MUI Imports
 import Button from '@mui/material/Button'
@@ -12,7 +12,8 @@ import Avatar from '@mui/material/Avatar'
 // Components Imports
 import EnhancedTable from '@/components/table'
 import type { Entity, HeadCell } from '@/components/table/types'
-import TreeSelect, { Tree } from '@/components/form/tree-select'
+import MultipleAnimationSelect from '@/components/form/tree-select'
+import type { Node } from '@/components/form/tree-select/types'
 
 interface User extends Entity {
   name: string
@@ -52,18 +53,21 @@ const headCells: HeadCell<User>[] = [
   { disablePadding: false, id: 'updatedAt', label: 'UpdatedAt', numeric: false }
 ]
 
-const treeData: readonly Tree[] = [
+const treeData: readonly Node[] = [
   {
     id: 1,
     extName: 'Front',
+    deep: 1,
     children: [
       {
         id: 3,
+        deep: 2,
         extName: 'JavaScript',
         children: []
       },
       {
         id: 4,
+        deep: 2,
         extName: 'TypeScript',
         children: []
       }
@@ -72,20 +76,24 @@ const treeData: readonly Tree[] = [
   {
     id: 2,
     extName: 'Backd',
+    deep: 1,
     children: [
       {
         id: 5,
         extName: 'Java',
+        deep: 2,
         children: []
       },
       {
         id: 6,
         extName: 'PHP',
+        deep: 2,
         children: []
       },
       {
         id: 7,
         extName: 'Node.js',
+        deep: 2,
         children: []
       }
     ]
@@ -93,16 +101,28 @@ const treeData: readonly Tree[] = [
 ]
 
 export default function Page(): ReactNode {
+  // States
+  const [values, setValues] = useState<string[]>([])
+
   return (
     <>
+      {/** Table filter Card */}
       <Card sx={{ minWidth: 275 }} className='mb-6'>
         <CardActions>
+          <MultipleAnimationSelect
+            nodes={treeData}
+            labelBy='extName'
+            multiSelect={false}
+            checkboxSelection={false}
+            value={values}
+            onSelectedItemsClick={items => setValues(items)}
+          />
           <Button size='medium' variant='contained'>
             Learn More
           </Button>
-          <TreeSelect nodes={treeData} labelBy='extName' />
         </CardActions>
       </Card>
+      {/** Table List */}
       {/* Default table for multiple selections to delete */}
       <EnhancedTable<User>
         rows={users}

@@ -1,39 +1,101 @@
+'use client'
+
 // React Imports
-import { type ReactNode, useState, type MouseEvent } from 'react'
+import { useState, useMemo, type SyntheticEvent } from 'react'
 
 // MUI Imports
 import Box from '@mui/material/Box'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
-import TextField from '@mui/material/TextField'
+import Select from '@mui/material/Select'
+import OutlinedInput from '@mui/material/OutlinedInput'
+import Chip from '@mui/material/Chip'
 
 // Components
 import AnimationTree from './AnimationTree'
 
 // Type Imports
-import type { MultiTreeProps } from './types'
+import type { MultiTreeProps, Nodes, Node } from './types'
 
-interface Props extends MultiTreeProps {
-  size: 'small' | 'medium'
+const cacheable = (nodes: Nodes, map: Map<number, Node> = new Map()): Map<number, Node> => {
+  for (const node of nodes) {
+    map.set(node.id, node)
+
+    if (node.children.length > 0) {
+      cacheable(node.children, map)
+    }
+  }
+
+  return map
 }
 
-export default function TreeSelect({ nodes: items, labelBy }: Omit<MultiTreeProps, 'onItemClick'>) {
+interface Props extends Omit<MultiTreeProps, 'onSelectedItemsChange' | 'selectedItems'> {
+  inputLabel?: string
+  onSelectedItemsClick: (items: string[]) => void
+  value: string[]
+  rootNodeSelectable?: boolean
+}
+
+export default function MultipleAnimationSelect(props: Props) {
+  const {
+    nodes,
+    labelBy,
+    inputLabel,
+    multiSelect,
+    checkboxSelection,
+    value,
+    onSelectedItemsClick,
+    rootNodeSelectable
+  } = props
+
   // States
-  const [label, setLable] = useState<string>('')
-  const [open, setOpen] = useState<boolean>(false)
+  const cache = useMemo((): Map<number, Node> => cacheable(nodes), [nodes])
 
   // Hooks
-  const handleClick = (nodes: Node[]) => {
-    console.log(nodes)
+  const handelSelectedItemsChange = (event: SyntheticEvent, items: string[] | string | null) => {
+    const isStringble = items && typeof items === 'string'
+
+    if (isStringble && value.includes(items)) {
+      const filters = value.filter((id: string): boolean => id !== items)
+
+      onSelectedItemsClick([...filters])
+    } else if (isStringble && !value.includes(items)) {
+      onSelectedItemsClick([...value, items])
+    } else if (Array.isArray(items)) {
+      onSelectedItemsClick([...items])
+    }
   }
 
   return (
     <Box sx={{ minWidth: 200 }}>
       <FormControl fullWidth>
-        <InputLabel id='simple-select-label'>Region</InputLabel>
-        <TextField select size='small'>
-          <AnimationTree nodes={items} labelBy={labelBy} onItemClick={handleClick} />
-        </TextField>
+        <InputLabel id='multiple-chip-label'>{inputLabel ?? 'multiple'}</InputLabel>
+        <Select
+          labelId='multiple-chip-label'
+          id='multiple-chip'
+          multiple
+          size='small'
+          value={value}
+          input={<OutlinedInput id='select-multiple-chip' label='Chip' />}
+          renderValue={selected => (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              {selected.map(value => {
+                const node = cache.get(Number(value)) as Node
+
+                return <Chip key={value} label={node[labelBy]} />
+              })}
+            </Box>
+          )}
+        >
+          <AnimationTree
+            multiSelect={multiSelect}
+            checkboxSelection={checkboxSelection}
+            nodes={nodes}
+            labelBy={labelBy}
+            onSelectedItemsChange={handelSelectedItemsChange}
+            selectedItems={value}
+          />
+        </Select>
       </FormControl>
     </Box>
   )

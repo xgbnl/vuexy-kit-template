@@ -1,8 +1,8 @@
 'use client'
 
 // React Imports
-import { forwardRef, useState, useMemo, useEffect } from 'react'
-import type { Ref, ReactNode, MouseEvent } from 'react'
+import { forwardRef, useMemo } from 'react'
+import type { Ref, ReactNode } from 'react'
 
 // MUI Imports
 import Collapse from '@mui/material/Collapse'
@@ -38,50 +38,31 @@ const CustomTreeItem = forwardRef((props: TreeItemProps, ref: Ref<HTMLLIElement>
   <TreeItem {...props} slots={{ groupTransition: TransitionComponent, ...props.slots }} ref={ref} />
 ))
 
-function buildTreeMap(nodes: Nodes, map: Map<number, Node> = new Map()): Map<number, Node> {
-  for (const node of nodes) {
-    map.set(node.id, node)
-
-    if (node.children.length > 0) {
-      buildTreeMap(node.children, map)
-    }
-  }
-
-  return map
+const presenter = (items: Nodes, labelBy: string): ReactNode => {
+  return items.map(
+    (tree: Node): ReactNode => (
+      <CustomTreeItem itemId={`${tree.id}`} key={`grid-community-${uuid()}`} label={tree[labelBy]}>
+        {tree.children ? presenter(tree.children, labelBy) : null}
+      </CustomTreeItem>
+    )
+  )
 }
 
-export default function AnimationTree({ nodes, labelBy, onItemClick }: MultiTreeProps) {
+export default function AnimationTree(props: MultiTreeProps) {
+  const { nodes, labelBy, onSelectedItemsChange, selectedItems, multiSelect, checkboxSelection } = props
+
   // States
-  const [selected, setSelected] = useState<Node[]>([])
-
-  const cache = useMemo(() => buildTreeMap(nodes), [nodes])
-
-  useEffect((): void => {
-    onItemClick(selected)
-  }, [selected])
-
-  // Hooks
-  const handelItemClick = (event: MouseEvent<unknown>, id: string): void => {
-    const node = cache?.get(Number(id)) as Node
-
-    if (!selected.some(n => n.id === node.id)) {
-      setSelected([...selected, node])
-    }
-  }
-
-  const presenter = (items: Nodes): ReactNode => {
-    return items.map(
-      (tree: Node): ReactNode => (
-        <CustomTreeItem itemId={`${tree.id}`} key={`grid-community-${uuid()}`} label={tree[labelBy]}>
-          {tree.children ? presenter(tree.children) : null}
-        </CustomTreeItem>
-      )
-    )
-  }
+  const nodeView = useMemo(() => presenter(nodes, labelBy), [nodes, labelBy])
 
   return (
-    <SimpleTreeView multiSelect checkboxSelection defaultExpandedItems={['grid']} onItemClick={handelItemClick}>
-      {presenter(nodes)}
+    <SimpleTreeView
+      multiSelect={multiSelect}
+      checkboxSelection={checkboxSelection}
+      defaultExpandedItems={['grid']}
+      selectedItems={selectedItems as string[]}
+      onSelectedItemsChange={onSelectedItemsChange}
+    >
+      {nodeView}
     </SimpleTreeView>
   )
 }
