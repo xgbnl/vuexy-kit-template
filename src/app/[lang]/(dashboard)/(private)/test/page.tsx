@@ -163,6 +163,10 @@ export default function Page(): ReactNode {
       {/** Table List */}
       {/* Default table for multiple selections to delete */}
       <EnhancedTable<User>
+        total={100}
+        onPageChange={(page: number, perPage: number): void => {
+          console.log(page, perPage)
+        }}
         rows={users}
         sortBy='id'
         headCells={headCells}
@@ -173,6 +177,10 @@ export default function Page(): ReactNode {
       />
       {/** Enable column multi-selection and override side-effect button group */}
       <EnhancedTable<User>
+        total={100}
+        onPageChange={(page: number, perPage: number): void => {
+          console.log(page, perPage)
+        }}
         rows={users}
         sortBy='id'
         headCells={headCells}

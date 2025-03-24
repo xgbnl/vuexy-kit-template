@@ -52,10 +52,12 @@ interface Props<T> extends SlotProp<T> {
   headCells: HeadCell<T>[] // Column head.
   multiple?: boolean | false // Enable row multiple selection.
   onDelete?: (rows: T[]) => void // Enable default delete action.
+  onPageChange: (page: number, pageSize: number) => void
+  total: number
 }
 
 export default function EnhancedTable<T extends Entity>(props: Props<T>) {
-  const { rows, sortBy, headCells, multiple: chosen, onDelete, slotProps } = props
+  const { rows, sortBy, headCells, multiple: chosen, onDelete, slotProps, total, onPageChange } = props
 
   // States
   const [order, setOrder] = useState<Order>('asc')
@@ -102,12 +104,18 @@ export default function EnhancedTable<T extends Entity>(props: Props<T>) {
   }
 
   const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage)
+    setPage(newPage - 1)
+
+    onPageChange(newPage, rowsPerPage)
   }
 
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
+    const perPage = parseInt(event.target.value, 10)
+
+    setRowsPerPage(perPage)
     setPage(0)
+
+    onPageChange(page, perPage)
   }
 
   const handleDelete = (): void => {
@@ -180,14 +188,21 @@ export default function EnhancedTable<T extends Entity>(props: Props<T>) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component='div'
-          count={rows.length}
+          count={total}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           ActionsComponent={() => (
             <Grid container justifyContent='center' width='100%'>
-              <Pagination variant='outlined' shape='rounded' count={1} color='primary' disabled={true} />
+              <Pagination
+                variant='outlined'
+                shape='rounded'
+                page={page + 1}
+                onChange={handleChangePage}
+                count={Math.ceil(total / rowsPerPage)}
+                color='primary'
+              />
             </Grid>
           )}
         />
