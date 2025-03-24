@@ -9,8 +9,13 @@ import MenuItem from '@mui/material/MenuItem'
 // Components Imports
 import CustomTextField from '@core/components/mui/TextField'
 
-// Types Imports
-import type { Selectable, Value } from './types'
+export interface Selectable {
+  label: string
+  value: Value
+  disabled?: boolean
+}
+
+export type Value = number | string
 
 interface Props {
   items: Selectable[]
@@ -39,7 +44,7 @@ const SimpleSelect = ({ items, value, label, onChange, defaultValue }: Props) =>
     >
       {[defaultValue, ...items].map(
         (item: Selectable): ReactNode => (
-          <MenuItem key={item.value} value={item.value}>
+          <MenuItem key={item.value} disabled={item.disabled} value={item.value}>
             <em>{item.label}</em>
           </MenuItem>
         )

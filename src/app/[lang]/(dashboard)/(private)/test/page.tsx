@@ -15,8 +15,7 @@ import EnhancedTable from '@/components/table'
 import type { Entity, HeadCell } from '@/components/table/types'
 import MultipleAnimationSelect from '@/components/form/tree-select'
 import type { Node } from '@/components/form/tree-select/types'
-import { Selectable } from '@/components/form/simple-select/types'
-import SimpleSelect from '@/components/form/simple-select/SimpleSelect'
+import SimpleSelect, { type Selectable } from '@/components/form/simple-select/SimpleSelect'
 
 interface User extends Entity {
   name: string
@@ -143,7 +142,7 @@ export default function Page(): ReactNode {
             </Grid>
             <Grid size={{ xs: 4, sm: 2 }}>
               <SimpleSelect
-                defaultValue={{ label: 'Please select payment status', value: 0 }}
+                defaultValue={{ label: 'Please select payment status', value: 0, disabled: true }}
                 items={selectables}
                 label='paid status'
                 value={payStatus}
