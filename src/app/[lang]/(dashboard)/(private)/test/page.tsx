@@ -8,12 +8,15 @@ import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import Avatar from '@mui/material/Avatar'
+import Grid from '@mui/material/Grid2'
 
 // Components Imports
 import EnhancedTable from '@/components/table'
 import type { Entity, HeadCell } from '@/components/table/types'
 import MultipleAnimationSelect from '@/components/form/tree-select'
 import type { Node } from '@/components/form/tree-select/types'
+import { Selectable } from '@/components/form/simple-select/types'
+import SimpleSelect from '@/components/form/simple-select/SimpleSelect'
 
 interface User extends Entity {
   name: string
@@ -100,36 +103,62 @@ const treeData: readonly Node[] = [
   }
 ]
 
+const selectables: Selectable[] = [
+  { label: 'Paid', value: 1 },
+  { label: 'Unpaid', value: 2 }
+]
+
 export default function Page(): ReactNode {
   // States
   const [values, setValues] = useState<string[]>([])
   const [signValues, setSignValues] = useState<string[]>([])
+  const [payStatus, setPayStatus] = useState<number>(0)
 
   return (
     <>
       {/** Table filter Card */}
       <Card sx={{ minWidth: 275 }} className='mb-6'>
         <CardActions>
-          {/* Enable multiple selection, enable checkbox effect, and allow root node selection */}
-          <MultipleAnimationSelect
-            nodes={treeData}
-            labelBy='extName'
-            multiSelect
-            checkboxSelection
-            value={values}
-            onSelectedItemsClick={items => setValues(items)}
-            rootNodeSelectable
-          />
-          {/* Disable multi-select and checkbox, and prohibit root node selection */}
-          <MultipleAnimationSelect
-            nodes={treeData}
-            labelBy='extName'
-            value={signValues}
-            onSelectedItemsClick={items => setSignValues(items)}
-          />
-          <Button size='medium' variant='contained'>
-            Learn More
-          </Button>
+          <Grid container spacing={6} sx={{ width: '100%' }}>
+            <Grid size={{ xs: 4, sm: 2 }}>
+              {/* Enable multiple selection, enable checkbox effect, and allow root node selection */}
+              <MultipleAnimationSelect
+                nodes={treeData}
+                labelBy='extName'
+                multiSelect
+                checkboxSelection
+                value={values}
+                onSelectedItemsClick={items => setValues(items)}
+                rootNodeSelectable
+              />
+            </Grid>
+            <Grid size={{ xs: 4, sm: 2 }}>
+              {/* Disable multi-select and checkbox, and prohibit root node selection */}
+              <MultipleAnimationSelect
+                nodes={treeData}
+                labelBy='extName'
+                value={signValues}
+                onSelectedItemsClick={items => setSignValues(items)}
+              />
+            </Grid>
+            <Grid size={{ xs: 4, sm: 2 }}>
+              <SimpleSelect
+                defaultValue={{ label: 'Please select payment status', value: 0 }}
+                items={selectables}
+                label='paid status'
+                value={payStatus}
+                onChange={(v): void => setPayStatus(v as number)}
+              />
+            </Grid>
+            <Grid container spacing={3} alignContent='flex-end'>
+              <Button size='medium' variant='contained' startIcon={<i className='tabler-search' />}>
+                Search
+              </Button>
+              <Button size='medium' variant='contained' startIcon={<i className='tabler-refresh' />}>
+                Reset
+              </Button>
+            </Grid>
+          </Grid>
         </CardActions>
       </Card>
       {/** Table List */}
