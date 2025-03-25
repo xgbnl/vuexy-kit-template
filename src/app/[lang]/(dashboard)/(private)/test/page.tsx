@@ -13,8 +13,8 @@ import Grid from '@mui/material/Grid2'
 // Components Imports
 import EnhancedTable from '@/views/apps/list'
 import type { Entity, HeadCell } from '@/views/apps/list/types'
-import MultipleAnimationSelect from '@/components/form/tree-select'
-import type { Node } from '@/components/form/tree-select/types'
+import Cascader from '@/views/apps/cascader'
+import type { Node } from '@/views/apps/cascader/types'
 import SimpleSelect, { type Selectable } from '@/views/apps/select/SimpleSelect'
 
 interface User extends Entity {
@@ -121,7 +121,7 @@ export default function Page(): ReactNode {
           <Grid container spacing={6} sx={{ width: '100%' }}>
             <Grid size={{ xs: 4, sm: 2 }}>
               {/* Enable multiple selection, enable checkbox effect, and allow root node selection */}
-              <MultipleAnimationSelect
+              <Cascader
                 nodes={treeData}
                 labelBy='extName'
                 multiSelect
@@ -133,7 +133,7 @@ export default function Page(): ReactNode {
             </Grid>
             <Grid size={{ xs: 4, sm: 2 }}>
               {/* Disable multi-select and checkbox, and prohibit root node selection */}
-              <MultipleAnimationSelect
+              <Cascader
                 nodes={treeData}
                 labelBy='extName'
                 value={signValues}

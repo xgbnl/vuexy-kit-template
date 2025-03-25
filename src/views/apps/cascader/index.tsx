@@ -23,12 +23,13 @@ type Cacheable = Map<number, Node>
 
 type Selectable = undefined | boolean
 
-interface Props extends Omit<MultiTreeProps, 'onSelectedItemsChange' | 'selectedItems'>, Pick<InputBaseProps, 'size'> {
+type Props = {
   inputLabel?: string
   onSelectedItemsClick: (items: string[]) => void
   value: string[]
   rootNodeSelectable?: Selectable
-}
+} & Omit<MultiTreeProps, 'onSelectedItemsChange' | 'selectedItems'> &
+  Pick<InputBaseProps, 'size'>
 
 // Store node information to map and cache it using useMemo.
 const storeCache = (nodes: Nodes, map: Cacheable = new Map()): Cacheable => {
@@ -58,7 +59,7 @@ const shouldAddItem = (selectable: Selectable, cacheable: Cacheable, id: string)
   return true
 }
 
-export default function MultipleAnimationSelect(props: Props) {
+export default function Cascader(props: Props) {
   const {
     nodes,
     labelBy,
