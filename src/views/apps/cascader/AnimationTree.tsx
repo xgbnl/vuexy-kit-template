@@ -17,7 +17,7 @@ import { useSpring, animated } from '@react-spring/web'
 import { uuid } from '@/utils/uuid'
 
 // Type Imports
-import type { MultiTreeProps, Node, Nodes } from './types'
+import type { TreeViewProps, Option, Options, FieldName } from './types'
 
 function TransitionComponent(props: TransitionProps) {
   const style = useSpring({
@@ -38,21 +38,25 @@ const CustomTreeItem = forwardRef((props: TreeItemProps, ref: Ref<HTMLLIElement>
   <TreeItem {...props} slots={{ groupTransition: TransitionComponent, ...props.slots }} ref={ref} />
 ))
 
-const presenter = (items: Nodes, labelBy: string): ReactNode => {
-  return items.map(
-    (tree: Node): ReactNode => (
-      <CustomTreeItem itemId={`${tree.id}`} key={`grid-community-${uuid()}`} label={tree[labelBy]}>
-        {tree.children ? presenter(tree.children, labelBy) : null}
+const presenter = (options: Options, fieldNames?: FieldName): ReactNode => {
+  return options.map((option: Option): ReactNode => {
+    // Var
+    const value = fieldNames?.value ? option[fieldNames.value as keyof Option] : option.value
+    const label = (fieldNames?.label ? option[fieldNames.label as keyof Option] : option.label) as string
+
+    return (
+      <CustomTreeItem itemId={`${value}`} key={`grid-community-${value}`} label={label}>
+        {option.children ? presenter(option.children, fieldNames) : null}
       </CustomTreeItem>
     )
-  )
+  })
 }
 
-export default function AnimationTree(props: MultiTreeProps) {
-  const { nodes, labelBy, onSelectedItemsChange, selectedItems, multiSelect, checkboxSelection } = props
+export default function AnimationTree(props: TreeViewProps) {
+  const { options, onSelectedItemsChange, selectedItems, multiSelect, checkboxSelection, fieldNames } = props
 
   // States
-  const nodeView = useMemo(() => presenter(nodes, labelBy), [nodes, labelBy])
+  const nodeView = useMemo(() => presenter(options, fieldNames), [options, fieldNames])
 
   return (
     <SimpleTreeView

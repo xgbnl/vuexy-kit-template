@@ -1,17 +1,28 @@
 // MUI Imports
 import type { UseTreeViewSelectionParameters } from '@mui/x-tree-view/internals'
 
-export type Nodes = Node[] | readonly Node[]
+export type Options = Option[] | readonly Option[]
 
-export interface Node {
-  id: number
-  children: Nodes
-  deep: number
-  [key: string]: any
+export type Option = {
+  value: number | string
+  children?: Options
+  label?: string
+  isLeaf?: boolean
+  disabled?: boolean
 }
 
-export type MultiTreeProps = {
-  nodes: Nodes
-  labelBy: string
+export type FieldName = {
+  label?: string
+  value?: string
+  children?: string
+}
+
+export type FieldNames = {
+  fieldNames?: FieldName
+}
+
+export type TreeViewProps = {
+  options: Options
 } & Required<Pick<UseTreeViewSelectionParameters<any>, 'onSelectedItemsChange' | 'selectedItems'>> &
-  Pick<UseTreeViewSelectionParameters<any>, 'multiSelect' | 'checkboxSelection'>
+  Pick<UseTreeViewSelectionParameters<any>, 'multiSelect' | 'checkboxSelection'> &
+  FieldNames

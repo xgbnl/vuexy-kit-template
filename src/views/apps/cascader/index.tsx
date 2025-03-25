@@ -17,9 +17,9 @@ import type { InputBaseProps } from '@mui/material'
 import AnimationTree from './AnimationTree'
 
 // Type Imports
-import type { MultiTreeProps, Nodes, Node } from './types'
+import type { TreeViewProps, Options, Option, FieldNames, FieldName } from './types'
 
-type Cacheable = Map<number, Node>
+type Cacheable = Map<string, Option>
 
 type Selectable = undefined | boolean
 
@@ -28,16 +28,20 @@ type Props = {
   onSelectedItemsClick: (items: string[]) => void
   value: string[]
   rootNodeSelectable?: Selectable
-} & Omit<MultiTreeProps, 'onSelectedItemsChange' | 'selectedItems'> &
-  Pick<InputBaseProps, 'size'>
+} & Omit<TreeViewProps, 'onSelectedItemsChange' | 'selectedItems'> &
+  Pick<InputBaseProps, 'size'> &
+  FieldNames
 
 // Store node information to map and cache it using useMemo.
-const storeCache = (nodes: Nodes, map: Cacheable = new Map()): Cacheable => {
-  for (const node of nodes) {
-    map.set(node.id, node)
+const storeCache = (options: Options, map: Cacheable = new Map(), fieldNames?: FieldName): Cacheable => {
+  for (const option of options) {
+    const value = (fieldNames?.value ? option[fieldNames.value as keyof Option] : option.value) as string
 
-    if (node.children.length > 0) {
-      storeCache(node.children, map)
+    map.set(value, option)
+
+    const children = fieldNames?.children ? option[fieldNames.children as keyof Option] : option.children as Options
+    if (children.length > 0) {
+      storeCache(children, map)
     }
   }
 
@@ -61,8 +65,8 @@ const shouldAddItem = (selectable: Selectable, cacheable: Cacheable, id: string)
 
 export default function Cascader(props: Props) {
   const {
-    nodes,
-    labelBy,
+    options: nodes,
+    fieldNames,
     inputLabel,
     multiSelect,
     checkboxSelection,
@@ -73,7 +77,7 @@ export default function Cascader(props: Props) {
   } = props
 
   // States
-  const cache = useMemo((): Map<number, Node> => storeCache(nodes), [nodes])
+  const cache = useMemo((): Map<number, Option> => storeCache(nodes), [nodes])
 
   // Hooks
   const handelSelectedItemsChange = (event: SyntheticEvent, items: string[] | string | null) => {
@@ -92,7 +96,7 @@ export default function Cascader(props: Props) {
 
   const renderValue = (selected: string[]): ReactNode => {
     if (multiSelect === undefined || !multiSelect) {
-      const node = cache.get(Number(selected.at(0))) as Node
+      const node = cache.get(Number(selected.at(0))) as Option
 
       return node[labelBy]
     }
@@ -100,7 +104,7 @@ export default function Cascader(props: Props) {
     return (
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
         {selected.map(value => {
-          const node = cache.get(Number(value)) as Node
+          const node = cache.get(Number(value)) as Option
 
           return <Chip key={value} label={node[labelBy]} />
         })}
@@ -124,7 +128,7 @@ export default function Cascader(props: Props) {
           <AnimationTree
             multiSelect={multiSelect}
             checkboxSelection={checkboxSelection}
-            nodes={nodes}
+            options={nodes}
             labelBy={labelBy}
             onSelectedItemsChange={handelSelectedItemsChange}
             selectedItems={value}

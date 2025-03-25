@@ -14,7 +14,7 @@ import Grid from '@mui/material/Grid2'
 import EnhancedTable from '@/views/apps/list'
 import type { Entity, HeadCell } from '@/views/apps/list/types'
 import Cascader from '@/views/apps/cascader'
-import type { Node } from '@/views/apps/cascader/types'
+import type { Option } from '@/views/apps/cascader/types'
 import SimpleSelect, { type Selectable } from '@/views/apps/select/SimpleSelect'
 
 interface User extends Entity {
@@ -55,7 +55,7 @@ const headCells: HeadCell<User>[] = [
   { disablePadding: false, id: 'updatedAt', label: 'UpdatedAt', numeric: false }
 ]
 
-const treeData: readonly Node[] = [
+const treeData: readonly Option[] = [
   {
     id: 1,
     extName: 'Front',
@@ -122,7 +122,7 @@ export default function Page(): ReactNode {
             <Grid size={{ xs: 4, sm: 2 }}>
               {/* Enable multiple selection, enable checkbox effect, and allow root node selection */}
               <Cascader
-                nodes={treeData}
+                options={treeData}
                 labelBy='extName'
                 multiSelect
                 checkboxSelection
@@ -134,7 +134,7 @@ export default function Page(): ReactNode {
             <Grid size={{ xs: 4, sm: 2 }}>
               {/* Disable multi-select and checkbox, and prohibit root node selection */}
               <Cascader
-                nodes={treeData}
+                options={treeData}
                 labelBy='extName'
                 value={signValues}
                 onSelectedItemsClick={items => setSignValues(items)}
