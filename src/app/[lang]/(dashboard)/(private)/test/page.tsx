@@ -11,8 +11,8 @@ import Avatar from '@mui/material/Avatar'
 import Grid from '@mui/material/Grid2'
 
 // Components Imports
-import EnhancedTable from '@/components/table'
-import type { Entity, HeadCell } from '@/components/table/types'
+import EnhancedTable from '@/views/apps/list'
+import type { Entity, HeadCell } from '@/views/apps/list/types'
 import MultipleAnimationSelect from '@/components/form/tree-select'
 import type { Node } from '@/components/form/tree-select/types'
 import SimpleSelect, { type Selectable } from '@/components/form/simple-select/SimpleSelect'
