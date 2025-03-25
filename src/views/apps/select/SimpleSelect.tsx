@@ -5,7 +5,7 @@ import { type ReactNode } from 'react'
 
 // MUI Imports
 import MenuItem from '@mui/material/MenuItem'
-import type { BaseSelectProps } from '@mui/material'
+import type { BaseSelectProps, BaseTextFieldProps } from '@mui/material'
 
 // Components Imports
 import CustomTextField from '@core/components/mui/TextField'
@@ -24,15 +24,16 @@ type Props = {
   label: string
   defaultValue: Selectable
   onChange: (value: Value) => void
-} & Pick<BaseSelectProps, 'multiple'>
+} & Pick<BaseSelectProps, 'multiple'> &
+  Pick<BaseTextFieldProps, 'id'>
 
-const SimpleSelect = ({ items, value, label, onChange, defaultValue, multiple }: Props) => {
+const SimpleSelect = ({ items, value, label, onChange, defaultValue, multiple, id }: Props) => {
   return (
     <CustomTextField
       select
       fullWidth
       label={label}
-      id='custom-select'
+      id={id}
       defaultValue={defaultValue.value}
       value={value}
       onChange={(event): void => onChange(event.target.value as any)}
