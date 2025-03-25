@@ -15,7 +15,7 @@ import EnhancedTable from '@/views/apps/list'
 import type { Entity, HeadCell } from '@/views/apps/list/types'
 import MultipleAnimationSelect from '@/components/form/tree-select'
 import type { Node } from '@/components/form/tree-select/types'
-import SimpleSelect, { type Selectable } from '@/components/form/simple-select/SimpleSelect'
+import SimpleSelect, { type Selectable } from '@/views/apps/select/SimpleSelect'
 
 interface User extends Entity {
   name: string

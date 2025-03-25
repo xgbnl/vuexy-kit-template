@@ -5,11 +5,12 @@ import { type ReactNode } from 'react'
 
 // MUI Imports
 import MenuItem from '@mui/material/MenuItem'
+import type { BaseSelectProps } from '@mui/material'
 
 // Components Imports
 import CustomTextField from '@core/components/mui/TextField'
 
-export interface Selectable {
+export type Selectable = {
   label: string
   value: Value
   disabled?: boolean
@@ -17,15 +18,15 @@ export interface Selectable {
 
 export type Value = number | string
 
-interface Props {
+type Props = {
   items: Selectable[]
   value: Value
   label: string
   defaultValue: Selectable
   onChange: (value: Value) => void
-}
+} & Pick<BaseSelectProps, 'multiple'>
 
-const SimpleSelect = ({ items, value, label, onChange, defaultValue }: Props) => {
+const SimpleSelect = ({ items, value, label, onChange, defaultValue, multiple }: Props) => {
   return (
     <CustomTextField
       select
@@ -38,7 +39,7 @@ const SimpleSelect = ({ items, value, label, onChange, defaultValue }: Props) =>
       slotProps={{
         select: {
           displayEmpty: true,
-          multiple: false
+          multiple: multiple
         }
       }}
     >
