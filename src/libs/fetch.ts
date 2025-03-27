@@ -11,13 +11,10 @@ import { toast } from 'react-toastify'
 import { getSession } from 'next-auth/react'
 import type { Session } from 'next-auth'
 
-// Libs Imports
-import { auth } from '@/libs/auth'
-
 // Utils Imports
-import { ensurePrefix } from '@utils/string'
 import { isPlainObject } from '@utils/isPlainObject'
 import { getLocale } from '@utils/getLocale'
+import { getAppUrl } from '@/utils/getAppUrl'
 
 // Hooks Imports
 import type { Locale } from '@/configs/i18n'
@@ -34,7 +31,7 @@ interface RequestParams {
   body: Record<string, unknown>
 }
 
-export interface Responder<T> {
+export interface JsonResponse<T> {
   msg: string
   code: number
   data: T
@@ -46,8 +43,8 @@ type HttpResponse<T> = T extends string
     ? Blob
     : T extends ArrayBuffer
       ? ArrayBuffer
-      : T extends Responder<infer U>
-        ? Responder<U>
+      : T extends JsonResponse<infer U>
+        ? JsonResponse<U>
         : never
 
 type Resource = 'json' | 'blob' | 'text' | 'buffer'
@@ -113,13 +110,9 @@ async function httpClient<T>(options: HttpRequestOption): Promise<HttpResponse<T
           return response.arrayBuffer() as Promise<HttpResponse<T>>
       }
 
-      return handelJsonResponse<T>(response) as Promise<HttpResponse<T>>
+      return rederable<T>(response) as Promise<HttpResponse<T>>
     })
     .catch(err => {
-      if (isNextEnv()) {
-        return Promise.reject(err.message || err)
-      }
-
       toast.error<string>(err.message)
     })
     .finally(() => {
@@ -144,7 +137,7 @@ const buildUrl = (option: Pick<HttpRequestOption, 'params' | 'url' | 'pathVariab
     }, url)
   }
 
-  return process.env.NEXT_PUBLIC_API_URL + ensurePrefix(url, '/')
+  return getAppUrl(url)
 }
 
 const prepareHeaders = async (
@@ -167,7 +160,7 @@ const prepareHeaders = async (
     }
   }
 
-  const session: Session | null = isNextEnv() ? await auth() : await getSession()
+  const session: Session | null = await getSession()
 
   if (session?.user?.passport) {
     headers['Authorization'] = 'Bearer ' + session.user.passport
@@ -176,14 +169,10 @@ const prepareHeaders = async (
   return Promise.resolve(Object.assign(headers, header))
 }
 
-const handelJsonResponse = async <T>(promise: Response): Promise<Responder<T> | Error> => {
-  const response: Responder<T> = await promise.json()
+async function rederable<T>(promise: Response): Promise<JsonResponse<T> | Error> {
+  const response: JsonResponse<T> = await promise.json()
 
   if ([400, 401, 403, 404, 419, 422, 500].includes(response.code)) {
-    if (isNextEnv()) {
-      return response
-    }
-
     if (response.code !== 401) {
       const locale: Locale = getLocale() as Locale
 
@@ -197,11 +186,6 @@ const handelJsonResponse = async <T>(promise: Response): Promise<Responder<T> | 
   }
 
   return response
-}
-
-// Determine that the current environment is the Next server
-const isNextEnv = (): boolean => {
-  return typeof window === 'undefined'
 }
 
 export const get = <T>(

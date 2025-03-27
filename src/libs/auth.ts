@@ -7,8 +7,11 @@ import type { NextAuthConfig, User } from 'next-auth'
 import { CredentialsSignin } from 'next-auth'
 import NextAuth from 'next-auth'
 
+// Utils Imports
+import { getAppUrl } from '@/utils/getAppUrl'
+
 // Libs Imports
-import { post, type Responder } from '@/libs/fetch'
+import type { JsonResponse } from '@/libs/fetch'
 
 class InvalidLoginError extends CredentialsSignin {
   code: string
@@ -38,22 +41,31 @@ const nextConfig: NextAuthConfig = {
       authorize: async (
         credentials: Partial<Record<'username' | 'password' | 'redirect' | 'callbackUrl' | 'csrfToken', unknown>>
       ): Promise<User | null | never> => {
-        let res: Responder<Model>
+        const promise: Response = await fetch(getAppUrl(String(process.env.NEXT_API_AUTH)), {
+          body: JSON.stringify({ username: credentials.username, password: credentials.password }),
+          mode: 'cors',
+          cache: 'no-cache',
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json;charset=UTF-8'
+          }
+        })
 
-        try {
-          res = await post<Model>('/auth', { body: { username: credentials.username, password: credentials.password } })
-        } catch (error) {
-          throw new InvalidLoginError(JSON.stringify({ code: 500, msg: 'Unable to connect to server:' + error }))
+        if (promise.status !== 200 && !promise.ok) {
+          throw new InvalidLoginError(JSON.stringify({ code: 500, msg: 'Unable to connect to server' }))
         }
 
-        if ([422, 500, 403].includes(res.code)) {
-          throw new InvalidLoginError(JSON.stringify({ code: res.code, msg: res.msg }))
+        const response: JsonResponse<Model> = await promise.json()
+
+        if ([422, 500, 403].includes(response.code)) {
+          throw new InvalidLoginError(JSON.stringify({ code: response.code, msg: response.msg }))
         }
 
         return {
-          name: res.data.name,
-          image: res.data.avatar,
-          passport: res.data.passport
+          name: response.data.name,
+          image: response.data.avatar,
+          passport: response.data.passport
         }
       }
     }),
