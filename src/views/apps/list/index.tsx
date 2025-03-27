@@ -14,7 +14,7 @@ import TableBody from '@mui/material/TableBody'
 import Pagination from '@mui/material/Pagination'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 
 // Components Imports
 import EnhancedTableToolbar from './EnhancedTableToolbar'

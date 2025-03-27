@@ -1,14 +1,14 @@
 'use client'
 
 // React Imports
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 
 // MUI Imports
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import Avatar from '@mui/material/Avatar'
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 
 // Components Imports
 import EnhancedTable from '@/views/apps/list'
@@ -16,6 +16,7 @@ import type { Entity, HeadCell } from '@/views/apps/list/types'
 import Cascader from '@/views/apps/cascader'
 import type { Option } from '@/views/apps/cascader/types'
 import SimpleSelect, { type Selectable } from '@/views/apps/select/SimpleSelect'
+import { get, type Responder } from '@/libs/next-fetch/fetch'
 
 interface User extends Entity {
   name: string
@@ -57,45 +58,45 @@ const headCells: HeadCell<User>[] = [
 
 const treeData: readonly Option[] = [
   {
-    id: 1,
+    value: 1,
     extName: 'Front',
-    deep: 1,
+    isLeaf: false,
     children: [
       {
-        id: 3,
-        deep: 2,
+        value: 3,
+        isLeaf: true,
         extName: 'JavaScript',
         children: []
       },
       {
-        id: 4,
-        deep: 2,
+        value: 4,
+        isLeaf: true,
         extName: 'TypeScript',
         children: []
       }
     ]
   },
   {
-    id: 2,
-    extName: 'Backd',
-    deep: 1,
+    value: 2,
+    extName: 'Backed',
+    isLeaf: false,
     children: [
       {
-        id: 5,
-        extName: 'Java',
-        deep: 2,
-        children: []
-      },
-      {
-        id: 6,
+        value: 5,
+        isLeaf: true,
         extName: 'PHP',
-        deep: 2,
         children: []
       },
       {
-        id: 7,
-        extName: 'Node.js',
-        deep: 2,
+        value: 6,
+        isLeaf: true,
+        extName: 'JAVA',
+        children: []
+      },
+      {
+        value: 7,
+        isLeaf: true,
+        extName: 'Golang',
         children: []
       }
     ]
@@ -113,6 +114,16 @@ export default function Page(): ReactNode {
   const [signValues, setSignValues] = useState<string[]>([])
   const [payStatus, setPayStatus] = useState<number>(0)
 
+  const [options, setOptions] = useState<Option[]>([])
+
+  useEffect(() => {
+    get<Responder<Option[]>>('regions', { params: { deep: 2 } }).then(res => {
+      if (res && res.code === 200) {
+        setOptions(res.data)
+      }
+    })
+  }, [])
+
   return (
     <>
       {/** Table filter Card */}
@@ -122,8 +133,11 @@ export default function Page(): ReactNode {
             <Grid size={{ xs: 4, sm: 2 }}>
               {/* Enable multiple selection, enable checkbox effect, and allow root node selection */}
               <Cascader
-                options={treeData}
-                labelBy='extName'
+                options={options}
+                aliasble={{
+                  label: 'name',
+                  value: 'id'
+                }}
                 multiSelect
                 checkboxSelection
                 value={values}
@@ -135,7 +149,9 @@ export default function Page(): ReactNode {
               {/* Disable multi-select and checkbox, and prohibit root node selection */}
               <Cascader
                 options={treeData}
-                labelBy='extName'
+                aliasble={{
+                  label: 'extName'
+                }}
                 value={signValues}
                 onSelectedItemsClick={items => setSignValues(items)}
               />
