@@ -48,6 +48,7 @@ import { useSettings } from '@core/hooks/useSettings'
 
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
+import { type JsonResponse, HttpStatus } from '@/libs/fetch'
 
 // Styled Custom Components
 const LoginIllustration = styled('img')(({ theme }) => ({
@@ -151,17 +152,15 @@ const Login = ({ mode }: { mode: SystemMode }) => {
       router.replace(getLocalizedUrl(redirectURL, locale as Locale))
     } else {
       if (res?.error) {
-        const throwable: { code: number; msg: string } = JSON.parse(res.code as string)
+        const throwable: Omit<JsonResponse<any>, 'data'> = JSON.parse(res.code as string)
 
-        if (throwable.code === 500) {
+        if (HttpStatus.includes(throwable.code)) {
           toast.error<string>(throwable.msg)
+        } else {
+          const error = JSON.parse(res.error)
 
-          return
+          setErrorState(error)
         }
-
-        const error = JSON.parse(res.error)
-
-        setErrorState(error)
       }
     }
   }

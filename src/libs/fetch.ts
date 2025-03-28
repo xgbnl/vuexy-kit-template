@@ -20,16 +20,25 @@ import { getAppUrl } from '@/utils/getAppUrl'
 import type { Locale } from '@/configs/i18n'
 
 // Interfaces
-interface PathVariables {
+type PathVariables = {
   key: string
   value: string | number
 }
 
-interface RequestParams {
+type RequestParams = {
   pathVariables: PathVariables[]
   params: Record<string, string | number>
   body: Record<string, unknown>
 }
+
+type Resource = 'json' | 'blob' | 'text' | 'buffer'
+
+type HttpRequestOption = {
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  headers?: Record<string, string>
+  url: string
+  resource: Resource
+} & Partial<RequestParams>
 
 export interface JsonResponse<T> {
   msg: string
@@ -37,7 +46,7 @@ export interface JsonResponse<T> {
   data: T
 }
 
-type HttpResponse<T> = T extends string
+export type HttpResponse<T> = T extends string
   ? string
   : T extends Blob
     ? Blob
@@ -47,14 +56,7 @@ type HttpResponse<T> = T extends string
         ? JsonResponse<U>
         : never
 
-type Resource = 'json' | 'blob' | 'text' | 'buffer'
-
-interface HttpRequestOption extends Partial<RequestParams> {
-  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  headers?: Record<string, string>
-  url: string
-  resource: Resource
-}
+export const HttpStatus: number[] = [400, 401, 403, 404, 419, 422, 500]
 
 // Controllers
 const pendingRequests: Record<string, null | AbortController> = {}
@@ -172,7 +174,7 @@ const prepareHeaders = async (
 async function rederable<T>(promise: Response): Promise<JsonResponse<T> | Error> {
   const response: JsonResponse<T> = await promise.json()
 
-  if ([400, 401, 403, 404, 419, 422, 500].includes(response.code)) {
+  if (HttpStatus.includes(response.code)) {
     if (response.code !== 401) {
       const locale: Locale = getLocale() as Locale
 

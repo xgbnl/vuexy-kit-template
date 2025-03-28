@@ -12,14 +12,7 @@ import { getAppUrl } from '@/utils/getAppUrl'
 
 // Libs Imports
 import type { JsonResponse } from '@/libs/fetch'
-
-class InvalidLoginError extends CredentialsSignin {
-  code: string
-  constructor(message: string) {
-    super()
-    this.code = message
-  }
-}
+import { HttpStatus } from '@/libs/fetch'
 
 interface Model {
   name: string
@@ -35,31 +28,41 @@ const nextConfig: NextAuthConfig = {
   providers: [
     Credentials({
       credentials: {
-        username: { label: '用户名', type: 'text' },
+        email: { label: '邮箱', type: 'text' },
         password: { label: '密码', type: 'password' }
       },
       authorize: async (
-        credentials: Partial<Record<'username' | 'password' | 'redirect' | 'callbackUrl' | 'csrfToken', unknown>>
+        credentials: Partial<Record<'email' | 'password' | 'redirect' | 'callbackUrl' | 'csrfToken', unknown>>
       ): Promise<User | null | never> => {
-        const promise: Response = await fetch(getAppUrl(String(process.env.NEXT_API_AUTH)), {
-          body: JSON.stringify({ username: credentials.username, password: credentials.password }),
-          mode: 'cors',
-          cache: 'no-cache',
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json;charset=UTF-8'
-          }
-        })
+        const { email, password } = credentials
+
+        let promise: Response
+
+        try {
+          promise = await fetch(getAppUrl(String(process.env.NEXT_API_AUTH)), {
+            body: JSON.stringify({ email, password }),
+            mode: 'cors',
+            cache: 'no-cache',
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json;charset=UTF-8'
+            }
+          })
+        } catch (e) {
+          const error = e instanceof TypeError ? e.message : (e as string)
+
+          failed(`[${error}] Please check whether the server is running normally`)
+        }
 
         if (promise.status !== 200 && !promise.ok) {
-          throw new InvalidLoginError(JSON.stringify({ code: 500, msg: 'Unable to connect to server' }))
+          failed('Unable to connect to server')
         }
 
         const response: JsonResponse<Model> = await promise.json()
 
-        if ([422, 500, 403].includes(response.code)) {
-          throw new InvalidLoginError(JSON.stringify({ code: response.code, msg: response.msg }))
+        if (HttpStatus.includes(response.code)) {
+          failed(response.msg, response.code)
         }
 
         return {
@@ -132,6 +135,18 @@ const nextConfig: NextAuthConfig = {
       return session
     }
   }
+}
+
+class InvalidLoginError extends CredentialsSignin {
+  code: string
+  constructor(message: string) {
+    super()
+    this.code = message
+  }
+}
+
+function failed(msg: string, code: number = 500): never {
+  throw new InvalidLoginError(JSON.stringify({ code, msg }))
 }
 
 export const { auth, handlers } = NextAuth(nextConfig)
