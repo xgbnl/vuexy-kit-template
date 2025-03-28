@@ -87,7 +87,7 @@ async function httpClient<T>(options: HttpRequestOption): Promise<HttpResponse<T
   } & Pick<HttpRequestOption, 'method' | 'headers' | 'url'> = {
     signal: controller ? controller.signal : null,
     method: options.method,
-    headers: await prepareHeaders(options),
+    headers: await bearerHeader(options),
     mode: 'cors',
     cache: 'no-cache',
     url: buildUrl(options)
@@ -122,7 +122,7 @@ async function httpClient<T>(options: HttpRequestOption): Promise<HttpResponse<T
     }) as Promise<HttpResponse<T>>
 }
 
-const buildUrl = (option: Pick<HttpRequestOption, 'params' | 'url' | 'pathVariables'>): string => {
+function buildUrl(option: Pick<HttpRequestOption, 'params' | 'url' | 'pathVariables'>): string {
   const { url: path, pathVariables, params } = option
 
   let url: string = path
@@ -142,9 +142,9 @@ const buildUrl = (option: Pick<HttpRequestOption, 'params' | 'url' | 'pathVariab
   return getAppUrl(url)
 }
 
-const prepareHeaders = async (
+async function bearerHeader(
   option: Pick<HttpRequestOption, 'headers' | 'body' | 'method'>
-): Promise<Record<string, string>> => {
+): Promise<Record<string, string>> {
   const { headers: header, body, method } = option
 
   const headers: Record<string, string> = {
