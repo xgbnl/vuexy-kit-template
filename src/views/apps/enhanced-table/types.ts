@@ -7,6 +7,13 @@ export interface Entity {
   id: number | string
 }
 
+export type EnhancedTableSlotProp<T> = {
+  slotProps?: {
+    root?: () => ReactNode
+    actions?: (rows: T[]) => ReactNode
+  }
+}
+
 export interface HeadCell<T> {
   disablePadding: boolean
   id: keyof T
@@ -16,9 +23,7 @@ export interface HeadCell<T> {
   action?: (row: T) => ReactNode
 }
 
-export type SlotProp<T> = {
-  slotProps?: {
-    root?: () => ReactNode
-    actions?: (rows: T[]) => ReactNode
-  }
+export type EnhancedTableRowProps<T> = {
+  row: T
+  columns: HeadCell<T>[]
 }

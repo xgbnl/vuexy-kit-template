@@ -1,3 +1,5 @@
+'use client'
+
 // React Imports
 import type { MouseEvent, ChangeEvent, ReactNode } from 'react'
 
@@ -11,10 +13,7 @@ import TableSortLabel from '@mui/material/TableSortLabel'
 import { visuallyHidden } from '@mui/utils'
 
 // Type Imports
-import type { Order, Entity, HeadCell } from './types'
-
-// Utils Imports
-import { uuid } from '@/utils/uuid'
+import type { Order, Entity, HeadCell } from '../types'
 
 interface EnhancedTableProps<T extends Entity> {
   numSelected: number
@@ -28,7 +27,7 @@ interface EnhancedTableProps<T extends Entity> {
 }
 
 export default function EnhancedTableHead<T extends Entity>(props: EnhancedTableProps<T>): ReactNode {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells, chosen: selected } = props
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells, chosen } = props
 
   const createSortHandler = (property: keyof T) => (event: MouseEvent<unknown>) => {
     onRequestSort(event, property)
@@ -37,22 +36,19 @@ export default function EnhancedTableHead<T extends Entity>(props: EnhancedTable
   return (
     <TableHead>
       <TableRow>
-        {selected && (
+        {chosen && (
           <TableCell padding='checkbox'>
             <Checkbox
               color='primary'
               indeterminate={numSelected > 0 && numSelected < rowCount}
               checked={rowCount > 0 && numSelected === rowCount}
               onChange={onSelectAllClick}
-              inputProps={{
-                'aria-label': 'select all desserts'
-              }}
             />
           </TableCell>
         )}
         {headCells.map((headCell: HeadCell<T>) => (
           <TableCell
-            key={uuid()}
+            key={`mui-tablecell-${headCell.id as string}`}
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}

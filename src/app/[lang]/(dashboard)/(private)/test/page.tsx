@@ -11,12 +11,12 @@ import Avatar from '@mui/material/Avatar'
 import Grid from '@mui/material/Grid'
 
 // Components Imports
-import EnhancedTable from '@/views/apps/list'
-import type { Entity, HeadCell } from '@/views/apps/list/types'
+import EnhancedTableContainer from '@/views/apps/enhanced-table'
+import type { Entity, HeadCell } from '@/views/apps/enhanced-table/types'
 import Cascader from '@/views/apps/cascader'
 import type { Option } from '@/views/apps/cascader/types'
 import SimpleSelect, { type Selectable } from '@/views/apps/select/SimpleSelect'
-import { get, type Responder } from '@/libs/next-fetch/fetch'
+import { Get, type JsonResponse } from '@/libs/fetch'
 
 interface User extends Entity {
   name: string
@@ -117,7 +117,7 @@ export default function Page(): ReactNode {
   const [options, setOptions] = useState<Option[]>([])
 
   useEffect(() => {
-    get<Responder<Option[]>>('regions', { params: { deep: 2 } }).then(res => {
+    Get<JsonResponse<Option[]>>('regions', { params: { deep: 2 } }).then(res => {
       if (res && res.code === 200) {
         setOptions(res.data)
       }
@@ -178,7 +178,7 @@ export default function Page(): ReactNode {
       </Card>
       {/** Table List */}
       {/* Default table for multiple selections to delete */}
-      <EnhancedTable<User>
+      <EnhancedTableContainer<User>
         total={100}
         onPageChange={(page: number, perPage: number): void => {
           console.log(page, perPage)
@@ -192,7 +192,7 @@ export default function Page(): ReactNode {
         }}
       />
       {/** Enable column multi-selection and override side-effect button group */}
-      <EnhancedTable<User>
+      <EnhancedTableContainer<User>
         total={100}
         onPageChange={(page: number, perPage: number): void => {
           console.log(page, perPage)

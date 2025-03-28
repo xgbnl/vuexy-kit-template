@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import type { MouseEvent, ChangeEvent, ReactNode } from 'react'
 
 // MUI Imports
@@ -17,16 +17,13 @@ import TablePagination from '@mui/material/TablePagination'
 import Grid from '@mui/material/Grid'
 
 // Components Imports
-import EnhancedTableToolbar from './EnhancedTableToolbar'
-import EnhancedTableHead from './EnhancedTableHead'
-import SimpleTableCell from './SimpleTableCell'
-import SortTableRow from './SortTableRow'
+import EnhancedTableToolbar from './toolbar'
+import EnhancedTableHead from './head'
+import EnhancedTableSortRow from './row/sort'
+import EnhancedTableSimpleRow from './row/simple'
 
 // Type Imports
-import type { Order, HeadCell, Entity, SlotProp } from './types'
-
-// Utils Imports
-import { uuid } from '@/utils/uuid'
+import type { Order, Entity, EnhancedTableSlotProp, HeadCell } from './types'
 
 function getComparator<T, Key extends keyof T>(order: Order, orderBy: Key): (a: T, b: T) => number {
   return order === 'desc'
@@ -46,18 +43,19 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   return 0
 }
 
-interface Props<T> extends SlotProp<T> {
+type Props<T> = {
   rows: T[]
   sortBy: keyof T // Sort field.
   headCells: HeadCell<T>[] // Column head.
-  multiple?: boolean | false // Enable row multiple selection.
+  multiple?: boolean // Enable row multiple selection.
   onDelete?: (rows: T[]) => void // Enable default delete action.
   onPageChange: (page: number, pageSize: number) => void
   total: number
-}
+  rawKey?: keyof T | ((row: T) => string | number)
+} & EnhancedTableSlotProp<T>
 
-export default function EnhancedTable<T extends Entity>(props: Props<T>) {
-  const { rows, sortBy, headCells, multiple: chosen, onDelete, slotProps, total, onPageChange } = props
+export default function EnhancedTableContainer<T extends Entity>(props: Props<T>) {
+  const { rows, sortBy, headCells, multiple: chosen, onDelete, slotProps, total, onPageChange, rawKey } = props
 
   // States
   const [order, setOrder] = useState<Order>('asc')
@@ -86,22 +84,25 @@ export default function EnhancedTable<T extends Entity>(props: Props<T>) {
     setSelected([])
   }
 
-  const handleClick = (event: MouseEvent<unknown>, row: T) => {
-    const selectedIndex = selected.indexOf(row)
-    let newSelected: T[] = []
+  const handleClick = useCallback(
+    (_event: MouseEvent<unknown>, row: T) => {
+      const selectedIndex = selected.indexOf(row)
+      let newSelected: T[] = []
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, row)
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1))
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1))
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1))
-    }
+      if (selectedIndex === -1) {
+        newSelected = newSelected.concat(selected, row)
+      } else if (selectedIndex === 0) {
+        newSelected = newSelected.concat(selected.slice(1))
+      } else if (selectedIndex === selected.length - 1) {
+        newSelected = newSelected.concat(selected.slice(0, -1))
+      } else if (selectedIndex > 0) {
+        newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1))
+      }
 
-    setSelected(newSelected)
-  }
+      setSelected(newSelected)
+    },
+    [selected]
+  )
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage - 1)
@@ -132,6 +133,40 @@ export default function EnhancedTable<T extends Entity>(props: Props<T>) {
     [order, orderBy, page, rowsPerPage, rows]
   )
 
+  const getReactKey = useCallback(
+    (row: T) => {
+      if (rawKey !== undefined) {
+        return typeof rawKey === 'function' ? rawKey(row) : row[rawKey]
+      }
+
+      return row.id
+    },
+    [rawKey]
+  )
+
+  const render = useCallback(
+    (row: T) => {
+      const reactKey = getReactKey(row)
+
+      if (chosen) {
+        return (
+          <EnhancedTableSortRow<T>
+            key={`mui-enhanced-table-sort-row-${reactKey}`}
+            row={row}
+            selected={selected}
+            columns={headCells}
+            onClick={handleClick}
+          />
+        )
+      }
+
+      return (
+        <EnhancedTableSimpleRow<T> key={`mui-enhanced-table-simple-row-${reactKey}`} row={row} columns={headCells} />
+      )
+    },
+    [chosen, getReactKey, handleClick, headCells, selected]
+  )
+
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 1 }}>
@@ -154,25 +189,7 @@ export default function EnhancedTable<T extends Entity>(props: Props<T>) {
               chosen={chosen as boolean}
             />
             <TableBody>
-              {chosen
-                ? visibleRows.map(
-                    (row: T): ReactNode => (
-                      <SortTableRow<T>
-                        key={uuid()}
-                        row={row}
-                        selected={selected}
-                        columns={headCells}
-                        onClick={handleClick}
-                      />
-                    )
-                  )
-                : visibleRows.map(
-                    (row: T): ReactNode => (
-                      <TableRow hover role='checkbox' tabIndex={-1} key={uuid()} sx={{ cursor: 'pointer' }}>
-                        <SimpleTableCell row={row} columns={headCells} />
-                      </TableRow>
-                    )
-                  )}
+              {visibleRows.map((row: T): ReactNode => render(row))}
               {emptyRows > 0 && (
                 <TableRow
                   style={{
