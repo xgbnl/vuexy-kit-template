@@ -2,5 +2,5 @@
 import { ensurePrefix } from '@/utils/string'
 
 export function getAppUrl(path: string): string {
-  return process.env.NEXT_API_URL + ensurePrefix(path, '/')
+  return process.env.NEXT_PUBLIC_API_URL + ensurePrefix(path, '/')
 }

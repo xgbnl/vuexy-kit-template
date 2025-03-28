@@ -39,7 +39,7 @@ const nextConfig: NextAuthConfig = {
         let promise: Response
 
         try {
-          promise = await fetch(getAppUrl(String(process.env.NEXT_API_AUTH)), {
+          promise = await fetch(getAppUrl(String(process.env.NEXT_PUBLIC_API_AUTH)), {
             body: JSON.stringify({ email, password }),
             mode: 'cors',
             cache: 'no-cache',
