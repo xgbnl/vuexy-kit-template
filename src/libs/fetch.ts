@@ -190,7 +190,7 @@ async function rederable<T>(promise: Response): Promise<JsonResponse<T> | Error>
   return response
 }
 
-export const get = <T>(
+export const Get = <T>(
   url: string,
   params: Partial<RequestParams> = {},
   resource: Resource = 'json'
@@ -205,7 +205,7 @@ export const get = <T>(
   })
 }
 
-export const post = <T>(
+export const Post = <T>(
   url: string,
   params: Pick<RequestParams, 'body'>,
   resource: Resource = 'json'
@@ -218,7 +218,7 @@ export const post = <T>(
   })
 }
 
-export const patch = <T>(
+export const Patch = <T>(
   url: string,
   params: Partial<Omit<RequestParams, 'params'>>,
   resource: Resource = 'json'
@@ -232,7 +232,7 @@ export const patch = <T>(
   })
 }
 
-export const destroy = <T>(
+export const Delete = <T>(
   url: string,
   params: Partial<Pick<RequestParams, 'pathVariables'>>,
   resource: Resource = 'json'
