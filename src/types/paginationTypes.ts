@@ -1,6 +1,6 @@
-export interface Paginator<Model> {
+export type Paginator<T> = {
   total: number
   perPage: number
   currentPage: number
-  list: Model[]
+  list: T[]
 }
