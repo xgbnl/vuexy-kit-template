@@ -40,7 +40,7 @@ type HttpRequestOption = {
   resource: Resource
 } & Partial<RequestParams>
 
-export interface JsonResponse<T> {
+export type JsonResponse<T> = {
   msg: string
   code: number
   data: T
