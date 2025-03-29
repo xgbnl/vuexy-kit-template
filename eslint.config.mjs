@@ -24,7 +24,7 @@ const eslintConfig = [
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
     plugins: {
       'react-hooks': reactHooks,
-      '@next/next': pluginNext,
+      '@next/next': pluginNext
     },
     rules: {
       'react-hooks/rules-of-hooks': 'error',
