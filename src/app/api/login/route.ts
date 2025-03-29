@@ -1,39 +1,53 @@
 // Next Imports
 import { NextResponse } from 'next/server'
 
-import type { UserTable } from './users'
+// Utils Imports
+import { getAppUrl } from '@/utils/getAppUrl'
 
-type ResponseUser = Omit<UserTable, 'password'>
-
-// Mock data for demo purpose
-import { users } from './users'
+// Libs Imports
+import type { JsonResponse } from '@/libs/fetch'
+import type { Authenticatable } from '@/libs/auth/types'
 
 export async function POST(req: Request) {
   // Vars
-  const { email, password } = await req.json()
-  const user = users.find(u => u.email === email && u.password === password)
-  let response: null | ResponseUser = null
+  const credentials = await req.json()
 
-  if (user) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: _, ...filteredUserData } = user
+  let promise: Response
 
-    response = {
-      ...filteredUserData
-    }
-
-    return NextResponse.json(response)
-  } else {
-    // We return 401 status code and error message if user is not found
-    return NextResponse.json(
-      {
-        // We create object here to separate each error message for each field in case of multiple errors
-        message: ['Email or Password is invalid']
-      },
-      {
-        status: 401,
-        statusText: 'Unauthorized Access'
+  try {
+    promise = await fetch(getAppUrl(String(process.env.NEXT_PUBLIC_API_AUTH)), {
+      body: JSON.stringify(credentials),
+      mode: 'cors',
+      cache: 'no-cache',
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8'
       }
-    )
+    })
+  } catch (e) {
+    const error = e instanceof TypeError ? e.message : (e as string)
+
+    return response({
+      code: 500,
+      msg: `[${error}] Please check whether the server is running normally`,
+      data: null
+    })
   }
+
+  if (promise.status !== 200 && !promise.ok) {
+    return response({
+      code: 500,
+      msg: 'Unable to connect to server',
+      data: null
+    })
+  }
+
+  const jsonResponse: JsonResponse<Authenticatable> = await promise.json()
+
+  return response(jsonResponse)
+}
+
+function response<T>(content: JsonResponse<T>) {
+  return NextResponse.json(content)
 }
