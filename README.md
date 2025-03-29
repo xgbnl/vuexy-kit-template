@@ -44,7 +44,13 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 First, Edit the `.env.local` file and add the following content:
 ```dotenv
+# api prefix
 NEXT_API_PREFIX=/api
+
+# Java Or PHP Service api
 NEXT_PUBLIC_API_URL=https://myapi.test${NEXT_API_PREFIX}
+
+# Auth api path
+NEXT_PUBLIC_API_AUTH=/auth
 ```
 Then call the request method in the `libs/fetch.ts` file:
