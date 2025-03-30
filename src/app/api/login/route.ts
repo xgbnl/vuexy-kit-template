@@ -28,7 +28,7 @@ export async function POST(req: Request) {
   } catch (e) {
     const error = e instanceof TypeError ? e.message : (e as string)
 
-    return response({
+    return NextResponse.json({
       code: 500,
       msg: `[${error}] Please check whether the server is running normally`,
       data: null
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
   }
 
   if (promise.status !== 200 && !promise.ok) {
-    return response({
+    return NextResponse.json({
       code: 500,
       msg: 'Unable to connect to server',
       data: null
@@ -45,9 +45,5 @@ export async function POST(req: Request) {
 
   const jsonResponse: JsonResponse<Authenticatable> = await promise.json()
 
-  return response(jsonResponse)
-}
-
-function response<T>(content: JsonResponse<T>) {
-  return NextResponse.json(content)
+  return NextResponse.json(jsonResponse)
 }
