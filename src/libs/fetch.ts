@@ -119,7 +119,7 @@ async function httpClient<T>(options: HttpRequestOption): Promise<HttpResponse<T
 }
 
 function buildUrl(option: Pick<HttpRequestOption, 'params' | 'url' | 'pathVariables'>): string {
-  const { url: path, pathVariables, params } = option
+  const { url: path, params, pathVariables = {} } = option
 
   let url: string = path
 
@@ -130,15 +130,9 @@ function buildUrl(option: Pick<HttpRequestOption, 'params' | 'url' | 'pathVariab
   }
 
   if (isPlainObject(pathVariables)) {
-    url = Object.entries(pathVariables as Params).reduce<string>((haystack, entries): string => {
-      const needle = entries.at(0)
+    const pattern = new RegExp(`:(${Object.keys(pathVariables).join('|')})\\b`, 'g')
 
-      if (haystack.includes(`:${needle}`)) {
-        haystack = haystack.replace(`:${needle}`, String(entries.at(1)))
-      }
-
-      return haystack
-    }, url)
+    url = url.replace(pattern, (_, key) => String(pathVariables[key]))
   }
 
   return getAppUrl(url)
