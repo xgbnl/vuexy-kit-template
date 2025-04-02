@@ -19,15 +19,11 @@ import { getAppUrl } from '@/utils/getAppUrl'
 // Hooks Imports
 import type { Locale } from '@/configs/i18n'
 
-// Interfaces
-type PathVariables = {
-  key: string
-  value: string | number
-}
+type Params = Record<string, string | number>
 
 type RequestParams = {
-  pathVariables: PathVariables[]
-  params: Record<string, string | number>
+  pathVariables: Params
+  params: Params
   body: Record<string, unknown>
 }
 
@@ -133,9 +129,15 @@ function buildUrl(option: Pick<HttpRequestOption, 'params' | 'url' | 'pathVariab
     url += queryString
   }
 
-  if (pathVariables?.length) {
-    url = pathVariables.reduce<string>((accUrl: string, pathVar: PathVariables): string => {
-      return accUrl.replace(':' + pathVar.key, String(pathVar.value))
+  if (isPlainObject(pathVariables)) {
+    url = Object.entries(pathVariables as Params).reduce<string>((haystack, entries): string => {
+      const needle = entries.at(0)
+
+      if (haystack.includes(`:${needle}`)) {
+        haystack = haystack.replace(`:${needle}`, String(entries.at(1)))
+      }
+
+      return haystack
     }, url)
   }
 
