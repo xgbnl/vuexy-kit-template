@@ -6,15 +6,16 @@ import type { MouseEvent, ChangeEvent, ReactNode } from 'react'
 
 // MUI Imports
 import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
+import Divider from '@mui/material/Divider'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
 import Pagination from '@mui/material/Pagination'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import Grid from '@mui/material/Grid'
 
 // Components Imports
 import EnhancedTableToolbar from './toolbar'
@@ -177,6 +178,7 @@ export default function EnhancedTableContainer<T extends Entity>(props: Props<T>
           slotProps={slotProps}
         />
         <TableContainer>
+          <Divider />
           <Table sx={{ minWidth: 750 }} aria-labelledby='tableTitle' size={'medium'}>
             <EnhancedTableHead
               numSelected={selected.length}
@@ -213,7 +215,7 @@ export default function EnhancedTableContainer<T extends Entity>(props: Props<T>
           ActionsComponent={() => (
             <Grid container justifyContent='center' width='100%'>
               <Pagination
-                variant='outlined'
+                variant='tonal'
                 shape='rounded'
                 page={page + 1}
                 onChange={handleChangePage}

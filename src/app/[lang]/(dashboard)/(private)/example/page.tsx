@@ -94,7 +94,7 @@ export default function Page(): ReactNode {
       {/** Table List */}
       {/* Default table for multiple selections to delete */}
       <EnhancedTableContainer<User>
-        total={100}
+        total={2}
         onPageChange={(page: number, perPage: number): void => {
           console.log(page, perPage)
         }}
@@ -108,7 +108,7 @@ export default function Page(): ReactNode {
       />
       {/** Enable column multi-selection and override side-effect button group */}
       <EnhancedTableContainer<User>
-        total={100}
+        total={2}
         onPageChange={(page: number, perPage: number): void => {
           console.log(page, perPage)
         }}
