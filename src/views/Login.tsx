@@ -41,6 +41,7 @@ import CustomTextField from '@core/components/mui/TextField'
 
 // Config Imports
 import themeConfig from '@configs/themeConfig'
+import { type JsonResponse, HttpStatus } from '@/configs/fetch'
 
 // Hook Imports
 import { useImageVariant } from '@core/hooks/useImageVariant'
@@ -48,7 +49,6 @@ import { useSettings } from '@core/hooks/useSettings'
 
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
-import { type JsonResponse, HttpStatus } from '@/libs/fetch'
 
 // Styled Custom Components
 const LoginIllustration = styled('img')(({ theme }) => ({
