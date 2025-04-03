@@ -41,7 +41,7 @@ import CustomTextField from '@core/components/mui/TextField'
 
 // Config Imports
 import themeConfig from '@configs/themeConfig'
-import { type JsonResponse, HttpStatus } from '@/configs/fetch'
+import { type Throwable, HttpStatus } from '@/configs/fetch'
 
 // Hook Imports
 import { useImageVariant } from '@core/hooks/useImageVariant'
@@ -144,15 +144,12 @@ const Login = ({ mode }: { mode: SystemMode }) => {
       // Vars
       const redirectURL = searchParams.get('redirectTo') ?? '/'
 
-      toast.success<string>('登录成功', {
-        position: 'top-center',
-        delay: 1000
-      })
+      toast.success<string>('登录成功')
 
       router.replace(getLocalizedUrl(redirectURL, locale as Locale))
     } else {
       if (res?.error) {
-        const throwable: Omit<JsonResponse<any>, 'data'> = JSON.parse(res.code as string)
+        const throwable: Throwable = JSON.parse(res.code as string)
 
         if (HttpStatus.includes(throwable.code)) {
           toast.error<string>(throwable.msg)
