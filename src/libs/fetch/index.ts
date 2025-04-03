@@ -1,15 +1,21 @@
 // ThirdParty Imports
 import qs from 'qs'
 
-// React Imports
-import { toast } from 'react-toastify'
-
 // Utils Imports
 import { isPlainObject } from '@utils/isPlainObject'
 import { getAppUrl } from '@/utils/getAppUrl'
 
 // Types Improts
-import type { Renderable, Authenticatable, BaseRequestOptions, HttpResponse, Passport } from '@/configs/fetch'
+import {
+  type Renderable,
+  type Authenticatable,
+  type Reportable,
+  type BaseRequestOptions,
+  type HttpResponse,
+  type Passport,
+  type Throwable,
+  ResponseStatus
+} from '@/configs/fetch'
 
 type FetchBaseConfig = {
   signal: AbortSignal | null
@@ -25,8 +31,9 @@ const AbortWhiteList: string[] = []
 
 export async function fetcher<T>(
   options: BaseRequestOptions,
-  renderable: Renderable,
-  authenticatable: Authenticatable
+  render: Renderable,
+  auth: Authenticatable,
+  report: Reportable
 ): Promise<HttpResponse<T>> {
   let controller: AbortController | null = null
 
@@ -45,7 +52,7 @@ export async function fetcher<T>(
   const baseConfig: FetchBaseConfig = {
     signal: controller ? controller.signal : null,
     method: options.method,
-    headers: await makeHeader(options, authenticatable),
+    headers: await makeHeader(options, auth),
     mode: 'cors',
     cache: 'no-cache',
     url: buildUrl(options)
@@ -56,9 +63,12 @@ export async function fetcher<T>(
   }
 
   return fetch(baseConfig.url, baseConfig as RequestInit)
-    .then((response: Response): Promise<HttpResponse<T> | Error> => {
+    .then((response: Response): Promise<HttpResponse<T> | Throwable> => {
       if (!response.ok) {
-        return Promise.reject<Error>(new Error(`HTTP error: ${response.status}`))
+        return Promise.reject<Throwable>({
+          code: response.status,
+          msg: ResponseStatus[response.status] ?? response.statusText
+        })
       }
 
       switch (options.resource) {
@@ -70,12 +80,14 @@ export async function fetcher<T>(
           return response.arrayBuffer() as Promise<HttpResponse<T>>
       }
 
-      return renderable<T>(response) as Promise<HttpResponse<T>>
+      return render<T>(response) as Promise<HttpResponse<T>>
     })
-    .catch(err => {
-      if (err.name !== 'AbortError') {
-        toast.error<string>(err.message)
+    .catch<Error | Throwable>((error: Error | Throwable) => {
+      if (error instanceof Error) {
+        return report({ code: 1000, msg: `[${error.name}]: ${error.message}` })
       }
+
+      return report(error)
     })
     .finally(() => {
       delete pendingRequests[options.url]

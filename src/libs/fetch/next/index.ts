@@ -25,11 +25,13 @@ import type {
   HttpPatchParams,
   HttpDeleteParams,
   Resource,
-  HttpResponse
+  HttpResponse,
+  Reportable,
+  Throwable
 } from '@/configs/fetch'
 
 // Abstract implements
-const NextRenderable: Renderable = async <T>(promise: Response): Promise<JsonResponse<T> | Error> => {
+const render: Renderable = async <T>(promise: Response): Promise<JsonResponse<T> | Error> => {
   const response: JsonResponse<T> = await promise.json()
 
   if (HttpStatus.includes(response.code)) {
@@ -39,10 +41,14 @@ const NextRenderable: Renderable = async <T>(promise: Response): Promise<JsonRes
   return response
 }
 
-const NextAuthorzation: Authenticatable = async (): Promise<Passport | null> => {
+const authorization: Authenticatable = async (): Promise<Passport | null> => {
   const session: Session | null = await auth()
 
   return session?.user?.passport ? { bearerToken: session.user.passport } : null
+}
+
+const report: Reportable = (error: Throwable): Promise<Throwable> => {
+  return Promise.reject(error)
 }
 
 export const Get: HttpGet = <T>(
@@ -59,8 +65,9 @@ export const Get: HttpGet = <T>(
       pathVariables: params.pathVariables,
       body: params.body
     },
-    NextRenderable,
-    NextAuthorzation
+    render,
+    authorization,
+    report
   )
 }
 
@@ -76,8 +83,9 @@ export const Post: HttpPost = <T>(
       method: 'POST',
       body: params.body
     },
-    NextRenderable,
-    NextAuthorzation
+    render,
+    authorization,
+    report
   )
 }
 
@@ -94,8 +102,9 @@ export const Patch: HttpPatch = <T>(
       body: params.body,
       pathVariables: params.pathVariables
     },
-    NextRenderable,
-    NextAuthorzation
+    render,
+    authorization,
+    report
   )
 }
 
@@ -111,7 +120,8 @@ export const Delete: HttpDelete = <T>(
       method: 'DELETE',
       pathVariables: params.pathVariables
     },
-    NextRenderable,
-    NextAuthorzation
+    render,
+    authorization,
+    report
   )
 }

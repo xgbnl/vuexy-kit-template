@@ -22,7 +22,9 @@ import type {
   HttpPatchParams,
   HttpDeleteParams,
   Resource,
-  HttpResponse
+  HttpResponse,
+  Reportable,
+  Throwable
 } from '@/configs/fetch'
 
 // Utils Imports
@@ -31,7 +33,7 @@ import { getLocale } from '@/utils/getLocale'
 // Fetch Imports
 import { fetcher } from '../index'
 
-const ReactRenderable: Renderable = async <T>(promise: Response): Promise<JsonResponse<T> | Error> => {
+const render: Renderable = async <T>(promise: Response): Promise<JsonResponse<T> | Error> => {
   const response: JsonResponse<T> = await promise.json()
 
   if (HttpStatus.includes(response.code)) {
@@ -50,10 +52,18 @@ const ReactRenderable: Renderable = async <T>(promise: Response): Promise<JsonRe
   return response
 }
 
-const ReactAuthorization: Authenticatable = async (): Promise<Passport | null> => {
+const authorization: Authenticatable = async (): Promise<Passport | null> => {
   const session: Session | null = await getSession()
 
   return session?.user?.passport ? { bearerToken: session.user.passport } : null
+}
+
+const report: Reportable = (error: Throwable): Promise<Throwable> => {
+  if (error.code !== 1000) {
+    toast.error<string>(error.msg)
+  }
+
+  return Promise.reject(error)
 }
 
 export const Get: HttpGet = <T>(
@@ -70,8 +80,9 @@ export const Get: HttpGet = <T>(
       pathVariables: params.pathVariables,
       body: params.body
     },
-    ReactRenderable,
-    ReactAuthorization
+    render,
+    authorization,
+    report
   )
 }
 
@@ -87,8 +98,9 @@ export const Post: HttpPost = <T>(
       method: 'POST',
       body: params.body
     },
-    ReactRenderable,
-    ReactAuthorization
+    render,
+    authorization,
+    report
   )
 }
 
@@ -105,8 +117,9 @@ export const Patch: HttpPatch = <T>(
       body: params.body,
       pathVariables: params.pathVariables
     },
-    ReactRenderable,
-    ReactAuthorization
+    render,
+    authorization,
+    report
   )
 }
 
@@ -122,7 +135,8 @@ export const Delete: HttpDelete = <T>(
       method: 'DELETE',
       pathVariables: params.pathVariables
     },
-    ReactRenderable,
-    ReactAuthorization
+    render,
+    authorization,
+    report
   )
 }

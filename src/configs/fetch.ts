@@ -1,5 +1,26 @@
 // Http response status code
-export const HttpStatus: number[] = [400, 401, 403, 404, 419, 422, 500]
+export enum ResponseStatus {
+  BadRequest = 400,
+  Unauthorized = 401,
+  Forbidden = 403,
+  NotFound = 404,
+  PageExpired = 419,
+  Validation = 422,
+  TooManyRequests = 429,
+  ServerError = 500,
+  BadGateway = 502
+}
+
+export const HttpStatus: number[] = [
+  ResponseStatus.BadRequest,
+  ResponseStatus.Unauthorized,
+  ResponseStatus.Forbidden,
+  ResponseStatus.NotFound,
+  ResponseStatus.PageExpired,
+  ResponseStatus.Validation,
+  ResponseStatus.TooManyRequests,
+  ResponseStatus.ServerError
+]
 
 // Response type
 export type Resource = 'json' | 'blob' | 'text' | 'buffer'
@@ -45,25 +66,29 @@ export type HttpResponse<T> = T extends string
         ? JsonResponse<U>
         : never
 
+export type Throwable = Omit<JsonResponse<unknown>, 'data'>
+
 // Http Request Params
 export type HttpGetParams = Partial<RequestParams>
 
-export type HttpPostParams = Pick<RequestParams, 'body'>
+export type HttpPostParams = Partial<Pick<RequestParams, 'body'>>
 
 export type HttpPatchParams = Partial<Omit<RequestParams, 'params'>>
 
 export type HttpDeleteParams = Partial<Pick<RequestParams, 'pathVariables'>>
 
 // Http Request Methods
-export type HttpGet = <T>(url: string, params: HttpGetParams, resource: Resource) => Promise<HttpResponse<T>>
+export type HttpGet = <T>(url: string, params?: HttpGetParams, resource?: Resource) => Promise<HttpResponse<T>>
 
-export type HttpPost = <T>(url: string, params: HttpPostParams, resource: Resource) => Promise<HttpResponse<T>>
+export type HttpPost = <T>(url: string, params?: HttpPostParams, resource?: Resource) => Promise<HttpResponse<T>>
 
-export type HttpPatch = <T>(url: string, params: HttpPatchParams, resource: Resource) => Promise<HttpResponse<T>>
+export type HttpPatch = <T>(url: string, params?: HttpPatchParams, resource?: Resource) => Promise<HttpResponse<T>>
 
-export type HttpDelete = <T>(url: string, params: HttpDeleteParams, resource: Resource) => Promise<HttpResponse<T>>
+export type HttpDelete = <T>(url: string, params?: HttpDeleteParams, resource?: Resource) => Promise<HttpResponse<T>>
 
 // Abstract Methods
 export type Renderable = <T>(promise: Response) => Promise<JsonResponse<T> | Error>
 
 export type Authenticatable = () => Promise<Passport | null>
+
+export type Reportable = (error: Throwable) => Promise<Throwable>
