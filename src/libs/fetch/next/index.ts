@@ -45,7 +45,11 @@ const NextAuthorzation: Authenticatable = async (): Promise<Passport | null> => 
   return session?.user?.passport ? { bearerToken: session.user.passport } : null
 }
 
-export const Get: HttpGet = <T>(url: string, params: HttpGetParams, resource: Resource): Promise<HttpResponse<T>> => {
+export const Get: HttpGet = <T>(
+  url: string,
+  params: HttpGetParams = {},
+  resource: Resource = 'json'
+): Promise<HttpResponse<T>> => {
   return fetcher<T>(
     {
       url,
@@ -62,8 +66,8 @@ export const Get: HttpGet = <T>(url: string, params: HttpGetParams, resource: Re
 
 export const Post: HttpPost = <T>(
   url: string,
-  params: HttpPostParams,
-  resource: Resource
+  params: HttpPostParams = {},
+  resource: Resource = 'json'
 ): Promise<HttpResponse<T>> => {
   return fetcher<T>(
     {
@@ -79,8 +83,8 @@ export const Post: HttpPost = <T>(
 
 export const Patch: HttpPatch = <T>(
   url: string,
-  params: HttpPatchParams,
-  resource: Resource
+  params: HttpPatchParams = {},
+  resource: Resource = 'json'
 ): Promise<HttpResponse<T>> => {
   return fetcher<T>(
     {
@@ -97,8 +101,8 @@ export const Patch: HttpPatch = <T>(
 
 export const Delete: HttpDelete = <T>(
   url: string,
-  params: HttpDeleteParams,
-  resource: Resource
+  params: HttpDeleteParams = {},
+  resource: Resource = 'json'
 ): Promise<HttpResponse<T>> => {
   return fetcher<T>(
     {
