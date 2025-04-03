@@ -7,14 +7,9 @@ import type { ReactNode } from 'react'
 import { TableCell } from '@mui/material'
 
 // Type Imports
-import type { HeadCell } from '../types'
+import type { HeadCell } from '@/types/apps/tableType'
 
-interface Props<T> {
-  columns: HeadCell<T>[]
-  row: T
-}
-
-export default function EnhancedTableSimpleCell<T>(props: Props<T>): ReactNode {
+export default function EnhancedTableSimpleCell<T>(props: { columns: HeadCell<T>[]; row: T }): ReactNode {
   const { columns, row } = props
 
   return columns.map((column: HeadCell<T>) => {

@@ -12,7 +12,7 @@ import Checkbox from '@mui/material/Checkbox'
 import EnhancedTableSimpleCell from '../../cell'
 
 // Type Imports
-import type { EnhancedTableRowProps } from '../../types'
+import type { EnhancedTableRowProps } from '@/types/apps/tableType'
 
 type Props<T> = {
   selected: T[]

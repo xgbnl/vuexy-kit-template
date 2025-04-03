@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useEffect, useState, type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 
 // MUI Imports
 import Button from '@mui/material/Button'
@@ -10,13 +10,13 @@ import CardActions from '@mui/material/CardActions'
 import Avatar from '@mui/material/Avatar'
 import Grid from '@mui/material/Grid'
 
+// Types Imports
+import type { Option } from '@/types/apps/tupleType'
+
 // Components Imports
 import EnhancedTableContainer from '@/views/apps/enhanced-table'
-import type { Entity, HeadCell } from '@/views/apps/enhanced-table/types'
-import Cascader from '@/views/apps/cascader'
-import type { Option } from '@/views/apps/cascader/types'
-import SimpleSelect, { type Selectable } from '@/views/apps/select/SimpleSelect'
-import { Get, type JsonResponse } from '@/libs/fetch'
+import type { Entity, HeadCell } from '@/types/apps/tableType'
+import SimpleSelect from '@/views/apps/select/SimpleSelect'
 
 interface User extends Entity {
   name: string
@@ -56,73 +56,14 @@ const headCells: HeadCell<User>[] = [
   { disablePadding: false, id: 'updatedAt', label: 'UpdatedAt', numeric: false }
 ]
 
-const treeData: readonly Option[] = [
-  {
-    value: 1,
-    extName: 'Front',
-    isLeaf: false,
-    children: [
-      {
-        value: 3,
-        isLeaf: true,
-        extName: 'JavaScript',
-        children: []
-      },
-      {
-        value: 4,
-        isLeaf: true,
-        extName: 'TypeScript',
-        children: []
-      }
-    ]
-  },
-  {
-    value: 2,
-    extName: 'Backed',
-    isLeaf: false,
-    children: [
-      {
-        value: 5,
-        isLeaf: true,
-        extName: 'PHP',
-        children: []
-      },
-      {
-        value: 6,
-        isLeaf: true,
-        extName: 'JAVA',
-        children: []
-      },
-      {
-        value: 7,
-        isLeaf: true,
-        extName: 'Golang',
-        children: []
-      }
-    ]
-  }
-]
-
-const selectables: Selectable[] = [
+const selectables: Option[] = [
   { label: 'Paid', value: 1 },
   { label: 'Unpaid', value: 2 }
 ]
 
 export default function Page(): ReactNode {
   // States
-  const [values, setValues] = useState<string[]>([])
-  const [signValues, setSignValues] = useState<string[]>([])
   const [payStatus, setPayStatus] = useState<number>(0)
-
-  const [options, setOptions] = useState<Option[]>([])
-
-  useEffect(() => {
-    Get<JsonResponse<Option[]>>('regions', { params: { deep: 2 } }).then(res => {
-      if (res && res.code === 200) {
-        setOptions(res.data)
-      }
-    })
-  }, [])
 
   return (
     <>
@@ -130,32 +71,6 @@ export default function Page(): ReactNode {
       <Card sx={{ minWidth: 275 }} className='mb-6'>
         <CardActions>
           <Grid container spacing={6} sx={{ width: '100%' }}>
-            <Grid size={{ xs: 4, sm: 2 }}>
-              {/* Enable multiple selection, enable checkbox effect, and allow root node selection */}
-              <Cascader
-                options={options}
-                aliasble={{
-                  label: 'name',
-                  value: 'id'
-                }}
-                multiSelect
-                checkboxSelection
-                value={values}
-                onSelectedItemsClick={items => setValues(items)}
-                rootNodeSelectable
-              />
-            </Grid>
-            <Grid size={{ xs: 4, sm: 2 }}>
-              {/* Disable multi-select and checkbox, and prohibit root node selection */}
-              <Cascader
-                options={treeData}
-                aliasble={{
-                  label: 'extName'
-                }}
-                value={signValues}
-                onSelectedItemsClick={items => setSignValues(items)}
-              />
-            </Grid>
             <Grid size={{ xs: 4, sm: 2 }}>
               <SimpleSelect
                 defaultValue={{ label: 'Please select payment status', value: 0, disabled: true }}

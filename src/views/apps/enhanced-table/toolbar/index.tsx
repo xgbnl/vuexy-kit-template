@@ -8,13 +8,13 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { alpha } from '@mui/material/styles'
 
 // Type Imports
-import type { EnhancedTableSlotProp } from '../types'
+import type { EnhancedTableSlotProp } from '@/types/apps/tableType'
 
-interface EnhancedTableToolbarProps<T> extends EnhancedTableSlotProp<T> {
+type EnhancedTableToolbarProps<T> = {
   numSelected: number
   onDelete?: () => void
   selected: T[]
-}
+} & EnhancedTableSlotProp<T>
 
 export default function EnhancedTableToolbar<T>(props: EnhancedTableToolbarProps<T>) {
   const { numSelected, onDelete, slotProps, selected } = props

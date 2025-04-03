@@ -13,9 +13,9 @@ import TableSortLabel from '@mui/material/TableSortLabel'
 import { visuallyHidden } from '@mui/utils'
 
 // Type Imports
-import type { Order, Entity, HeadCell } from '../types'
+import type { Order, Entity, HeadCell } from '@/types/apps/tableType'
 
-interface EnhancedTableProps<T extends Entity> {
+type EnhancedTableProps<T extends Entity> = {
   numSelected: number
   chosen: boolean
   onRequestSort: (event: MouseEvent<unknown>, property: keyof T) => void

@@ -11,25 +11,20 @@ import type { BaseSelectProps, BaseTextFieldProps } from '@mui/material'
 // Components Imports
 import CustomTextField from '@core/components/mui/TextField'
 
-export type Selectable = {
-  label: string
-  value: Value
-  disabled?: boolean
-}
-
-export type Value = number | string
+// Types Imports
+import type { OptionValue, Option } from '@/types/apps/tupleType'
 
 type Props = {
-  items: Selectable[]
-  value: Value
+  items: Option[]
+  value: OptionValue
   label: string
-  defaultValue: Selectable
-  onChange: (value: Value) => void
+  defaultValue: Option
+  onChange: (value: OptionValue) => void
 } & Pick<BaseSelectProps, 'multiple'> &
   Pick<BaseTextFieldProps, 'id'>
 
 const SimpleSelect = memo(({ items, value, label, onChange, defaultValue, multiple, id }: Props) => {
-  const options = useMemo((): Selectable[] => [defaultValue, ...items], [defaultValue, items])
+  const options = useMemo((): Option[] => [defaultValue, ...items], [defaultValue, items])
 
   return (
     <CustomTextField
@@ -48,7 +43,7 @@ const SimpleSelect = memo(({ items, value, label, onChange, defaultValue, multip
       }}
     >
       {options.map(
-        (item: Selectable): ReactNode => (
+        (item: Option): ReactNode => (
           <MenuItem key={`mui-menu-item-${item.value}`} disabled={item.disabled} value={item.value}>
             <em>{item.label}</em>
           </MenuItem>

@@ -23,7 +23,7 @@ import EnhancedTableSortRow from './row/sort'
 import EnhancedTableSimpleRow from './row/simple'
 
 // Type Imports
-import type { Order, Entity, EnhancedTableSlotProp, HeadCell } from './types'
+import type { Order, Entity, EnhancedTableSlotProp, HeadCell } from '@/types/apps/tableType'
 
 function getComparator<T, Key extends keyof T>(order: Order, orderBy: Key): (a: T, b: T) => number {
   return order === 'desc'
