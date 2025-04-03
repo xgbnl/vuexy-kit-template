@@ -1,9 +1,6 @@
 // Http response status code
 export const HttpStatus: number[] = [400, 401, 403, 404, 419, 422, 500]
 
-// Types
-type Params = Record<string, string | number>
-
 // Response type
 export type Resource = 'json' | 'blob' | 'text' | 'buffer'
 
@@ -15,8 +12,8 @@ export type Passport = {
 
 // Base request params
 export type RequestParams = {
-  pathVariables: Params
-  params: Params
+  pathVariables: Record<string, string | number>
+  params: Record<string, string | number>
   body: Record<string, unknown>
 }
 
