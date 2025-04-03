@@ -4,8 +4,11 @@ import { NextResponse } from 'next/server'
 // Utils Imports
 import { getAppUrl } from '@/utils/getAppUrl'
 
+// Configs Imports
+import type { JsonResponse } from '@/configs/fetch'
+
 // Libs Imports
-import type { JsonResponse } from '@/libs/fetch'
+import { Get } from '@/libs/fetch/next'
 import type { Authenticatable } from '@/libs/auth/types'
 
 export async function POST(req: Request) {
@@ -15,16 +18,8 @@ export async function POST(req: Request) {
   let promise: Response
 
   try {
-    promise = await fetch(getAppUrl(String(process.env.NEXT_PUBLIC_API_AUTH)), {
-      body: JSON.stringify(credentials),
-      mode: 'cors',
-      cache: 'no-cache',
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json;charset=UTF-8'
-      }
-    })
+    promise = await Get(getAppUrl(String(process.env.NEXT_PUBLIC_API_AUTH)))
+    console.log(promise)
   } catch (e) {
     const error = e instanceof TypeError ? e.message : (e as string)
 

@@ -9,9 +9,11 @@ import NextAuth from 'next-auth'
 // Exception imports
 import InvalidLoginError from './InvalidLoginError'
 
-// Libs Imports
-import type { JsonResponse } from '@/libs/fetch'
-import { HttpStatus } from '@/libs/fetch'
+// Configs Imports
+import type { JsonResponse } from '@/configs/fetch'
+import { HttpStatus } from '@/configs/fetch'
+
+// Types Imports
 import type { Authenticatable } from './types'
 
 const nextConfig: NextAuthConfig = {
