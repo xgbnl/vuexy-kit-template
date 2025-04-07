@@ -8,6 +8,8 @@ import { toast } from 'react-toastify'
 // Configs Imports
 import type { Locale } from '@/configs/i18n'
 import { HttpStatus } from '@/configs/fetch'
+
+// Types Imports
 import type {
   Renderable,
   Authenticatable,
@@ -25,7 +27,7 @@ import type {
   HttpResponse,
   Reportable,
   Throwable
-} from '@/configs/fetch'
+} from '@/types/fetchTypes'
 
 // Utils Imports
 import { getLocale } from '@/utils/getLocale'

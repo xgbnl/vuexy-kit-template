@@ -10,8 +10,10 @@ import NextAuth from 'next-auth'
 import InvalidLoginError from './InvalidLoginError'
 
 // Configs Imports
-import type { JsonResponse } from '@/configs/fetch'
 import { HttpStatus, ResponseStatus } from '@/configs/fetch'
+
+// Types Imports
+import type { JsonResponse } from '@/types/fetchTypes'
 
 // Vars
 export type Authenticatable = {

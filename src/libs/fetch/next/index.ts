@@ -4,7 +4,7 @@ import type { Session } from 'next-auth'
 // Libs Imports
 import { auth } from '@/libs/auth'
 
-// Constant Imports
+// Configs Imports
 import { HttpStatus } from '@/configs/fetch'
 
 // Fetch Imports
@@ -28,7 +28,7 @@ import type {
   HttpResponse,
   Reportable,
   Throwable
-} from '@/configs/fetch'
+} from '@/types/fetchTypes'
 
 // Abstract implements
 const render: Renderable = async <T>(promise: Response): Promise<JsonResponse<T> | Error> => {

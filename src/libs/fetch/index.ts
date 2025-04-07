@@ -6,6 +6,9 @@ import { isPlainObject } from '@utils/isPlainObject'
 import { getAppUrl } from '@/utils/getAppUrl'
 
 // Configs Improts
+import { ResponseStatus } from '@/configs/fetch'
+
+// Types Imports
 import type {
   Renderable,
   Authenticatable,
@@ -14,8 +17,7 @@ import type {
   HttpResponse,
   Passport,
   Throwable
-} from '@/configs/fetch'
-import { ResponseStatus } from '@/configs/fetch'
+} from '@/types/fetchTypes'
 
 type FetchBaseConfig = {
   signal: AbortSignal | null

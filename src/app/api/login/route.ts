@@ -1,8 +1,8 @@
 // Next Imports
 import { NextResponse } from 'next/server'
 
-// Configs Imports
-import type { JsonResponse, Throwable } from '@/configs/fetch'
+// Types Imports
+import type { JsonResponse, Throwable } from '@/types/fetchTypes'
 
 // Libs Imports
 import { Post } from '@/libs/fetch/next'

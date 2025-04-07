@@ -34,6 +34,7 @@ import { toast } from 'react-toastify'
 // Type Imports
 import type { SystemMode } from '@core/types'
 import type { Locale } from '@/configs/i18n'
+import type { Throwable } from '@/types/fetchTypes'
 
 // Component Imports
 import Logo from '@components/layout/shared/Logo'
@@ -41,7 +42,7 @@ import CustomTextField from '@core/components/mui/TextField'
 
 // Config Imports
 import themeConfig from '@configs/themeConfig'
-import { type Throwable, HttpStatus } from '@/configs/fetch'
+import { HttpStatus } from '@/configs/fetch'
 
 // Hook Imports
 import { useImageVariant } from '@core/hooks/useImageVariant'
