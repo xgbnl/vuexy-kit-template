@@ -11,10 +11,14 @@ import InvalidLoginError from './InvalidLoginError'
 
 // Configs Imports
 import type { JsonResponse } from '@/configs/fetch'
-import { HttpStatus } from '@/configs/fetch'
+import { HttpStatus, ResponseStatus } from '@/configs/fetch'
 
-// Types Imports
-import type { Authenticatable } from './types'
+// Vars
+export type Authenticatable = {
+  name: string
+  avatar: string
+  passport: string
+}
 
 const nextConfig: NextAuthConfig = {
   debug: false,
@@ -42,6 +46,8 @@ const nextConfig: NextAuthConfig = {
 
         if (HttpStatus.includes(code)) {
           throw new InvalidLoginError(msg, code)
+        } else if (code === 1000) {
+          throw new InvalidLoginError(msg, ResponseStatus.TooManyRequests)
         }
 
         return {

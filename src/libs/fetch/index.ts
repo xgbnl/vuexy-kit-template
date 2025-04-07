@@ -5,17 +5,17 @@ import qs from 'qs'
 import { isPlainObject } from '@utils/isPlainObject'
 import { getAppUrl } from '@/utils/getAppUrl'
 
-// Types Improts
-import {
-  type Renderable,
-  type Authenticatable,
-  type Reportable,
-  type BaseRequestOptions,
-  type HttpResponse,
-  type Passport,
-  type Throwable,
-  ResponseStatus
+// Configs Improts
+import type {
+  Renderable,
+  Authenticatable,
+  Reportable,
+  BaseRequestOptions,
+  HttpResponse,
+  Passport,
+  Throwable
 } from '@/configs/fetch'
+import { ResponseStatus } from '@/configs/fetch'
 
 type FetchBaseConfig = {
   signal: AbortSignal | null

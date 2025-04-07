@@ -6,7 +6,7 @@ import type { JsonResponse, Throwable } from '@/configs/fetch'
 
 // Libs Imports
 import { Post } from '@/libs/fetch/next'
-import type { Authenticatable } from '@/libs/auth/types'
+import type { Authenticatable } from '@/libs/auth'
 
 export async function POST(req: Request) {
   // Vars
