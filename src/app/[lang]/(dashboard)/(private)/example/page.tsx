@@ -17,6 +17,7 @@ import type { Option } from '@/types/apps/tupleType'
 import EnhancedTableContainer from '@/views/apps/enhanced-table'
 import type { Entity, HeadCell } from '@/types/apps/tableType'
 import SimpleSelect from '@/views/apps/select/SimpleSelect'
+import PickersBetween from '@/views/apps/date-pickers/PickersBetween'
 
 interface User extends Entity {
   name: string
@@ -79,6 +80,9 @@ export default function Page(): ReactNode {
                 value={payStatus}
                 onChange={(v): void => setPayStatus(v as number)}
               />
+            </Grid>
+            <Grid size={{ xs: 2, sm: 3 }}>
+              <PickersBetween />
             </Grid>
             <Grid container spacing={3} alignContent='flex-end'>
               <Button size='medium' variant='contained' startIcon={<i className='tabler-search' />}>
