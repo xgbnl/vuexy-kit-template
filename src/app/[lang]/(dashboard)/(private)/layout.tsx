@@ -32,16 +32,17 @@ const Layout = async (props: ChildrenType & { params: Promise<{ lang: Locale }> 
   const params = await props.params
 
   const { children } = props
+  const { lang } = params
 
   // Vars
-  const direction = i18n.langDirection[params.lang]
-  const dictionary = await getDictionary(params.lang)
+  const direction = i18n.langDirection[lang]
+  const dictionary = await getDictionary(lang)
   const mode = await getMode()
   const systemMode = await getSystemMode()
 
   return (
-    <Providers direction={direction}>
-      <AuthGuard locale={params.lang}>
+    <Providers direction={direction} lang={lang}>
+      <AuthGuard locale={lang}>
         <LayoutWrapper
           systemMode={systemMode}
           verticalLayout={
