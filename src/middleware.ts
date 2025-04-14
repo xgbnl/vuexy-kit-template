@@ -7,9 +7,8 @@ import type { Session } from 'next-auth'
 // Libs Imports
 import { auth } from '@/libs/auth'
 
-// Hooks Imports
-import { getLocale } from '@utils/getLocale'
-import type { Locale } from '@configs/i18n'
+// Configs Imports
+import { type Locale, i18n } from '@configs/i18n'
 
 export async function middleware(request: NextRequest): Promise<NextResponse> {
   // Hooks
@@ -27,7 +26,9 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   }
 
   if (guest && !isAuthPage) {
-    const locale: Locale = getLocale(pathname) ?? 'zh'
+    const locales = pathname.match(/^\/([a-z]{2})(\/|$)/)
+
+    const locale = (locales?.at(1) ?? i18n.defaultLocale) as Locale
 
     return NextResponse.redirect(new URL(`/${locale}/login`, url))
   }
