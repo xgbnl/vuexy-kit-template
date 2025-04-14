@@ -7,6 +7,7 @@ import type { JsonResponse, Throwable } from '@/types/fetchTypes'
 // Libs Imports
 import { Post } from '@/libs/fetch/next'
 import type { Authenticatable } from '@/libs/auth'
+import { HttpStatus } from '@/configs/fetch'
 
 export async function POST(req: Request) {
   // Vars
@@ -26,7 +27,7 @@ export async function POST(req: Request) {
     })
   }
 
-  if (response.code !== 200) {
+  if (HttpStatus.includes(response.code)) {
     return NextResponse.json({
       code: response.code,
       msg: response.msg,
