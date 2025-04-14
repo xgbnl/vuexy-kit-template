@@ -9,6 +9,9 @@ import { styled } from '@mui/material/styles'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import type { BaseNonStaticPickerProps } from '@mui/x-date-pickers/internals'
 import type { BaseTextFieldProps } from '@mui/material'
+import type { UsePickerValueBaseProps } from '@mui/x-date-pickers/internals/hooks/usePicker/usePickerValue.types'
+import type { DateValidationError } from '@mui/x-date-pickers/models'
+import { OnChange } from '@react-spring/web'
 
 const DatePickerStyled = styled(DatePicker)<BaseNonStaticPickerProps>(({ theme }) => ({
   '& .MuiInputLabel-root': {
@@ -40,20 +43,25 @@ const DatePickerStyled = styled(DatePicker)<BaseNonStaticPickerProps>(({ theme }
   }
 }))
 
-type Props = Pick<BaseTextFieldProps, 'label' | 'placeholder'> & {
+type Props = {
   id?: string
-}
+} & Pick<BaseTextFieldProps, 'label' | 'placeholder'> &
+  Pick<UsePickerValueBaseProps<Date, DateValidationError>, 'value' | 'onChange'>
 
-const CustomDatePicker = forwardRef(({ label, placeholder }: Props, ref: ForwardedRef<HTMLInputElement>) => {
-  return (
-    <DatePickerStyled
-      inputRef={ref}
-      format='yyyy-MM-dd'
-      slotProps={{
-        textField: { size: 'small', label, placeholder }
-      }}
-    />
-  )
-})
+const CustomDatePicker = forwardRef(
+  ({ label, placeholder, value, onChange }: Props, ref: ForwardedRef<HTMLInputElement>) => {
+    return (
+      <DatePickerStyled
+        inputRef={ref}
+        format='yyyy-MM-dd'
+        value={value}
+        onChange={onChange}
+        slotProps={{
+          textField: { size: 'small', label, placeholder }
+        }}
+      />
+    )
+  }
+)
 
 export default CustomDatePicker
