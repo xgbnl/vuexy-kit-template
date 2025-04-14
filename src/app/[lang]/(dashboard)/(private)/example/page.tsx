@@ -17,7 +17,7 @@ import type { Option } from '@/types/apps/tupleType'
 import EnhancedTableContainer from '@/views/apps/enhanced-table'
 import type { Entity, HeadCell } from '@/types/apps/tableType'
 import SimpleSelect from '@/views/apps/select/SimpleSelect'
-import PickersBetween from '@/views/apps/date-pickers/PickersBetween'
+import DatePicker from '@/views/apps/date-picker'
 
 interface User extends Entity {
   name: string
@@ -74,7 +74,7 @@ export default function Page(): ReactNode {
           <Grid container spacing={6} sx={{ width: '100%' }}>
             <Grid size={{ xs: 4, sm: 2 }}>
               <SimpleSelect
-                defaultValue={{ label: 'Please select payment status', value: 0, disabled: true }}
+                defaultValue={{ label: 'All payment status', value: 0, disabled: false }}
                 items={selectables}
                 label='paid status'
                 value={payStatus}
@@ -82,7 +82,7 @@ export default function Page(): ReactNode {
               />
             </Grid>
             <Grid size={{ xs: 2, sm: 3 }}>
-              <PickersBetween />
+              <DatePicker label='date' />
             </Grid>
             <Grid container spacing={3} alignContent='flex-end'>
               <Button size='medium' variant='contained' startIcon={<i className='tabler-search' />}>
