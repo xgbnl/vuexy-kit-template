@@ -6,7 +6,6 @@ import type { Session } from 'next-auth'
 import { toast } from 'react-toastify'
 
 // Configs Imports
-import type { Locale } from '@/configs/i18n'
 import { HttpStatus } from '@/configs/fetch'
 
 // Types Imports
@@ -29,22 +28,18 @@ import type {
   Throwable
 } from '@/types/fetchTypes'
 
-// Utils Imports
-import { getLocale } from '@/utils/getLocale'
-
 // Fetch Imports
 import { fetcher } from '../index'
+import { getLang } from '@/utils/getLang'
 
 const render: Renderable = async <T>(promise: Response): Promise<JsonResponse<T> | Error> => {
   const response: JsonResponse<T> = await promise.json()
 
   if (HttpStatus.includes(response.code)) {
     if (response.code === 401) {
-      const locale: Locale = getLocale() as Locale
-
       toast.error<string>(response.msg, {
         delay: 1000,
-        onClose: () => window.location.replace(`/${locale}/login`)
+        onClose: () => window.location.replace(`/${getLang(window.location.pathname)}/login`)
       })
     }
 
