@@ -11,7 +11,6 @@ import { auth } from '@/libs/auth'
 import { type Locale, i18n } from '@configs/i18n'
 
 export async function middleware(request: NextRequest): Promise<NextResponse> {
-  // Hooks
   const {
     nextUrl: { pathname },
     url
