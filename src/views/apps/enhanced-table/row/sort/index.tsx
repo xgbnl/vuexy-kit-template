@@ -16,16 +16,21 @@ import type { EnhancedTableRowProps } from '@/types/apps/tableType'
 
 type Props<T> = {
   selected: T[]
-  onClick: (envent: MouseEvent<unknown>, row: T) => void
+  onClick: (row: T) => void
 } & EnhancedTableRowProps<T>
 
 export default function EnhancedTableSortRow<T>({ row, selected, columns, onClick }: Props<T>): ReactNode {
   const isItemSelected = useMemo((): boolean => selected.includes(row), [selected, row])
 
+  const handelOnClick = (event: MouseEvent<unknown>): void => {
+    event?.stopPropagation()
+    onClick(row)
+  }
+
   return (
     <TableRow
       hover
-      onClick={event => onClick(event, row)}
+      onClick={handelOnClick}
       role='checkbox'
       aria-checked={isItemSelected}
       tabIndex={-1}
