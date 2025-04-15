@@ -3,6 +3,9 @@
 // React Imports
 import { useMemo } from 'react'
 
+// NEXT Imports
+import { useParams } from 'next/navigation'
+
 // MUI Imports
 import { deepmerge } from '@mui/utils'
 import { ThemeProvider, lighten, darken, createTheme } from '@mui/material/styles'
@@ -10,6 +13,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter'
 import CssBaseline from '@mui/material/CssBaseline'
 import type {} from '@mui/material/themeCssVarsAugmentation' //! Do not remove this import otherwise you will get type errors while making a production build
 import type {} from '@mui/lab/themeAugmentation' //! Do not remove this import otherwise you will get type errors while making a production build
+import { zhCN, enUS, type Localization } from '@mui/material/locale'
 
 // Third-party Imports
 import { useMedia } from 'react-use'
@@ -23,6 +27,7 @@ import ModeChanger from './ModeChanger'
 
 // Config Imports
 import themeConfig from '@configs/themeConfig'
+import { i18n, type Locale } from '@/configs/i18n'
 
 // Hook Imports
 import { useSettings } from '@core/hooks/useSettings'
@@ -38,6 +43,10 @@ type Props = ChildrenType & {
 const CustomThemeProvider = (props: Props) => {
   // Props
   const { children, direction, systemMode } = props
+
+  // States
+  const { lang } = useParams<{ lang: Locale }>()
+  const locale = useMemo<Localization>(() => (lang === i18n.defaultLocale ? zhCN : enUS), [lang])
 
   // Hooks
   const { settings } = useSettings()
@@ -87,7 +96,7 @@ const CustomThemeProvider = (props: Props) => {
 
     const coreTheme = deepmerge(defaultCoreTheme(settings, currentMode, direction), newTheme)
 
-    return createTheme(coreTheme)
+    return createTheme(coreTheme, locale)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.primaryColor, settings.skin, currentMode])
