@@ -57,10 +57,10 @@ type Identifier<T> = keyof T | ((row: T) => string | number)
 
 type Props<T> = {
   rows: T[]
-  sortBy: keyof T // Sort field.
-  headCells: HeadCell<T>[] // Column head.
-  multiple?: boolean // Enable row multiple selection.
-  onDelete?: (rows: T[]) => void // Enable default delete action.
+  sortBy: keyof T
+  headCells: HeadCell<T>[]
+  multiple?: boolean
+  onDelete?: (rows: T[]) => void
   onPageChange: (page: number, pageSize: number) => void
   total: number
   identifier?: Identifier<T>
