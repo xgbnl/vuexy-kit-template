@@ -76,7 +76,7 @@ export default function Page(): ReactNode {
               <SimpleSelect
                 defaultValue={{ label: 'All payment status', value: 0, disabled: false }}
                 items={selectables}
-                label='paid status'
+                label='Paid Status'
                 value={payStatus}
                 onChange={(v): void => setPayStatus(v as number)}
               />
