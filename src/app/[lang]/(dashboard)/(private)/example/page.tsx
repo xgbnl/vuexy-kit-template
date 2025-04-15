@@ -82,7 +82,11 @@ export default function Page(): ReactNode {
               />
             </Grid>
             <Grid size={{ xs: 2, sm: 3 }}>
-              <DatePicker label='date' placeholder='xxxx' />
+              <DatePicker
+                onChange={value => {
+                  console.log(value)
+                }}
+              />
             </Grid>
             <Grid container spacing={3} alignContent='flex-end'>
               <Button size='medium' variant='contained' startIcon={<i className='tabler-search' />}>

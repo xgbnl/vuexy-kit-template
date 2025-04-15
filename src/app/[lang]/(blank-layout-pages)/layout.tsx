@@ -8,22 +8,15 @@ import BlankLayout from '@layouts/BlankLayout'
 // Util Imports
 import { getSystemMode } from '@core/utils/serverHelpers'
 
-// Types Imports
-import type { Locale } from '@/configs/i18n'
-
-type Props = ChildrenType & { params: Promise<{ lang: Locale }> }
-
-const Layout = async (props: Props) => {
+const Layout = async (props: ChildrenType) => {
   const { children } = props
-
-  const params = await props.params
 
   // Vars
   const direction = 'ltr'
   const systemMode = await getSystemMode()
 
   return (
-    <Providers direction={direction} lang={params.lang}>
+    <Providers direction={direction}>
       <BlankLayout systemMode={systemMode}>{children}</BlankLayout>
     </Providers>
   )

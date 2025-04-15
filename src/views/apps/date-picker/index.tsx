@@ -1,67 +1,102 @@
 'use client'
 
 // React Imports
-import { forwardRef } from 'react'
-import type { ForwardedRef } from 'react'
+import { useState, forwardRef, useMemo } from 'react'
+
+// Next Imports
+import { useParams } from 'next/navigation'
 
 // MUI Imports
-import { styled } from '@mui/material/styles'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import type { BaseNonStaticPickerProps } from '@mui/x-date-pickers/internals'
-import type { BaseTextFieldProps } from '@mui/material'
-import type { UsePickerValueBaseProps } from '@mui/x-date-pickers/internals/hooks/usePicker/usePickerValue.types'
-import type { DateValidationError } from '@mui/x-date-pickers/models'
+import Grid from '@mui/material/Grid'
+import type { TextFieldProps } from '@mui/material/TextField'
 
-const DatePickerStyled = styled(DatePicker)<BaseNonStaticPickerProps>(({ theme }) => ({
-  '& .MuiInputLabel-root': {
-    transform: 'none',
-    width: 'fit-content',
-    maxWidth: '100%',
-    lineHeight: 1.153,
-    position: 'relative',
-    fontSize: theme.typography.body2.fontSize,
-    marginBottom: theme.spacing(1),
-    color: 'var(--mui-palette-text-primary)',
-    '&:not(.Mui-error).MuiFormLabel-colorPrimary.Mui-focused': {
-      color: 'var(--mui-palette-primary-main) !important'
-    },
-    '&.Mui-disabled': {
-      color: 'var(--mui-palette-text-disabled)'
-    },
-    '&.Mui-error': {
-      color: 'var(--mui-palette-error-main)'
-    }
-  },
-  '& .MuiOutlinedInput-root.Mui-focused::before': {
-    display: 'none'
-  },
-  '& legend': { display: 'none' },
-  '& fieldset': { top: 0 }
-}))
+// Third-party Imports
+import { format } from 'date-fns'
+import { zhCN, enUS } from 'date-fns/locale'
+import type { Locale as DateFnsLocale } from 'date-fns'
+
+// Component Imports
+import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
+import CustomTextField from '@core/components/mui/TextField'
+
+// Configs Imports
+import { i18n } from '@/configs/i18n'
+import type { Locale } from '@/configs/i18n'
+
+type CustomInputProps = TextFieldProps & {
+  label: string
+  end: Date | number
+  start: Date | number
+}
 
 type Props = {
-  id?: string
-} & Pick<BaseTextFieldProps, 'label' | 'placeholder'> &
-  Pick<UsePickerValueBaseProps<Date | null, DateValidationError>, 'value' | 'onChange'>
+  onChange: (value: Pick<CustomInputProps, 'end' | 'start'>) => void
+} & Partial<Pick<CustomInputProps, 'label'>>
 
-const CustomDatePicker = forwardRef(
-  ({ label, placeholder, value, onChange }: Props, ref: ForwardedRef<HTMLInputElement>) => {
-    return (
-      <DatePickerStyled
-        inputRef={ref}
-        format='yyyy-MM-dd'
-        value={value}
-        onChange={onChange}
-        label={label}
-        slotProps={{
-          textField: { size: 'small', placeholder, sx: { '::placeholder': { opacity: 0.5 } } },
-          actionBar: {
-            actions: ['clear']
-          }
-        }}
-      />
-    )
+const PickersRange = ({ label, onChange }: Props) => {
+  // States
+  const [startDateRange, setStartDateRange] = useState<Date | null | undefined>(new Date())
+  const [endDateRange, setEndDateRange] = useState<Date | null | undefined>(new Date())
+  const { lang } = useParams<{ lang: Locale }>()
+
+  const { locale, dateFormat } = useMemo<{ locale: DateFnsLocale; dateFormat: string }>(() => {
+    const isDefaultLocale = lang === i18n.defaultLocale
+
+    return {
+      locale: isDefaultLocale ? zhCN : enUS,
+      dateFormat: isDefaultLocale ? 'yyyy-MM-dd' : 'MM/dd/yyyy'
+    }
+  }, [lang])
+
+  const handleOnChangeRange = (dates: any) => {
+    const [start, end] = dates
+
+    setStartDateRange(start)
+    setEndDateRange(end)
+
+    onChange({ start, end })
   }
-)
 
-export default CustomDatePicker
+  const CustomInput = forwardRef((props: CustomInputProps, ref) => {
+    const { label, start, end, ...rest } = props
+
+    const startDate = format(start, dateFormat)
+    const endDate = end !== null ? ` - ${format(end, dateFormat)}` : null
+
+    const value = `${startDate}${endDate !== null ? endDate : ''}`
+
+    return <CustomTextField fullWidth inputRef={ref} {...rest} label={label} value={value} />
+  })
+
+  return (
+    <Grid container spacing={6}>
+      <Grid size={{ xs: 12 }}>
+        <AppReactDatepicker
+          locale={locale}
+          selectsRange
+          monthsShown={2}
+          endDate={endDateRange as Date}
+          selected={startDateRange}
+          startDate={startDateRange as Date}
+          shouldCloseOnSelect={false}
+          id='date-range-picker-months'
+          onChange={handleOnChangeRange}
+          customInput={
+            <CustomInput
+              label={label ?? 'Multiple Months'}
+              end={endDateRange as Date | number}
+              start={startDateRange as Date | number}
+              slotProps={{
+                input: {
+                  endAdornment: <span className='tabler-calendar-time'></span>
+                }
+              }}
+            />
+          }
+        />
+      </Grid>
+    </Grid>
+  )
+}
+
+export default PickersRange
