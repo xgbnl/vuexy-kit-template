@@ -200,6 +200,11 @@ export default function EnhancedTableContainer<T extends Entity>(props: Props<T>
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
+          sx={{
+            '& .MuiTablePagination-spacer': {
+              display: 'none'
+            }
+          }}
           component='div'
           count={total}
           rowsPerPage={rowsPerPage}
@@ -207,7 +212,7 @@ export default function EnhancedTableContainer<T extends Entity>(props: Props<T>
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           ActionsComponent={() => (
-            <Grid container justifyContent='center' width='100%'>
+            <Grid container justifyContent='end' width='100%'>
               <Pagination
                 variant='tonal'
                 shape='rounded'
