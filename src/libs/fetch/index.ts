@@ -86,7 +86,9 @@ export async function fetcher<T>(
     })
     .catch<Error | Throwable>((error: Error | Throwable) => {
       if (error instanceof Error) {
-        return report({ code: 1000, msg: `[${error.name}]: ${error.message}` })
+        const code = error.name === 'AbortError' ? 1000 : ResponseStatus.ServerError
+
+        return report({ code: code, msg: `[${error.name}]: ${error.message}` })
       }
 
       return report(error)

@@ -62,9 +62,11 @@ export type HttpPatch = <T>(url: string, params?: HttpPatchParams, resource?: Re
 
 export type HttpDelete = <T>(url: string, params?: HttpDeleteParams, resource?: Resource) => Promise<HttpResponse<T>>
 
-// Abstract Methods
+// Prepare json response
 export type Renderable = <T>(promise: Response) => Promise<JsonResponse<T> | Error>
 
+// Prepare bearer token
 export type Authenticatable = () => Promise<Passport | null>
 
+// Prepare exception report
 export type Reportable = (error: Throwable) => Promise<Throwable>

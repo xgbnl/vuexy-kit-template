@@ -15,6 +15,7 @@ pnpm dev
 ```
 
 Then, run commend add next-auth secret to `.env.local` file:
+
 ```bash
 npm exec auth secret
 ```
@@ -43,6 +44,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ## How to using Api Service in project
 
 First, Edit the `.env.local` file and add the following content:
+
 ```dotenv
 # api prefix
 NEXT_API_PREFIX=/api
@@ -53,4 +55,17 @@ NEXT_PUBLIC_API_URL=https://myapi.test${NEXT_API_PREFIX}
 # Auth api path
 NEXT_PUBLIC_API_AUTH=/auth
 ```
+
 Then call the request method in the `libs/fetch.ts` file:
+
+# Fetch
+
+To avoid console errors, use an empty catch when calling fetch
+
+```tsx
+Post<any>('auth')
+  .then(res => {
+    console.log(res)
+  })
+  .catch(() => {})
+```

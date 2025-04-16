@@ -56,7 +56,7 @@ const authorization: Authenticatable = async (): Promise<Passport | null> => {
 }
 
 const report: Reportable = (error: Throwable): Promise<Throwable> => {
-  if (error.code !== 1000) {
+  if (HttpStatus.includes(error.code)) {
     toast.error<string>(error.msg)
   }
 
