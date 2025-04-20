@@ -91,8 +91,9 @@ export default function Page(): ReactNode {
             </Grid>
             <Grid size={{ xs: 2, sm: 3 }}>
               <CustomRadio
+                label='Radios'
                 onChange={(value): void => console.log(value)}
-                defaultValue={2}
+                value={2}
                 options={[
                   { label: 'a', value: 1 },
                   { label: 'b', value: 2 }
