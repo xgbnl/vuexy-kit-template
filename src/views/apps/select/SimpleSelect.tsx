@@ -12,7 +12,7 @@ import type { BaseSelectProps, BaseTextFieldProps } from '@mui/material'
 import CustomTextField from '@core/components/mui/TextField'
 
 // Types Imports
-import type { OptionValue, Option } from '@/types/apps/tupleType'
+import type { OptionValue, Option } from '@/types/apps/optionType'
 
 type Props = {
   items: Option[]

@@ -11,13 +11,14 @@ import Avatar from '@mui/material/Avatar'
 import Grid from '@mui/material/Grid'
 
 // Types Imports
-import type { Option } from '@/types/apps/tupleType'
+import type { Option } from '@/types/apps/optionType'
 
 // Components Imports
 import EnhancedTableContainer from '@/views/apps/enhanced-table'
 import type { Entity, HeadCell } from '@/types/apps/tableType'
 import SimpleSelect from '@/views/apps/select/SimpleSelect'
 import DatePicker from '@/views/apps/date-picker'
+import CustomRadio from '@/views/apps/radio'
 
 interface User extends Entity {
   name: string
@@ -86,6 +87,16 @@ export default function Page(): ReactNode {
                 onChange={value => {
                   console.log(value)
                 }}
+              />
+            </Grid>
+            <Grid size={{ xs: 2, sm: 3 }}>
+              <CustomRadio
+                onChange={(value): void => console.log(value)}
+                defaultValue={2}
+                options={[
+                  { label: 'a', value: 1 },
+                  { label: 'b', value: 2 }
+                ]}
               />
             </Grid>
             <Grid container spacing={3} alignContent='flex-end'>
