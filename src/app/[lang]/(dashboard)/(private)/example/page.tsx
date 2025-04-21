@@ -13,7 +13,7 @@ import Grid from '@mui/material/Grid'
 // Components Imports
 import EnhancedTableContainer from '@/views/apps/enhanced-table'
 import type { Entity, HeadCell } from '@/types/apps/tableType'
-import SimpleSelect from '@/views/apps/select/SimpleSelect'
+import SimpleSelect from '@/views/apps/select'
 import DatePicker from '@/views/apps/date-picker'
 import CustomRadio from '@/views/apps/radio'
 
