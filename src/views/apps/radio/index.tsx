@@ -11,9 +11,6 @@ import FormLabel from '@mui/material/FormLabel'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { styled } from '@mui/material/styles'
 
-// Types Imports
-import type { Option, OptionValue } from '@/types/apps/optionType'
-
 const FormControlStyled = styled(FormControl)(({ theme }) => ({
   '& .MuiFormLabel-root': {
     transform: 'none',

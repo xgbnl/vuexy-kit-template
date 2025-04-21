@@ -10,9 +10,6 @@ import CardActions from '@mui/material/CardActions'
 import Avatar from '@mui/material/Avatar'
 import Grid from '@mui/material/Grid'
 
-// Types Imports
-import type { Option } from '@/types/apps/optionType'
-
 // Components Imports
 import EnhancedTableContainer from '@/views/apps/enhanced-table'
 import type { Entity, HeadCell } from '@/types/apps/tableType'

@@ -11,9 +11,6 @@ import type { BaseSelectProps, BaseTextFieldProps } from '@mui/material'
 // Components Imports
 import CustomTextField from '@core/components/mui/TextField'
 
-// Types Imports
-import type { OptionValue, Option } from '@/types/apps/optionType'
-
 type Props = {
   items: Option[]
   value: OptionValue
@@ -34,7 +31,7 @@ const SimpleSelect = memo(({ items, value, label, onChange, defaultValue, multip
       id={id}
       defaultValue={defaultValue.value}
       value={value}
-      onChange={(event): void => onChange(event.target.value as any)}
+      onChange={(event): void => onChange(event.target.value)}
       slotProps={{
         select: {
           displayEmpty: true,
