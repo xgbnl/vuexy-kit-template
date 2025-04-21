@@ -22,6 +22,7 @@ import CustomTextField from '@core/components/mui/TextField'
 // Configs Imports
 import { i18n } from '@/configs/i18n'
 import type { Locale } from '@/configs/i18n'
+import { serializeDate } from '@/utils/serializeDate'
 
 type CustomInputProps = TextFieldProps & {
   label: string
@@ -30,7 +31,7 @@ type CustomInputProps = TextFieldProps & {
 }
 
 type Props = {
-  onChange: (value: Pick<CustomInputProps, 'end' | 'start'>) => void
+  onChange: (date: Pick<CustomInputProps, 'end' | 'start'>, format: string[]) => void
 } & Partial<Pick<CustomInputProps, 'label'>>
 
 const PickersRange = ({ label, onChange }: Props) => {
@@ -54,7 +55,7 @@ const PickersRange = ({ label, onChange }: Props) => {
     setStartDateRange(start)
     setEndDateRange(end)
 
-    onChange({ start, end })
+    onChange({ start, end }, [serializeDate(start), serializeDate(end)])
   }
 
   const CustomInput = forwardRef((props: CustomInputProps, ref) => {

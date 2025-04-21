@@ -1,6 +1,14 @@
-export function serializeDate(timestamp: string): string {
-  const date: Date = new Date(timestamp)
+export function serializeDate(date: string | number | Date | null): string {
+  if (null === date) {
+    return ''
+  }
 
+  const isTimestamp = typeof date === 'number' || typeof date === 'string'
+
+  return format(isTimestamp ? new Date(date) : date)
+}
+
+function format(date: Date): string {
   const year = date.getFullYear()
   const month = (date.getMonth() + 1).toString().padStart(2, '0')
   const day = date.getDate().toString().padStart(2, '0')
