@@ -14,7 +14,7 @@ import Grid from '@mui/material/Grid'
 import EnhancedTableContainer from '@/views/apps/enhanced-table'
 import type { Entity, HeadCell } from '@/types/apps/tableType'
 import SimpleSelect from '@/views/apps/select'
-import DatePicker from '@/views/apps/date-picker'
+import PickerRange from '@/views/apps/picker-range'
 import CustomRadio from '@/views/apps/radio'
 
 interface User extends Entity {
@@ -80,7 +80,7 @@ export default function Page(): ReactNode {
               />
             </Grid>
             <Grid size={{ xs: 2, sm: 3 }}>
-              <DatePicker
+              <PickerRange
                 onChange={value => {
                   console.log(value)
                 }}
