@@ -61,7 +61,13 @@ export async function fetcher<T>(
   }
 
   if (options.method !== 'GET') {
-    baseConfig.body = isPlainObject(options.body) ? JSON.stringify(options.body) : {}
+    baseConfig.body = {}
+
+    if (isPlainObject(options.body)) {
+      baseConfig.body = JSON.stringify(options.body)
+    } else if (options.body instanceof FormData) {
+      baseConfig.body = options.body
+    }
   }
 
   return fetch(baseConfig.url, baseConfig as RequestInit)
@@ -133,10 +139,8 @@ async function makeHeader(
     if (method === 'GET') {
       headers['Content-Type'] = 'application/x-www-form-urlencoded'
     }
-
-    if (body instanceof FormData) {
-      delete headers['Content-Type']
-    }
+  } else if (body instanceof FormData) {
+    delete headers['Content-Type']
   }
 
   const passport: Passport | null = await authenticatable()

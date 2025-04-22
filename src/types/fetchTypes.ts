@@ -11,7 +11,7 @@ export type Passport = {
 export type RequestParams = {
   pathVariables: Record<string, string | number>
   params: Record<string, string | number>
-  body: Record<string, unknown>
+  body: Record<string, unknown> | FormData
 }
 
 // Request option
