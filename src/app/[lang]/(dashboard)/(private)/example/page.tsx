@@ -55,14 +55,36 @@ const headCells: HeadCell<User>[] = [
   { disablePadding: false, id: 'updatedAt', label: 'UpdatedAt', numeric: false }
 ]
 
-const selectables: Option[] = [
-  { label: 'Paid', value: 1 },
-  { label: 'Unpaid', value: 2 }
+function makeOption<E>(label: string, value: E, disabled: boolean = false): Option<E> {
+  return { label, value, disabled } as Option<E>
+}
+
+const enum PayStatus {
+  All = 'all',
+  Paid = 'paid',
+  Unpaid = 'unpaid'
+}
+
+const enum Toggle {
+  Enabled = 'enabled',
+  Disabled = 'disabled'
+}
+
+const payStatusOption: Option<PayStatus>[] = [
+  makeOption<PayStatus>('All pay status', PayStatus.All),
+  makeOption<PayStatus>('Paid', PayStatus.Paid),
+  makeOption<PayStatus>('Unpaid', PayStatus.Unpaid)
+]
+
+const toggleOption: Option<Toggle>[] = [
+  makeOption<Toggle>('enabled', Toggle.Enabled),
+  makeOption<Toggle>('disabled', Toggle.Disabled)
 ]
 
 export default function Page(): ReactNode {
   // States
-  const [payStatus, setPayStatus] = useState<number>(0)
+  const [payStatus, setPayStatus] = useState<PayStatus>(PayStatus.All)
+  const [toggle, setToggle] = useState<Toggle>(Toggle.Enabled)
 
   return (
     <>
@@ -72,11 +94,10 @@ export default function Page(): ReactNode {
           <Grid container spacing={6} sx={{ width: '100%' }}>
             <Grid size={{ xs: 4, sm: 2 }}>
               <SimpleSelect
-                defaultValue={{ label: 'All payment status', value: 0, disabled: false }}
-                items={selectables}
+                items={payStatusOption}
                 label='Paid Status'
                 value={payStatus}
-                onChange={(v): void => setPayStatus(v as number)}
+                onChange={(v): void => setPayStatus(v)}
               />
             </Grid>
             <Grid size={{ xs: 2, sm: 3 }}>
@@ -89,12 +110,9 @@ export default function Page(): ReactNode {
             <Grid size={{ xs: 2, sm: 3 }}>
               <CustomRadio
                 label='Radios'
-                onChange={(value): void => console.log(value)}
-                value={2}
-                options={[
-                  { label: 'a', value: 1 },
-                  { label: 'b', value: 2 }
-                ]}
+                onChange={(value): void => setToggle(value)}
+                value={toggle}
+                options={toggleOption}
               />
             </Grid>
             <Grid container spacing={3} alignContent='flex-end'>

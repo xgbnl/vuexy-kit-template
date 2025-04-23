@@ -5,7 +5,7 @@ import type { HTMLAttributes } from 'react'
 
 // MUI Imports
 import Radio from '@mui/material/Radio'
-import RadioGroup from '@mui/material/RadioGroup'
+import RadioGroup, { type RadioGroupProps } from '@mui/material/RadioGroup'
 import FormControl from '@mui/material/FormControl'
 import FormLabel from '@mui/material/FormLabel'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -33,26 +33,25 @@ const FormControlStyled = styled(FormControl)(({ theme }) => ({
   }
 }))
 
-type Props = {
+type Props<E> = {
   label: string
-  options: Option[]
-  value: OptionValue
-  onChange(value: OptionValue): void
-} & Pick<HTMLAttributes<any>, 'id'>
+  options: Option<E>[]
+  value?: E
+  disabled?: boolean
+  onChange(value: E): void
+} & Pick<HTMLAttributes<any>, 'id'> &
+  Omit<RadioGroupProps, 'onChange' | 'value'>
 
-const CustomRadio = ({ id, label, options, value, onChange }: Props) => {
+export default function CustomRadio<E>(props: Props<E>) {
+  const { id, label, options, onChange, disabled } = props
+
   return (
     <FormControlStyled>
       <FormLabel id={id}>{label}</FormLabel>
-      <RadioGroup
-        row
-        value={value}
-        name='row-radio-buttons-group'
-        aria-labelledby={id}
-        onChange={event => onChange(event.target.value)}
-      >
+      <RadioGroup row {...props} aria-labelledby={id} onChange={event => onChange(event.target.value as E)}>
         {options.map(option => (
           <FormControlLabel
+            disabled={disabled}
             key={`mui-basic-radio-${option.value}`}
             value={option.value}
             control={<Radio />}
@@ -63,5 +62,3 @@ const CustomRadio = ({ id, label, options, value, onChange }: Props) => {
     </FormControlStyled>
   )
 }
-
-export default CustomRadio

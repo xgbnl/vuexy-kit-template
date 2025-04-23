@@ -1,8 +1,7 @@
 'use client'
 
 // React Imports
-import { type ReactNode } from 'react'
-import { useMemo, memo } from 'react'
+import type { ReactNode } from 'react'
 
 // MUI Imports
 import MenuItem from '@mui/material/MenuItem'
@@ -11,27 +10,23 @@ import type { BaseSelectProps, BaseTextFieldProps } from '@mui/material'
 // Components Imports
 import CustomTextField from '@core/components/mui/TextField'
 
-type Props = {
-  items: Option[]
-  value: OptionValue
+type Props<E> = {
+  items: Option<E>[]
+  value: E
   label: string
-  defaultValue: Option
-  onChange: (value: OptionValue) => void
+  onChange: (value: E) => void
 } & Pick<BaseSelectProps, 'multiple'> &
   Pick<BaseTextFieldProps, 'id'>
 
-const SimpleSelect = memo(({ items, value, label, onChange, defaultValue, multiple, id }: Props) => {
-  const options = useMemo((): Option[] => [defaultValue, ...items], [defaultValue, items])
-
+export default function SimpleSelect<E>({ items, value, label, onChange, multiple, id }: Props<E>) {
   return (
     <CustomTextField
       select
       fullWidth
       label={label}
       id={id}
-      defaultValue={defaultValue.value}
       value={value}
-      onChange={(event): void => onChange(event.target.value)}
+      onChange={(event): void => onChange(event.target.value as E)}
       slotProps={{
         select: {
           displayEmpty: true,
@@ -39,15 +34,13 @@ const SimpleSelect = memo(({ items, value, label, onChange, defaultValue, multip
         }
       }}
     >
-      {options.map(
-        (item: Option): ReactNode => (
-          <MenuItem key={`mui-menu-item-${item.value}`} disabled={item.disabled} value={item.value}>
+      {items.map(
+        (item: Option<E>): ReactNode => (
+          <MenuItem key={`mui-menu-item-${item.value}`} disabled={item.disabled} value={item.value as string | number}>
             <em>{item.label}</em>
           </MenuItem>
         )
       )}
     </CustomTextField>
   )
-})
-
-export default SimpleSelect
+}
