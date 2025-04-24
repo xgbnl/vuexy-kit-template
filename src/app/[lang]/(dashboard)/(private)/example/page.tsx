@@ -101,7 +101,7 @@ export default function Page(): ReactNode {
                 onChange={(v): void => setPayStatus(v)}
               />
             </Grid>
-            <Grid size={{ xs: 2, sm: 3 }}>
+            <Grid size={{ xs: 2, sm: 2.3 }}>
               <DateRange
                 onChange={value => {
                   console.log(value)
