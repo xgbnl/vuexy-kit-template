@@ -85,8 +85,8 @@ const DateRange = ({ label, onChange, start, end }: Props) => {
           customInput={
             <CustomInput
               label={label ?? 'Multiple Months'}
-              end={endDateRange as Date | number}
-              start={startDateRange as Date | number}
+              end={endDateRange as Date}
+              start={startDateRange as Date}
               slotProps={{
                 input: {
                   endAdornment: <span className='tabler-calendar-time'></span>
