@@ -22,7 +22,7 @@ import CustomTextField from '@core/components/mui/TextField'
 // Configs Imports
 import { i18n } from '@/configs/i18n'
 import type { Locale } from '@/configs/i18n'
-import { serializeDate } from '@/utils/serializeDate'
+import { serializeDate } from '@/utils/carbon'
 
 type CustomInputProps = TextFieldProps & {
   label: string
@@ -34,7 +34,7 @@ type Props = {
   onChange: (date: Pick<CustomInputProps, 'end' | 'start'>, format: string[]) => void
 } & Partial<Pick<CustomInputProps, 'label'>>
 
-const PickersRange = ({ label, onChange }: Props) => {
+const DateRange = ({ label, onChange }: Props) => {
   // States
   const [startDateRange, setStartDateRange] = useState<Date | null | undefined>(new Date())
   const [endDateRange, setEndDateRange] = useState<Date | null | undefined>(new Date())
@@ -100,4 +100,4 @@ const PickersRange = ({ label, onChange }: Props) => {
   )
 }
 
-export default PickersRange
+export default DateRange

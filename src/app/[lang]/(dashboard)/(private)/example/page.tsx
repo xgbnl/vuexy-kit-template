@@ -14,7 +14,8 @@ import Grid from '@mui/material/Grid'
 import EnhancedTableContainer from '@/views/apps/enhanced-table'
 import type { Entity, HeadCell } from '@/types/apps/tableType'
 import SimpleSelect from '@/views/apps/select'
-import PickerRange from '@/views/apps/picker-range'
+import DateRange from '@/views/apps/date-range'
+import TimePicker from '@/views/apps/time-picker'
 import CustomRadio from '@/views/apps/radio'
 
 interface User extends Entity {
@@ -91,7 +92,7 @@ export default function Page(): ReactNode {
       {/** Table filter Card */}
       <Card sx={{ minWidth: 275 }} className='mb-6'>
         <CardActions>
-          <Grid container spacing={6} sx={{ width: '100%' }}>
+          <Grid container spacing={4} sx={{ width: '100%' }}>
             <Grid size={{ xs: 4, sm: 2 }}>
               <SimpleSelect
                 items={payStatusOption}
@@ -101,7 +102,7 @@ export default function Page(): ReactNode {
               />
             </Grid>
             <Grid size={{ xs: 2, sm: 3 }}>
-              <PickerRange
+              <DateRange
                 onChange={value => {
                   console.log(value)
                 }}
@@ -114,6 +115,9 @@ export default function Page(): ReactNode {
                 value={toggle}
                 options={toggleOption}
               />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1 }}>
+              <TimePicker onChange={(date): void => console.log(date)} />
             </Grid>
             <Grid container spacing={3} alignContent='flex-end'>
               <Button size='medium' variant='contained' startIcon={<i className='tabler-search' />}>
