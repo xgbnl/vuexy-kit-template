@@ -26,18 +26,18 @@ import { serializeDate } from '@/utils/carbon'
 
 type CustomInputProps = TextFieldProps & {
   label: string
-  end: Date | number
-  start: Date | number
+  end: Date
+  start: Date
 }
 
 type Props = {
   onChange: (date: Pick<CustomInputProps, 'end' | 'start'>, format: string[]) => void
-} & Partial<Pick<CustomInputProps, 'label'>>
+} & Partial<CustomInputProps>
 
-const DateRange = ({ label, onChange }: Props) => {
+const DateRange = ({ label, onChange, start, end }: Props) => {
   // States
-  const [startDateRange, setStartDateRange] = useState<Date | null | undefined>(new Date())
-  const [endDateRange, setEndDateRange] = useState<Date | null | undefined>(new Date())
+  const [startDateRange, setStartDateRange] = useState<Date | null | undefined>(start ?? new Date())
+  const [endDateRange, setEndDateRange] = useState<Date | null | undefined>(end ?? new Date())
   const { lang } = useParams<{ lang: Locale }>()
 
   const { locale, dateFormat } = useMemo<{ locale: DateFnsLocale; dateFormat: string }>(() => {
