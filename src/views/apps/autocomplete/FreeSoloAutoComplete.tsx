@@ -9,9 +9,9 @@ import CustomTextField from '@core/components/mui/TextField'
 
 type Props = {
   onChange: (newValue: string[]) => void
-} & Pick<BaseTextFieldProps, 'label' | 'id'>
+} & Pick<BaseTextFieldProps, 'label' | 'id' | 'placeholder'>
 
-const FreeSoloAutoComplete = ({ onChange, label, id }: Props) => {
+const FreeSoloAutoComplete = ({ onChange, label, id, placeholder }: Props) => {
   return (
     <CustomAutocomplete
       id={id}
@@ -19,7 +19,7 @@ const FreeSoloAutoComplete = ({ onChange, label, id }: Props) => {
       freeSolo
       onChange={(_, newValue) => onChange(newValue)}
       getOptionLabel={option => option}
-      renderInput={params => <CustomTextField {...params} label={label} />}
+      renderInput={params => <CustomTextField {...params} label={label} placeholder={placeholder} />}
       options={[]}
     />
   )
