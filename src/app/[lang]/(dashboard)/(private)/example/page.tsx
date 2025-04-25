@@ -17,6 +17,8 @@ import SimpleSelect from '@/views/apps/select'
 import DateRange from '@/views/apps/date-range'
 import TimePicker from '@/views/apps/time-picker'
 import CustomRadio from '@/views/apps/radio'
+import GenericAutoComplete from '@/views/apps/autocomplete'
+import AutoCompleteExample from '@/views/examples/AutoCompleteExample'
 
 interface User extends Entity {
   name: string
@@ -115,6 +117,9 @@ export default function Page(): ReactNode {
                 value={toggle}
                 options={toggleOption}
               />
+            </Grid>
+            <Grid size={{ xs: 2, sm: 3 }}>
+              <AutoCompleteExample />
             </Grid>
             <Grid size={{ xs: 1, sm: 1 }}>
               <TimePicker onChange={(date): void => console.log(date)} />
