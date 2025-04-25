@@ -17,7 +17,6 @@ import SimpleSelect from '@/views/apps/select'
 import DateRange from '@/views/apps/date-range'
 import TimePicker from '@/views/apps/time-picker'
 import CustomRadio from '@/views/apps/radio'
-import GenericAutoComplete from '@/views/apps/autocomplete'
 import AutoCompleteExample from '@/views/examples/AutoCompleteExample'
 
 interface User extends Entity {
