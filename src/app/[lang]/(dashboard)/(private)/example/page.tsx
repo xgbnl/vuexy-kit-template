@@ -13,10 +13,10 @@ import Grid from '@mui/material/Grid'
 // Components Imports
 import EnhancedTableContainer from '@/views/apps/enhanced-table'
 import type { Entity, HeadCell } from '@/types/apps/tableType'
-import SimpleSelect from '@/views/apps/select'
+import EnumSelect from '@/views/apps/enum-select'
 import DateRange from '@/views/apps/date-range'
 import TimePicker from '@/views/apps/time-picker'
-import CustomRadio from '@/views/apps/radio'
+import EnumRadio from '@/views/apps/enum-radio'
 import AutoCompleteExample from '@/views/examples/AutoCompleteExample'
 import FreeSoloAutoCompleteExample from '@/views/examples/FreeSoloAutoComplete'
 
@@ -96,7 +96,7 @@ export default function Page(): ReactNode {
         <CardActions>
           <Grid container spacing={4} sx={{ width: '100%' }}>
             <Grid size={{ xs: 4, sm: 2 }}>
-              <SimpleSelect
+              <EnumSelect
                 items={payStatusOption}
                 label='Paid Status'
                 value={payStatus}
@@ -111,7 +111,7 @@ export default function Page(): ReactNode {
               />
             </Grid>
             <Grid size={{ xs: 2, sm: 3 }}>
-              <CustomRadio
+              <EnumRadio
                 label='Radios'
                 onChange={(value): void => setToggle(value)}
                 value={toggle}

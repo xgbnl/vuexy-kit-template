@@ -18,7 +18,7 @@ type Props<E> = {
 } & Pick<BaseSelectProps, 'multiple'> &
   Pick<BaseTextFieldProps, 'id'>
 
-export default function SimpleSelect<E>({ items, value, label, onChange, multiple, id }: Props<E>) {
+export default function EnumSelect<E>({ items, value, label, onChange, multiple, id }: Props<E>) {
   return (
     <CustomTextField
       select

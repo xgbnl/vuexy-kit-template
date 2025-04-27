@@ -42,7 +42,7 @@ type Props<E> = {
 } & Pick<HTMLAttributes<any>, 'id'> &
   Omit<RadioGroupProps, 'onChange' | 'value'>
 
-export default function CustomRadio<E>(props: Props<E>) {
+export default function EnumRadio<E>(props: Props<E>) {
   const { id, label, options, onChange, disabled } = props
 
   return (
