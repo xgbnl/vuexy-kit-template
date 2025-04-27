@@ -7,7 +7,6 @@ import { useState, forwardRef, useMemo } from 'react'
 import { useParams } from 'next/navigation'
 
 // MUI Imports
-import Grid from '@mui/material/Grid'
 import type { TextFieldProps } from '@mui/material/TextField'
 
 // Third-party Imports
@@ -70,33 +69,29 @@ const DateRange = ({ label, onChange, start, end }: Props) => {
   })
 
   return (
-    <Grid container spacing={6}>
-      <Grid size={{ xs: 12 }}>
-        <AppReactDatepicker
-          locale={locale}
-          selectsRange
-          monthsShown={2}
-          endDate={endDateRange as Date}
-          selected={startDateRange}
-          startDate={startDateRange as Date}
-          shouldCloseOnSelect={false}
-          id='date-range-picker-months'
-          onChange={handleOnChangeRange}
-          customInput={
-            <CustomInput
-              label={label ?? 'Multiple Months'}
-              end={endDateRange as Date}
-              start={startDateRange as Date}
-              slotProps={{
-                input: {
-                  endAdornment: <span className='tabler-calendar-time'></span>
-                }
-              }}
-            />
-          }
+    <AppReactDatepicker
+      locale={locale}
+      selectsRange
+      monthsShown={2}
+      endDate={endDateRange as Date}
+      selected={startDateRange}
+      startDate={startDateRange as Date}
+      shouldCloseOnSelect={false}
+      id='date-range-picker-months'
+      onChange={handleOnChangeRange}
+      customInput={
+        <CustomInput
+          label={label ?? 'Multiple Months'}
+          end={endDateRange as Date}
+          start={startDateRange as Date}
+          slotProps={{
+            input: {
+              endAdornment: <span className='tabler-calendar-time'></span>
+            }
+          }}
         />
-      </Grid>
-    </Grid>
+      }
+    />
   )
 }
 
