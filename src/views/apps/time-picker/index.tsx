@@ -6,6 +6,9 @@ import { useState, useMemo } from 'react'
 // Next Imports
 import { useParams } from 'next/navigation'
 
+// MUI Imports
+import type { BaseTextFieldProps } from '@mui/material'
+
 // Third-party Imports
 import { zhCN, enUS } from 'date-fns/locale'
 import type { Locale as DateFnsLocale } from 'date-fns'
@@ -30,9 +33,9 @@ interface DatetimeInterface {
 type Props = {
   value?: Date
   onChange: (date: DatetimeInterface) => void
-}
+} & Pick<BaseTextFieldProps, 'label'>
 
-const TimePicker = ({ onChange, value }: Props) => {
+const TimePicker = ({ onChange, value, label }: Props) => {
   // States
   const [time, setTime] = useState<Date | null | undefined>(value ?? new Date())
 
@@ -60,7 +63,7 @@ const TimePicker = ({ onChange, value }: Props) => {
       dateFormat='h:mm aa'
       id='time-only-picker'
       onChange={handleChange}
-      customInput={<CustomTextField label='Time Only' fullWidth />}
+      customInput={<CustomTextField label={label ?? 'Time Only'} fullWidth />}
     />
   )
 }
