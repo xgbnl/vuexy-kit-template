@@ -1,14 +1,39 @@
-export function serializeDate(date: string | number | Date | null): string {
+export type DatePoint = {
+  year: number
+  month: string
+  day: string
+  hours: string
+  minutes: string
+  seconds: string
+}
+
+export type DateTimeInterface = (date: string | number | Date | null) => string
+
+export const serializeDate: DateTimeInterface = (date: string | number | Date | null): string => {
   if (null === date) {
     return ''
   }
 
   const isTimestamp = typeof date === 'number' || typeof date === 'string'
 
-  return format(isTimestamp ? new Date(date) : date)
+  const { year, month, day } = format(isTimestamp ? new Date(date) : date)
+
+  return `${year}-${month}-${day}`
 }
 
-function format(date: Date): string {
+export const serializeDatetime = (date: string | number | Date | null): string => {
+  if (null === date) {
+    return ''
+  }
+
+  const isTimestamp = typeof date === 'number' || typeof date === 'string'
+
+  const { year, month, day, hours, minutes, seconds } = format(isTimestamp ? new Date(date) : date)
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
+
+export function format(date: Date): DatePoint {
   const year = date.getFullYear()
   const month = (date.getMonth() + 1).toString().padStart(2, '0')
   const day = date.getDate().toString().padStart(2, '0')
@@ -16,7 +41,14 @@ function format(date: Date): string {
   const minutes = date.getMinutes().toString().padStart(2, '0')
   const seconds = date.getSeconds().toString().padStart(2, '0')
 
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+  return {
+    year,
+    month,
+    day,
+    hours,
+    minutes,
+    seconds
+  }
 }
 
 export function serializeTime(date: Date | null): string {
