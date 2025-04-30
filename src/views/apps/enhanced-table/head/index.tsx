@@ -13,9 +13,9 @@ import TableSortLabel from '@mui/material/TableSortLabel'
 import { visuallyHidden } from '@mui/utils'
 
 // Type Imports
-import type { Order, Entity, HeadCell } from '@/types/apps/tableType'
+import type { Order, Attribute, HeadCell } from '@/types/apps/tableType'
 
-type EnhancedTableProps<T extends Entity> = {
+type EnhancedTableProps<T extends Attribute> = {
   numSelected: number
   chosen: boolean
   onRequestSort: (event: MouseEvent<unknown>, property: keyof T) => void
@@ -26,7 +26,7 @@ type EnhancedTableProps<T extends Entity> = {
   headCells: HeadCell<T>[]
 }
 
-export default function EnhancedTableHead<T extends Entity>(props: EnhancedTableProps<T>): ReactNode {
+export default function EnhancedTableHead<T extends Attribute>(props: EnhancedTableProps<T>): ReactNode {
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells, chosen } = props
 
   const createSortHandler = (property: keyof T) => (event: MouseEvent<unknown>) => {

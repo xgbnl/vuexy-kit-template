@@ -12,7 +12,7 @@ import Grid from '@mui/material/Grid'
 
 // Components Imports
 import EnhancedTableContainer from '@/views/apps/enhanced-table'
-import type { Entity, HeadCell } from '@/types/apps/tableType'
+import type { Attribute, HeadCell } from '@/types/apps/tableType'
 import EnumSelect from '@/views/apps/enum-select'
 import DateRange from '@/views/apps/date-range'
 import TimePicker from '@/views/apps/time-picker'
@@ -20,7 +20,7 @@ import EnumRadio from '@/views/apps/enum-radio'
 import AutoCompleteExample from '@/views/examples/AutoCompleteExample'
 import FreeSoloAutoCompleteExample from '@/views/examples/FreeSoloAutoComplete'
 
-interface User extends Entity {
+interface User extends Attribute {
   name: string
   avatar: string
   createdAt: string
@@ -164,8 +164,8 @@ export default function Page(): ReactNode {
         headCells={headCells}
         multiple={true}
         slotProps={{
-          root: () => <Button variant='contained'>Contained</Button>,
-          actions: (rows: User[]) => (
+          slot: () => <Button variant='contained'>Contained</Button>,
+          effectActions: (rows: User[]) => (
             <Button
               variant='contained'
               onClick={() => {

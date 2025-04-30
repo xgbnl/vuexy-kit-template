@@ -1,16 +1,18 @@
 // React Imports
-import type { ReactNode } from 'react'
+import type { ReactNode, ReactElement } from 'react'
 
 export type Order = 'asc' | 'desc'
 
-export interface Entity {
-  id: number | string
+export interface Attribute {
+  id: number
+  createdAt?: string
+  updatedAt?: string
 }
 
 export type EnhancedTableSlotProp<T> = {
   slotProps?: {
-    root?: () => ReactNode
-    actions?: (rows: T[]) => ReactNode
+    slot?: () => ReactNode
+    effectActions?: (rows: T[]) => ReactElement
   }
 }
 
