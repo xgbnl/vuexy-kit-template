@@ -3,7 +3,7 @@ import type { ReactNode, ReactElement } from 'react'
 
 export type Order = 'asc' | 'desc'
 
-export interface Attribute {
+export type Attribute = {
   id: number
   createdAt?: string
   updatedAt?: string
@@ -16,13 +16,13 @@ export type EnhancedTableSlotProp<T> = {
   }
 }
 
-export interface HeadCell<T> {
+export type HeadCell<T> = {
   disablePadding: boolean
-  id: keyof T
+  id: keyof T | 'action'
   label: string
   numeric: boolean
-  format?: (row: T) => any
-  action?: (row: T) => ReactNode
+  format?: (row: T) => ReactNode
+  action?: (row: T) => ReactElement
 }
 
 export type EnhancedTableRowProps<T> = {

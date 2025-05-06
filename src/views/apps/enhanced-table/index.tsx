@@ -85,7 +85,7 @@ export default function EnhancedTableContainer<T extends Attribute>(props: Props
   const visibleRows = useMemo(() => [...rows].sort(getComparator(order, orderBy)), [order, orderBy, rows])
 
   // Hooks
-  const handleRequestSort = (event: MouseEvent<unknown>, property: keyof T) => {
+  const handleSort = (event: MouseEvent<unknown>, property: keyof T) => {
     const isAsc = orderBy === property && order === 'asc'
 
     setOrder(isAsc ? 'desc' : 'asc')
@@ -162,7 +162,7 @@ export default function EnhancedTableContainer<T extends Attribute>(props: Props
               order={order}
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
+              onSort={handleSort}
               rowCount={rows.length}
               headCells={headCells}
               chosen={multiple as boolean}

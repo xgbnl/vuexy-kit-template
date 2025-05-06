@@ -12,13 +12,13 @@ import Checkbox from '@mui/material/Checkbox'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import { visuallyHidden } from '@mui/utils'
 
-// Type Imports
+// Types Imports
 import type { Order, Attribute, HeadCell } from '@/types/apps/tableType'
 
-type EnhancedTableProps<T extends Attribute> = {
+type Props<T extends Attribute> = {
   numSelected: number
   chosen: boolean
-  onRequestSort: (event: MouseEvent<unknown>, property: keyof T) => void
+  onSort: (event: MouseEvent<unknown>, property: keyof T) => void
   onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void
   order: Order
   orderBy: keyof T
@@ -26,12 +26,8 @@ type EnhancedTableProps<T extends Attribute> = {
   headCells: HeadCell<T>[]
 }
 
-export default function EnhancedTableHead<T extends Attribute>(props: EnhancedTableProps<T>): ReactNode {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells, chosen } = props
-
-  const createSortHandler = (property: keyof T) => (event: MouseEvent<unknown>) => {
-    onRequestSort(event, property)
-  }
+export default function EnhancedTableHead<T extends Attribute>(props: Props<T>): ReactNode {
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onSort, headCells, chosen } = props
 
   return (
     <TableHead>
@@ -56,7 +52,7 @@ export default function EnhancedTableHead<T extends Attribute>(props: EnhancedTa
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
+              onClick={(event): void => onSort(event, headCell.id)}
             >
               {headCell.label}
               {orderBy === headCell.id ? (
