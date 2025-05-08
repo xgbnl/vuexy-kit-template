@@ -24,7 +24,7 @@ import EnhancedTableSortRow from './row/sort'
 import EnhancedTableSimpleRow from './row/simple'
 
 // Type Imports
-import type { Order, Entity, EnhancedTableSlotProp, HeadCell } from '@/types/apps/tableType'
+import type { Order, Attribute, EnhancedTableSlotProp, HeadCell } from '@/types/apps/tableType'
 
 // Methods
 function getComparator<T, Key extends keyof T>(order: Order, orderBy: Key): (a: T, b: T) => number {
@@ -45,7 +45,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   return 0
 }
 
-function getRowIdentifier<T extends Entity>(row: T, identifier?: Identifier<T>) {
+function getRowIdentifier<T extends Attribute>(row: T, identifier?: Identifier<T>) {
   if (identifier !== undefined) {
     return typeof identifier === 'function' ? identifier(row) : row[identifier]
   }
@@ -66,7 +66,7 @@ type Props<T> = {
   identifier?: Identifier<T>
 } & EnhancedTableSlotProp<T>
 
-export default function EnhancedTableContainer<T extends Entity>(props: Props<T>) {
+export default function EnhancedTableContainer<T extends Attribute>(props: Props<T>) {
   const { rows, sortBy, headCells, multiple, onDelete, slotProps, total, onPageChange, identifier } = props
 
   // States
@@ -85,7 +85,7 @@ export default function EnhancedTableContainer<T extends Entity>(props: Props<T>
   const visibleRows = useMemo(() => [...rows].sort(getComparator(order, orderBy)), [order, orderBy, rows])
 
   // Hooks
-  const handleRequestSort = (event: MouseEvent<unknown>, property: keyof T) => {
+  const handleSort = (event: MouseEvent<unknown>, property: keyof T) => {
     const isAsc = orderBy === property && order === 'asc'
 
     setOrder(isAsc ? 'desc' : 'asc')
@@ -162,7 +162,7 @@ export default function EnhancedTableContainer<T extends Entity>(props: Props<T>
               order={order}
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
+              onSort={handleSort}
               rowCount={rows.length}
               headCells={headCells}
               chosen={multiple as boolean}

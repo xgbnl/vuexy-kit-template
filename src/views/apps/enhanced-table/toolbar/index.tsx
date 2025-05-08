@@ -37,12 +37,12 @@ export default function EnhancedTableToolbar<T>(props: EnhancedTableToolbarProps
         </Typography>
       ) : (
         <Typography sx={{ flex: '1 1 100%' }} variant='h6' id='tableTitle' component='div'>
-          {slotProps?.root ? slotProps.root() : 'Nutrition'}
+          {slotProps?.slot ? slotProps.slot() : 'Nutrition'}
         </Typography>
       )}
       {numSelected > 0 ? (
-        slotProps?.actions ? (
-          slotProps.actions(selected)
+        slotProps?.effectActions ? (
+          slotProps.effectActions(selected)
         ) : (
           <Tooltip title='Delete'>
             <IconButton onClick={onDelete}>

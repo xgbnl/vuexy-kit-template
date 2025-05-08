@@ -1,26 +1,29 @@
 // React Imports
-import type { ReactNode } from 'react'
+import type { ReactNode, ReactElement } from 'react'
 
 export type Order = 'asc' | 'desc'
 
-export interface Entity {
-  id: number | string
+export type Attribute = {
+  id: number
+  createdAt?: string
+  updatedAt?: string
+  action?: unknown
 }
 
 export type EnhancedTableSlotProp<T> = {
   slotProps?: {
-    root?: () => ReactNode
-    actions?: (rows: T[]) => ReactNode
+    slot?: () => ReactNode
+    effectActions?: (rows: T[]) => ReactElement
   }
 }
 
-export interface HeadCell<T> {
+export type HeadCell<T> = {
   disablePadding: boolean
   id: keyof T
   label: string
   numeric: boolean
-  format?: (row: T) => any
-  action?: (row: T) => ReactNode
+  format?: (row: T) => ReactNode
+  action?: (row: T) => ReactElement
 }
 
 export type EnhancedTableRowProps<T> = {
