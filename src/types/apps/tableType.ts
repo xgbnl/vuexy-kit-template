@@ -7,7 +7,7 @@ export type Attribute = {
   id: number
   createdAt?: string
   updatedAt?: string
-  action?: unknown
+  action?: ReactElement
 }
 
 export type EnhancedTableSlotProp<T> = {

@@ -33,22 +33,22 @@ const FormControlStyled = styled(FormControl)(({ theme }) => ({
   }
 }))
 
-type Props<E> = {
+type Props<T> = {
   label: string
-  options: Option<E>[]
-  value?: E
+  options: Option<T>[]
+  value?: T
   disabled?: boolean
-  onChange(value: E): void
+  onChange(value: T): void
 } & Pick<HTMLAttributes<any>, 'id'> &
   Omit<RadioGroupProps, 'onChange' | 'value'>
 
-export default function EnumRadio<E>(props: Props<E>) {
+export default function EnumRadio<T>(props: Props<T>) {
   const { id, label, options, onChange, disabled } = props
 
   return (
     <FormControlStyled>
       <FormLabel id={id}>{label}</FormLabel>
-      <RadioGroup row {...props} aria-labelledby={id} onChange={event => onChange(event.target.value as E)}>
+      <RadioGroup row {...props} aria-labelledby={id} onChange={event => onChange(event.target.value as T)}>
         {options.map(option => (
           <FormControlLabel
             disabled={disabled}

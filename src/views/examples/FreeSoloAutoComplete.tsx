@@ -1,5 +1,5 @@
 // Components Imports
-import FreeSoloAutoComplete from '../../components/apps/autocomplete/FreeSoloAutoComplete'
+import FreeSoloAutoComplete from '@components/apps/autocomplete/FreeSoloAutoComplete'
 
 const FreeSoloAutoCompleteExample = () => {
   return (

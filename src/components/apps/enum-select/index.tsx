@@ -10,15 +10,15 @@ import type { BaseSelectProps, BaseTextFieldProps } from '@mui/material'
 // Components Imports
 import CustomTextField from '@core/components/mui/TextField'
 
-type Props<E> = {
-  items: Option<E>[]
-  value: E
+type Props<T> = {
+  items: Option<T>[]
+  value: T
   label: string
-  onChange: (value: E) => void
+  onChange: (value: T) => void
 } & Pick<BaseSelectProps, 'multiple'> &
   Pick<BaseTextFieldProps, 'id'>
 
-export default function EnumSelect<E>({ items, value, label, onChange, multiple, id }: Props<E>) {
+export default function EnumSelect<T>({ items, value, label, onChange, multiple, id }: Props<T>) {
   return (
     <CustomTextField
       select
@@ -26,7 +26,7 @@ export default function EnumSelect<E>({ items, value, label, onChange, multiple,
       label={label}
       id={id}
       value={value}
-      onChange={(event): void => onChange(event.target.value as E)}
+      onChange={(event): void => onChange(event.target.value as T)}
       slotProps={{
         select: {
           displayEmpty: true,
@@ -35,7 +35,7 @@ export default function EnumSelect<E>({ items, value, label, onChange, multiple,
       }}
     >
       {items.map(
-        (item: Option<E>): ReactNode => (
+        (item: Option<T>): ReactNode => (
           <MenuItem key={`mui-menu-item-${item.value}`} disabled={item.disabled} value={item.value as string | number}>
             <em>{item.label}</em>
           </MenuItem>

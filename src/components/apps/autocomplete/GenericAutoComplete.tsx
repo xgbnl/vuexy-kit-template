@@ -9,24 +9,26 @@ import type { AutocompleteProps, BaseTextFieldProps } from '@mui/material'
 import CustomAutocomplete from '@core/components/mui/Autocomplete'
 import CustomTextField from '@core/components/mui/TextField'
 
-type Props<E> = {
-  fixed?: E
-  options: Option<E>[]
-  onChange: (newValue: Option<E>[]) => void
+type Props<T> = {
+  fixed?: T
+  options: Option<T>[]
+  onChange: (newValue: Option<T>[]) => void
 } & Pick<BaseTextFieldProps, 'label' | 'placeholder'> &
   Pick<AutocompleteProps<any, boolean | undefined, boolean | undefined, boolean | undefined, ElementType>, 'limitTags'>
 
-export default function GenericAutoComplete<E>({ fixed, options, label, placeholder, limitTags }: Props<E>) {
+export default function GenericAutoComplete<T>({ fixed, options, label, placeholder, limitTags, onChange }: Props<T>) {
   // States
   const fixedOption = useMemo(() => options.find(option => option.value === fixed), [fixed, options])
 
-  const [value, setValue] = useState<Option<E>[]>(fixedOption ? [fixedOption] : [])
+  const [value, setValue] = useState<Option<T>[]>(fixedOption ? [fixedOption] : [])
 
   // Hooks
-  const handleChange = (newValue: Option<E>[]): void => {
+  const handleChange = (newValue: Option<T>[]): void => {
     const merge = fixedOption ? [fixedOption, ...newValue.filter(option => option.value !== fixed)] : newValue
 
     setValue(merge)
+
+    onChange(newValue)
   }
 
   return (

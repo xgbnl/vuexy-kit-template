@@ -1,7 +1,7 @@
 declare module 'tailwindcss-logical'
 
-type Option<E> = {
+type Option<T> = {
   label: string
-  value: E[keyof E]
+  value: T
   disabled?: boolean
 }
