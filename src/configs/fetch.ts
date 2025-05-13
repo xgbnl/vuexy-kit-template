@@ -1,5 +1,5 @@
 // Http response status code
-export enum ResponseStatus {
+export const enum ResponseStatus {
   BadRequest = 400,
   Unauthorized = 401,
   Forbidden = 403,

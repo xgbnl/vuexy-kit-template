@@ -9,6 +9,11 @@ export type DatePoint = {
 
 export type DateTimeInterface = (date: string | number | Date | null) => string
 
+/**
+ * Format date to yyyy-MM-dd
+ * @param date
+ * @returns yyyy-MM-dd
+ */
 export const serializeDate: DateTimeInterface = (date: string | number | Date | null): string => {
   if (null === date) {
     return ''
@@ -21,6 +26,11 @@ export const serializeDate: DateTimeInterface = (date: string | number | Date | 
   return `${year}-${month}-${day}`
 }
 
+/**
+ * Format date to yyyy-MM-dd HH:mm:ss
+ * @param date
+ * @returns yyyy-MM-dd HH:mm:ss
+ */
 export const serializeDatetime = (date: string | number | Date | null): string => {
   if (null === date) {
     return ''

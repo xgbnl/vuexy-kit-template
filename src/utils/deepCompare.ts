@@ -1,3 +1,8 @@
+/**
+ * Determine whether the given objects are equal.
+ * @param args object
+ * @returns boolean
+ */
 export default function deepCompare(...args: any[]): boolean {
   let i: number, l: number, leftChain: any[], rightChain: any[]
 
