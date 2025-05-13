@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useState, type ReactNode } from 'react'
+import { useState, type ReactElement } from 'react'
 
 // MUI Imports
 import Button from '@mui/material/Button'
@@ -62,32 +62,14 @@ function makeOption<E>(label: string, value: E, disabled: boolean = false): Opti
   return { label, value, disabled } as Option<E>
 }
 
-const enum PayStatus {
-  All = 'all',
-  Paid = 'paid',
-  Unpaid = 'unpaid'
-}
+type PayStatus = 'all' | 'paid' | 'unpaid'
 
-const enum Toggle {
-  Enabled = 'enabled',
-  Disabled = 'disabled'
-}
+type Toggle = 'enabled' | 'disabled'
 
-const payStatusOption: Option<PayStatus>[] = [
-  makeOption<PayStatus>('All pay status', PayStatus.All),
-  makeOption<PayStatus>('Paid', PayStatus.Paid),
-  makeOption<PayStatus>('Unpaid', PayStatus.Unpaid)
-]
-
-const toggleOption: Option<Toggle>[] = [
-  makeOption<Toggle>('enabled', Toggle.Enabled),
-  makeOption<Toggle>('disabled', Toggle.Disabled)
-]
-
-export default function Page(): ReactNode {
+export default function Page(): ReactElement {
   // States
-  const [payStatus, setPayStatus] = useState<PayStatus>(PayStatus.All)
-  const [toggle, setToggle] = useState<Toggle>(Toggle.Enabled)
+  const [payStatus, setPayStatus] = useState<PayStatus>('all')
+  const [toggle, setToggle] = useState<Toggle>('enabled')
 
   return (
     <>
@@ -97,7 +79,11 @@ export default function Page(): ReactNode {
           <Grid container spacing={4} sx={{ width: '100%' }}>
             <Grid size={{ xs: 4, sm: 2 }}>
               <EnumSelect
-                items={payStatusOption}
+                items={[
+                  makeOption<PayStatus>('All pay status', 'all'),
+                  makeOption<PayStatus>('Paid', 'paid'),
+                  makeOption<PayStatus>('Unpaid', 'unpaid')
+                ]}
                 label='Paid Status'
                 value={payStatus}
                 onChange={(v): void => setPayStatus(v)}
@@ -115,7 +101,7 @@ export default function Page(): ReactNode {
                 label='Radios'
                 onChange={(value): void => setToggle(value)}
                 value={toggle}
-                options={toggleOption}
+                options={[makeOption<Toggle>('Enabled', 'enabled'), makeOption<Toggle>('Disabled', 'disabled')]}
               />
             </Grid>
             <Grid size={{ xs: 2, sm: 3 }}>
