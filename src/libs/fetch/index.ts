@@ -3,7 +3,7 @@ import qs from 'qs'
 
 // Utils Imports
 import { isPlainObject } from '@utils/isPlainObject'
-import { getAppUrl } from '@/utils/getAppUrl'
+import { getAppUrl } from '@/utils/url'
 
 // Configs Improts
 import { ResponseStatus } from '@/configs/fetch'
