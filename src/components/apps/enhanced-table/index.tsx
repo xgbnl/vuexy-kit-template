@@ -25,7 +25,6 @@ import EnhancedTableSimpleRow from './row/simple'
 
 // Type Imports
 import type { Order, Attribute, EnhancedTableSlotProp, HeadCell } from '@/types/apps/tableType'
-import theme from '@/@core/theme'
 
 // Methods
 function getComparator<T, Key extends keyof T>(order: Order, orderBy: Key): (a: T, b: T) => number {

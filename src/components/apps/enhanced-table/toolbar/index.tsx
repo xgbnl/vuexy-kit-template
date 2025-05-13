@@ -1,3 +1,8 @@
+'use client'
+
+// React Imports
+import type { ReactElement } from 'react'
+
 // MUI Imports
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
@@ -13,11 +18,34 @@ import type { EnhancedTableSlotProp } from '@/types/apps/tableType'
 type EnhancedTableToolbarProps<T> = {
   numSelected: number
   onDelete?: () => void
+  onFilter?: () => void
   selected: T[]
 } & EnhancedTableSlotProp<T>
 
 export default function EnhancedTableToolbar<T>(props: EnhancedTableToolbarProps<T>) {
-  const { numSelected, onDelete, slotProps, selected } = props
+  const { numSelected, onDelete, slotProps, selected, onFilter } = props
+
+  const render = (): ReactElement => {
+    if (numSelected > 0) {
+      return typeof slotProps?.effectActions === 'function' ? (
+        slotProps.effectActions(selected)
+      ) : (
+        <Tooltip title='Delete'>
+          <IconButton onClick={onDelete}>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
+      )
+    }
+
+    return (
+      <Tooltip title='Filter list'>
+        <IconButton onClick={onFilter}>
+          <FilterListIcon />
+        </IconButton>
+      </Tooltip>
+    )
+  }
 
   return (
     <Toolbar
@@ -40,23 +68,7 @@ export default function EnhancedTableToolbar<T>(props: EnhancedTableToolbarProps
           {slotProps?.slot ? slotProps.slot() : 'Nutrition'}
         </Typography>
       )}
-      {numSelected > 0 ? (
-        slotProps?.effectActions ? (
-          slotProps.effectActions(selected)
-        ) : (
-          <Tooltip title='Delete'>
-            <IconButton onClick={onDelete}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        )
-      ) : (
-        <Tooltip title='Filter list'>
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+      {render()}
     </Toolbar>
   )
 }
