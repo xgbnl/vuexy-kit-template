@@ -11,12 +11,12 @@ import Avatar from '@mui/material/Avatar'
 import Grid from '@mui/material/Grid'
 
 // Components Imports
-import EnhancedTableContainer from '@/views/apps/enhanced-table'
+import EnhancedTableContainer from '@/components/apps/enhanced-table'
 import type { Attribute, HeadCell } from '@/types/apps/tableType'
-import EnumSelect from '@/views/apps/enum-select'
-import DateRange from '@/views/apps/date-range'
-import TimePicker from '@/views/apps/time-picker'
-import EnumRadio from '@/views/apps/enum-radio'
+import EnumSelect from '@/components/apps/enum-select'
+import DateRange from '@/components/apps/date-range'
+import TimePicker from '@/components/apps/time-picker'
+import EnumRadio from '@/components/apps/enum-radio'
 import AutoCompleteExample from '@/views/examples/AutoCompleteExample'
 import FreeSoloAutoCompleteExample from '@/views/examples/FreeSoloAutoComplete'
 

@@ -1,5 +1,5 @@
 // Components Imports
-import GenericAutoComplete from '../apps/autocomplete/GenericAutoComplete'
+import GenericAutoComplete from '../../components/apps/autocomplete/GenericAutoComplete'
 
 // Utils Imports
 import { makeOption } from '@/utils/makeOption'
