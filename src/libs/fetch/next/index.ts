@@ -28,7 +28,7 @@ import type {
   HttpResponse,
   Reportable,
   Throwable
-} from '@/types/fetchTypes'
+} from '@/libs/fetch/types'
 
 // Abstract implements
 const render: Renderable = async <T>(promise: Response): Promise<JsonResponse<T> | Error> => {

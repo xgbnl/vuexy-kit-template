@@ -13,7 +13,7 @@ import InvalidLoginError from './InvalidLoginError'
 import { HttpStatus, ResponseStatus } from '@/configs/fetch'
 
 // Types Imports
-import type { JsonResponse } from '@/types/fetchTypes'
+import type { JsonResponse } from '@/libs/fetch/types'
 
 // Vars
 export type Authenticatable = {

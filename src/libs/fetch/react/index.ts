@@ -26,7 +26,7 @@ import type {
   HttpResponse,
   Reportable,
   Throwable
-} from '@/types/fetchTypes'
+} from '@/libs/fetch/types'
 
 // Fetch Imports
 import { fetcher } from '../index'

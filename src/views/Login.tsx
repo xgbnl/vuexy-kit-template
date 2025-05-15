@@ -34,7 +34,7 @@ import { toast } from 'react-toastify'
 // Type Imports
 import type { SystemMode } from '@core/types'
 import type { Locale } from '@/configs/i18n'
-import type { Throwable } from '@/types/fetchTypes'
+import type { Throwable } from '@/libs/fetch/types'
 
 // Component Imports
 import Logo from '@components/layout/shared/Logo'

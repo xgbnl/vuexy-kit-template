@@ -17,7 +17,7 @@ import type {
   HttpResponse,
   Passport,
   Throwable
-} from '@/types/fetchTypes'
+} from '@/libs/fetch/types'
 
 type FetchBaseConfig = {
   signal: AbortSignal | null

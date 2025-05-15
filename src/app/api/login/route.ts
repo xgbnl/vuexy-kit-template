@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server'
 
 // Types Imports
-import type { JsonResponse, Throwable } from '@/types/fetchTypes'
+import type { JsonResponse, Throwable } from '@/libs/fetch/types'
 
 // Libs Imports
 import { Post } from '@/libs/fetch/next'
