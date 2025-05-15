@@ -13,7 +13,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { alpha } from '@mui/material/styles'
 
 // Type Imports
-import type { EnhancedTableSlotProp } from '@/types/apps/tableType'
+import type { EnhancedTableSlotProp } from '@/components/apps/enhanced-table/types'
 
 type EnhancedTableToolbarProps<T> = {
   numSelected: number

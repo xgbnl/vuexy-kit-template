@@ -13,7 +13,7 @@ import TableSortLabel from '@mui/material/TableSortLabel'
 import { visuallyHidden } from '@mui/utils'
 
 // Types Imports
-import type { Order, Attribute, HeadCell } from '@/types/apps/tableType'
+import type { Order, Attribute, HeadCell } from '@/components/apps/enhanced-table/types'
 
 type Props<T extends Attribute> = {
   numSelected: number

@@ -12,7 +12,7 @@ import Grid from '@mui/material/Grid'
 
 // Components Imports
 import EnhancedTableContainer from '@/components/apps/enhanced-table'
-import type { Attribute, HeadCell } from '@/types/apps/tableType'
+import type { Attribute, HeadCell } from '@/components/apps/enhanced-table/types'
 import EnumSelect from '@/components/apps/enum-select'
 import DateRange from '@/components/apps/date-range'
 import TimePicker from '@/components/apps/time-picker'

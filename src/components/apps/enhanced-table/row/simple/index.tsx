@@ -7,7 +7,7 @@ import TableRow from '@mui/material/TableRow'
 import EnhancedTableSimpleCell from '../../cell'
 
 // Types Imports
-import type { EnhancedTableRowProps } from '@/types/apps/tableType'
+import type { EnhancedTableRowProps } from '@/components/apps/enhanced-table/types'
 
 export default function EnhancedTableSimpleRow<T>({ row, columns }: EnhancedTableRowProps<T>) {
   return (

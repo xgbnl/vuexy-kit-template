@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
 import { TableCell } from '@mui/material'
 
 // Type Imports
-import type { HeadCell } from '@/types/apps/tableType'
+import type { HeadCell } from '@/components/apps/enhanced-table/types'
 
 type Props<T> = {
   columns: HeadCell<T>[]
