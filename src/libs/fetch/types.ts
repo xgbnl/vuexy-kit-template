@@ -8,10 +8,10 @@ export type Passport = {
 }
 
 // Base request params
-export type RequestParams = {
-  pathVariables: Record<string, string | number>
-  params: Record<string, string | number>
-  body: Record<string, unknown> | FormData
+export type FetchRequestParams = {
+  pathVariables?: Record<string, string | number>
+  params?: Record<string, string | number>
+  body?: Record<string, unknown> | FormData
 }
 
 // Request option
@@ -20,7 +20,7 @@ export type BaseRequestOptions = {
   headers?: Record<string, string>
   url: string
   resource: Resource
-} & Partial<RequestParams>
+} & FetchRequestParams
 
 export type HeaderBaseParams = Pick<BaseRequestOptions, 'headers' | 'body' | 'method'>
 
@@ -32,7 +32,7 @@ export type JsonResponse<T> = {
 }
 
 // Fetch response result
-export type HttpResponse<T> = T extends string
+export type TResponse<T> = T extends string
   ? string
   : T extends Blob
     ? Blob
@@ -45,22 +45,20 @@ export type HttpResponse<T> = T extends string
 export type Throwable = Omit<JsonResponse<unknown>, 'data'>
 
 // Http Request Params
-export type HttpGetParams = Partial<RequestParams>
+export type HttpPostParams = Partial<Pick<FetchRequestParams, 'body'>>
 
-export type HttpPostParams = Partial<Pick<RequestParams, 'body'>>
+export type HttpPatchParams = Partial<Omit<FetchRequestParams, 'params'>>
 
-export type HttpPatchParams = Partial<Omit<RequestParams, 'params'>>
-
-export type HttpDeleteParams = Partial<Pick<RequestParams, 'pathVariables'>>
+export type HttpDeleteParams = Partial<Pick<FetchRequestParams, 'pathVariables'>>
 
 // Http Request Methods
-export type HttpGet = <T>(url: string, params?: HttpGetParams, resource?: Resource) => Promise<HttpResponse<T>>
+export type HttpGet = <T>(url: string, params?: FetchRequestParams, resource?: Resource) => Promise<TResponse<T>>
 
-export type HttpPost = <T>(url: string, params?: HttpPostParams, resource?: Resource) => Promise<HttpResponse<T>>
+export type HttpPost = <T>(url: string, params?: HttpPostParams, resource?: Resource) => Promise<TResponse<T>>
 
-export type HttpPatch = <T>(url: string, params?: HttpPatchParams, resource?: Resource) => Promise<HttpResponse<T>>
+export type HttpPatch = <T>(url: string, params?: HttpPatchParams, resource?: Resource) => Promise<TResponse<T>>
 
-export type HttpDelete = <T>(url: string, params?: HttpDeleteParams, resource?: Resource) => Promise<HttpResponse<T>>
+export type HttpDelete = <T>(url: string, params?: HttpDeleteParams, resource?: Resource) => Promise<TResponse<T>>
 
 // Prepare json response
 export type Renderable = <T>(promise: Response) => Promise<JsonResponse<T> | Error>

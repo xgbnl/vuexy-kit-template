@@ -20,12 +20,12 @@ import type {
   HttpPost,
   HttpPatch,
   HttpDelete,
-  HttpGetParams,
+  FetchRequestParams,
   HttpPostParams,
   HttpPatchParams,
   HttpDeleteParams,
   Resource,
-  HttpResponse,
+  TResponse,
   Reportable,
   Throwable
 } from '@/libs/fetch/types'
@@ -51,11 +51,11 @@ const report: Reportable = (error: Throwable): Promise<Throwable> => {
   return Promise.reject(error)
 }
 
-export const Get: HttpGet = <T>(
+export const get: HttpGet = <T>(
   url: string,
-  params: HttpGetParams = {},
+  params: FetchRequestParams = {},
   resource: Resource = 'json'
-): Promise<HttpResponse<T>> => {
+): Promise<TResponse<T>> => {
   return fetcher<T>(
     {
       url,
@@ -71,11 +71,11 @@ export const Get: HttpGet = <T>(
   )
 }
 
-export const Post: HttpPost = <T>(
+export const post: HttpPost = <T>(
   url: string,
   params: HttpPostParams = {},
   resource: Resource = 'json'
-): Promise<HttpResponse<T>> => {
+): Promise<TResponse<T>> => {
   return fetcher<T>(
     {
       url,
@@ -89,11 +89,11 @@ export const Post: HttpPost = <T>(
   )
 }
 
-export const Patch: HttpPatch = <T>(
+export const patch: HttpPatch = <T>(
   url: string,
   params: HttpPatchParams = {},
   resource: Resource = 'json'
-): Promise<HttpResponse<T>> => {
+): Promise<TResponse<T>> => {
   return fetcher<T>(
     {
       url,
@@ -108,11 +108,11 @@ export const Patch: HttpPatch = <T>(
   )
 }
 
-export const Delete: HttpDelete = <T>(
+export const destroy: HttpDelete = <T>(
   url: string,
   params: HttpDeleteParams = {},
   resource: Resource = 'json'
-): Promise<HttpResponse<T>> => {
+): Promise<TResponse<T>> => {
   return fetcher<T>(
     {
       url,

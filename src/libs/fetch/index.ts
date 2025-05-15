@@ -14,7 +14,7 @@ import type {
   Authenticatable,
   Reportable,
   BaseRequestOptions,
-  HttpResponse,
+  TResponse,
   Passport,
   Throwable
 } from '@/libs/fetch/types'
@@ -36,7 +36,7 @@ export async function fetcher<T>(
   render: Renderable,
   auth: Authenticatable,
   report: Reportable
-): Promise<HttpResponse<T>> {
+): Promise<TResponse<T>> {
   let controller: AbortController | null = null
 
   if (!AbortWhiteList.includes(options.url)) {
@@ -71,7 +71,7 @@ export async function fetcher<T>(
   }
 
   return fetch(baseConfig.url, baseConfig as RequestInit)
-    .then((response: Response): Promise<HttpResponse<T> | Throwable> => {
+    .then((response: Response): Promise<TResponse<T> | Throwable> => {
       if (!response.ok) {
         return Promise.reject<Throwable>({
           code: response.status,
@@ -81,14 +81,14 @@ export async function fetcher<T>(
 
       switch (options.resource) {
         case 'text':
-          return response.text() as Promise<HttpResponse<T>>
+          return response.text() as Promise<TResponse<T>>
         case 'blob':
-          return response.blob() as Promise<HttpResponse<T>>
+          return response.blob() as Promise<TResponse<T>>
         case 'buffer':
-          return response.arrayBuffer() as Promise<HttpResponse<T>>
+          return response.arrayBuffer() as Promise<TResponse<T>>
       }
 
-      return render<T>(response) as Promise<HttpResponse<T>>
+      return render<T>(response) as Promise<TResponse<T>>
     })
     .catch<Error | Throwable>((error: Error | Throwable) => {
       if (error instanceof Error) {
@@ -101,7 +101,7 @@ export async function fetcher<T>(
     })
     .finally(() => {
       delete pendingRequests[options.url]
-    }) as Promise<HttpResponse<T>>
+    }) as Promise<TResponse<T>>
 }
 
 function buildUrl(option: Pick<BaseRequestOptions, 'params' | 'url' | 'pathVariables'>): string {
