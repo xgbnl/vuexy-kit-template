@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server'
 import type { JsonResponse, Throwable } from '@/libs/fetch/types'
 
 // Libs Imports
-import { Post } from '@/libs/fetch/next'
+import { post } from '@/libs/fetch/next'
 import type { Authenticatable } from '@/libs/auth'
 import { HttpStatus } from '@/configs/fetch'
 
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   let response: JsonResponse<Authenticatable>
 
   try {
-    response = await Post<JsonResponse<Authenticatable>>(String(process.env.NEXT_PUBLIC_API_AUTH), credentials)
+    response = await post<JsonResponse<Authenticatable>>(String(process.env.NEXT_PUBLIC_API_AUTH), credentials)
   } catch (e) {
     const error = e as Throwable
 
