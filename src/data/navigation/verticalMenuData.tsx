@@ -11,7 +11,13 @@ const verticalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>>)
   {
     label: dictionary['navigation'].example,
     href: `/${dictionary['locale']}/example`,
-    icon: 'tabler-info-circle'
+    icon: 'tabler-info-circle',
+    children: [
+      {
+        label: dictionary['navigation'].empty,
+        href: `/${dictionary['locale']}/example/empty`
+      }
+    ]
   }
 ]
 
