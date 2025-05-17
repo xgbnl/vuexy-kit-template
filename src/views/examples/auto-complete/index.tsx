@@ -1,3 +1,5 @@
+'use client'
+
 // Components Imports
 import GenericAutoComplete from '@components/apps/autocomplete/GenericAutoComplete'
 
@@ -53,7 +55,7 @@ const AutoCompleteExample = () => {
       <GenericAutoComplete
         onChange={(newValue): void => console.log(newValue)}
         options={[makeOption<Union>('Enabled', 'enabled'), makeOption<Union>('Disabled', 'enabled')]}
-        label='Union tag'
+        label='Union type tag'
         placeholder='Favorites'
       />
     </>

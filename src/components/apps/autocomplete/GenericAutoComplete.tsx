@@ -1,3 +1,5 @@
+'use client'
+
 // React Imports
 import { useState, useMemo, type ElementType } from 'react'
 
