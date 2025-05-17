@@ -13,16 +13,16 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { alpha } from '@mui/material/styles'
 
 // Type Imports
-import type { EnhancedTableSlotProp } from '@/components/apps/enhanced-table/types'
+import type { TableSlotProp } from '@/components/apps/table/types'
 
 type EnhancedTableToolbarProps<T> = {
   numSelected: number
   onDelete?: () => void
   onFilter?: () => void
   selected: T[]
-} & EnhancedTableSlotProp<T>
+} & TableSlotProp<T>
 
-export default function EnhancedTableToolbar<T>(props: EnhancedTableToolbarProps<T>) {
+export default function MuiTableToolbar<T>(props: EnhancedTableToolbarProps<T>) {
   const { numSelected, onDelete, slotProps, selected, onFilter } = props
 
   const render = (): ReactElement => {

@@ -9,17 +9,17 @@ import { TableRow, TableCell } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox'
 
 // Components Imports
-import EnhancedTableSimpleCell from '../../cell'
+import MuiTableCell from './MuiTableCell'
 
 // Type Imports
-import type { EnhancedTableRowProps } from '@/components/apps/enhanced-table/types'
+import type { TableRowProps, Row } from './types'
 
-type Props<T> = {
+type Props<T extends Row> = {
   selected: T[]
   onClick: (row: T) => void
-} & EnhancedTableRowProps<T>
+} & TableRowProps<T>
 
-export default function EnhancedTableSortRow<T>({ row, selected, columns, onClick }: Props<T>): ReactNode {
+export default function MuiTableSortRow<T extends Row>({ row, selected, columns, onClick }: Props<T>): ReactNode {
   const isItemSelected = useMemo((): boolean => selected.includes(row), [selected, row])
 
   const handelOnClick = (event: MouseEvent<unknown>): void => {
@@ -40,7 +40,7 @@ export default function EnhancedTableSortRow<T>({ row, selected, columns, onClic
       <TableCell padding='checkbox'>
         <Checkbox color='primary' checked={isItemSelected} />
       </TableCell>
-      <EnhancedTableSimpleCell<T> row={row} columns={columns} />
+      <MuiTableCell<T> row={row} columns={columns} />
     </TableRow>
   )
 }

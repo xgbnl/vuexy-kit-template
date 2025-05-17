@@ -5,14 +5,14 @@ import type { ReactNode } from 'react'
 import { TableCell } from '@mui/material'
 
 // Type Imports
-import type { HeadCell } from '@/components/apps/enhanced-table/types'
+import type { TableHeadCell, Row } from './types'
 
-type Props<T> = {
-  columns: HeadCell<T>[]
+type Props<T extends Row> = {
+  columns: TableHeadCell<T>[]
   row: T
 }
 
-function render<T>(headCell: HeadCell<T>, row: T): ReactNode {
+function render<T extends Row>(headCell: TableHeadCell<T>, row: T): ReactNode {
   if (typeof headCell.format === 'function') {
     return headCell.format(row)
   }
@@ -24,10 +24,10 @@ function render<T>(headCell: HeadCell<T>, row: T): ReactNode {
   return row[headCell.id] as any
 }
 
-export default function EnhancedTableSimpleCell<T>(props: Props<T>): ReactNode {
+export default function MuiTableCell<T extends Row>(props: Props<T>): ReactNode {
   const { columns, row } = props
 
-  return columns.map((headCell: HeadCell<T>) => {
+  return columns.map((headCell: TableHeadCell<T>) => {
     const id = headCell.id as string
 
     return (

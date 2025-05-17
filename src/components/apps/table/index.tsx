@@ -18,13 +18,13 @@ import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
 
 // Components Imports
-import EnhancedTableToolbar from './toolbar'
-import EnhancedTableHead from './head'
-import EnhancedTableSortRow from './row/sort'
-import EnhancedTableSimpleRow from './row/simple'
+import MuiTableToolbar from './MuiTableToolBar'
+import MuiTableHeader from './MuiTableHeader'
+import MuiTableSortRow from './MuiTableSortRow'
+import MuiTableCell from './MuiTableCell'
 
 // Type Imports
-import type { Order, Attribute, EnhancedTableSlotProp, HeadCell } from '@/components/apps/enhanced-table/types'
+import type { Order, Row, TableSlotProp, TableHeadCell, RowKey } from './types'
 
 // Methods
 function getComparator<T, Key extends keyof T>(order: Order, orderBy: Key): (a: T, b: T) => number {
@@ -45,29 +45,43 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   return 0
 }
 
-function getRowIdentifier<T extends Attribute>(row: T, identifier?: Identifier<T>) {
+function getRowKey<T extends Row>(row: T, identifier?: RowKey<T>) {
   if (identifier !== undefined) {
     return typeof identifier === 'function' ? identifier(row) : row[identifier]
+  }
+
+  if (row.id === undefined) {
+    throw new Error('List rows require a primary key id of type Row or a custom primary key to render.')
   }
 
   return row.id
 }
 
-type Identifier<T> = keyof T | ((row: T) => string | number)
-
-type Props<T> = {
+type Props<T extends Row> = {
   rows: T[]
   sortBy: keyof T
-  headCells: HeadCell<T>[]
+  headCells: TableHeadCell<T>[]
   multiple?: boolean
   onDelete?: (rows: T[]) => void
   onPageChange: (page: number, pageSize: number) => void
+  onFilter?: () => void
   total: number
-  identifier?: Identifier<T>
-} & EnhancedTableSlotProp<T>
+  withKey?: RowKey<T>
+} & TableSlotProp<T>
 
-export default function EnhancedTableContainer<T extends Attribute>(props: Props<T>) {
-  const { rows, sortBy, headCells, multiple, onDelete, slotProps, total, onPageChange, identifier } = props
+export default function MuiTable<T extends Row>(props: Props<T>) {
+  const {
+    rows,
+    sortBy,
+    headCells,
+    multiple,
+    onDelete,
+    slotProps,
+    total,
+    onPageChange,
+    withKey: identifier,
+    onFilter
+  } = props
 
   // States
   const [order, setOrder] = useState<Order>('desc')
@@ -145,10 +159,41 @@ export default function EnhancedTableContainer<T extends Attribute>(props: Props
     }
   }
 
+  const tableRows = (): ReactElement[] => {
+    if (multiple) {
+      return visibleRows.map<ReactElement>(
+        (row: T): ReactElement => (
+          <MuiTableSortRow<T>
+            key={`mui-enhanced-table-sort-row-${getRowKey(row, identifier)}`}
+            row={row}
+            selected={selected}
+            columns={headCells}
+            onClick={handleClick}
+          />
+        )
+      )
+    }
+
+    return visibleRows.map<ReactElement>(
+      (row: T): ReactElement => (
+        <TableRow
+          key={`mui-enhanced-table-simple-row-${getRowKey(row, identifier)}`}
+          hover
+          role='checkbox'
+          tabIndex={-1}
+          sx={{ cursor: 'pointer' }}
+        >
+          <MuiTableCell row={row} columns={headCells} />
+        </TableRow>
+      )
+    )
+  }
+
   return (
-    <Box sx={{ width: '100%' }} boxShadow={theme => theme.customShadows.xl}>
+    <Box sx={{ width: '100%' }} boxShadow={theme => theme.customShadows.md}>
       <Paper sx={{ width: '100%', mb: 1 }}>
-        <EnhancedTableToolbar
+        <MuiTableToolbar
+          onFilter={onFilter}
           numSelected={selected.length}
           onDelete={handleDelete}
           selected={selected}
@@ -157,7 +202,7 @@ export default function EnhancedTableContainer<T extends Attribute>(props: Props
         <TableContainer>
           <Divider />
           <Table sx={{ minWidth: 750 }} aria-labelledby='tableTitle' size={'medium'}>
-            <EnhancedTableHead
+            <MuiTableHeader
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
@@ -168,24 +213,7 @@ export default function EnhancedTableContainer<T extends Attribute>(props: Props
               chosen={multiple as boolean}
             />
             <TableBody>
-              {visibleRows.map(
-                (row: T): ReactElement =>
-                  multiple ? (
-                    <EnhancedTableSortRow<T>
-                      key={`mui-enhanced-table-sort-row-${getRowIdentifier(row, identifier)}`}
-                      row={row}
-                      selected={selected}
-                      columns={headCells}
-                      onClick={handleClick}
-                    />
-                  ) : (
-                    <EnhancedTableSimpleRow<T>
-                      key={`mui-enhanced-table-simple-row-${getRowIdentifier(row, identifier)}`}
-                      row={row}
-                      columns={headCells}
-                    />
-                  )
-              )}
+              {tableRows()}
               {emptyRows > 0 && (
                 <TableRow
                   style={{

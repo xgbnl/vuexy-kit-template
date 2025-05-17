@@ -13,9 +13,9 @@ import TableSortLabel from '@mui/material/TableSortLabel'
 import { visuallyHidden } from '@mui/utils'
 
 // Types Imports
-import type { Order, Attribute, HeadCell } from '@/components/apps/enhanced-table/types'
+import type { Order, Row, TableHeadCell } from '@/components/apps/table/types'
 
-type Props<T extends Attribute> = {
+type Props<T extends Row> = {
   numSelected: number
   chosen: boolean
   onSort: (event: MouseEvent<unknown>, property: keyof T) => void
@@ -23,10 +23,10 @@ type Props<T extends Attribute> = {
   order: Order
   orderBy: keyof T
   rowCount: number
-  headCells: HeadCell<T>[]
+  headCells: TableHeadCell<T>[]
 }
 
-export default function EnhancedTableHead<T extends Attribute>(props: Props<T>): ReactNode {
+export default function MuiTableHeader<T extends Row>(props: Props<T>): ReactNode {
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onSort, headCells, chosen } = props
 
   return (
@@ -42,7 +42,7 @@ export default function EnhancedTableHead<T extends Attribute>(props: Props<T>):
             />
           </TableCell>
         )}
-        {headCells.map((headCell: HeadCell<T>) => (
+        {headCells.map((headCell: TableHeadCell<T>) => (
           <TableCell
             key={`mui-tablecell-${headCell.id as string}`}
             align={headCell.numeric ? 'right' : 'left'}
