@@ -21,6 +21,7 @@ import MuiTableToolbar from './MuiTableToolBar'
 import MuiTableHeader from './MuiTableHeader'
 import MuiTableSortRow from './MuiTableSortRow'
 import MuiTableCell from './MuiTableCell'
+import MuiTableEmptyState from './MuiTableEmptyState'
 
 // Type Imports
 import type { Order, Row, TableSlotProp, TableHeadCell, RowKey } from './types'
@@ -158,7 +159,7 @@ export default function MuiTable<T extends Row>(props: Props<T>) {
     }
   }
 
-  const tableRows = (): ReactElement[] => {
+  const tableRows = (): ReactElement[] | ReactElement => {
     if (multiple) {
       return visibleRows.map<ReactElement>(
         (row: T): ReactElement => (
@@ -199,7 +200,7 @@ export default function MuiTable<T extends Row>(props: Props<T>) {
       />
       <TableContainer>
         <Divider />
-        <Table sx={{ minWidth: 750 }} aria-labelledby='tableTitle' size={'medium'}>
+        <Table aria-labelledby='tableTitle' size={'medium'}>
           <MuiTableHeader
             numSelected={selected.length}
             order={order}
@@ -211,7 +212,7 @@ export default function MuiTable<T extends Row>(props: Props<T>) {
             chosen={multiple as boolean}
           />
           <TableBody>
-            {tableRows()}
+            {visibleRows.length <= 0 ? <MuiTableEmptyState col={headCells.length} /> : tableRows()}
             {emptyRows > 0 && (
               <TableRow
                 style={{

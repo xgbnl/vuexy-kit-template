@@ -98,6 +98,12 @@ const TableExample = (): ReactElement => {
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
+        <Typography variant='subtitle1'>Empty state</Typography>
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        <MuiTable<User> sortBy='id' total={0} headCells={headCells} rows={[]} onPageChange={handlePageChange} />
+      </Grid>
+      <Grid size={{ xs: 12 }}>
         <Typography variant='subtitle1'>Table Filters</Typography>
       </Grid>
       <Grid size={{ xs: 12 }}>
