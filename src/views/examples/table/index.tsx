@@ -5,6 +5,9 @@ import type { ReactElement } from 'react'
 
 // MUI Imports
 import Avatar from '@mui/material/Avatar'
+import Typography from '@mui/material/Typography'
+import Grid from '@mui/material/Grid'
+import Button from '@mui/material/Button'
 
 // Components Imports
 import MuiTable from '@/components/apps/table'
@@ -57,7 +60,44 @@ const TableExample = (): ReactElement => {
     console.log(page, pageSize)
   }
 
-  return <MuiTable<User> sortBy='id' total={2} headCells={headCells} rows={users} onPageChange={handlePageChange} />
+  return (
+    <Grid container rowGap={4}>
+      <Grid size={{ xs: 12 }}>
+        <Typography variant='h2'>Tables</Typography>
+        <Typography variant='subtitle1'>Normal list</Typography>
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        <MuiTable<User> sortBy='id' total={2} headCells={headCells} rows={users} onPageChange={handlePageChange} />
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        <Typography>Enable multiple selection</Typography>
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        <MuiTable<User>
+          total={2}
+          onPageChange={handlePageChange}
+          rows={users}
+          sortBy='id'
+          headCells={headCells}
+          multiple={true}
+          slotProps={{
+            slot: () => <Button variant='contained'>Contained</Button>,
+            effectActions: (rows: User[]) => (
+              <Button
+                variant='contained'
+                onClick={() => {
+                  console.log(rows)
+                }}
+              >
+                Contained
+              </Button>
+            )
+          }}
+        />
+      </Grid>
+      <Grid size={{ xs: 12 }}></Grid>
+    </Grid>
+  )
 }
 
 export default TableExample

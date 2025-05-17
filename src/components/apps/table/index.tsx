@@ -5,9 +5,8 @@ import { useState, useMemo, useCallback } from 'react'
 import type { MouseEvent, ChangeEvent, ReactElement } from 'react'
 
 // MUI Imports
-import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import Paper from '@mui/material/Paper'
+import Card from '@mui/material/Card'
 import Table from '@mui/material/Table'
 import Divider from '@mui/material/Divider'
 import TableRow from '@mui/material/TableRow'
@@ -190,69 +189,67 @@ export default function MuiTable<T extends Row>(props: Props<T>) {
   }
 
   return (
-    <Box sx={{ width: '100%' }} boxShadow={theme => theme.customShadows.md}>
-      <Paper sx={{ width: '100%', mb: 1 }}>
-        <MuiTableToolbar
-          onFilter={onFilter}
-          numSelected={selected.length}
-          onDelete={handleDelete}
-          selected={selected}
-          slotProps={slotProps}
-        />
-        <TableContainer>
-          <Divider />
-          <Table sx={{ minWidth: 750 }} aria-labelledby='tableTitle' size={'medium'}>
-            <MuiTableHeader
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onSort={handleSort}
-              rowCount={rows.length}
-              headCells={headCells}
-              chosen={multiple as boolean}
+    <Card>
+      <MuiTableToolbar
+        onFilter={onFilter}
+        numSelected={selected.length}
+        onDelete={handleDelete}
+        selected={selected}
+        slotProps={slotProps}
+      />
+      <TableContainer>
+        <Divider />
+        <Table sx={{ minWidth: 750 }} aria-labelledby='tableTitle' size={'medium'}>
+          <MuiTableHeader
+            numSelected={selected.length}
+            order={order}
+            orderBy={orderBy}
+            onSelectAllClick={handleSelectAllClick}
+            onSort={handleSort}
+            rowCount={rows.length}
+            headCells={headCells}
+            chosen={multiple as boolean}
+          />
+          <TableBody>
+            {tableRows()}
+            {emptyRows > 0 && (
+              <TableRow
+                style={{
+                  height: 70 * emptyRows
+                }}
+              >
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        sx={{
+          '& .MuiTablePagination-spacer': {
+            display: 'none'
+          }
+        }}
+        component='div'
+        count={total}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        ActionsComponent={() => (
+          <Grid container justifyContent='end' width='100%'>
+            <Pagination
+              variant='tonal'
+              shape='rounded'
+              page={page + 1}
+              onChange={handleChangePage}
+              count={Math.ceil(total / rowsPerPage)}
+              color='primary'
             />
-            <TableBody>
-              {tableRows()}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: 70 * emptyRows
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          sx={{
-            '& .MuiTablePagination-spacer': {
-              display: 'none'
-            }
-          }}
-          component='div'
-          count={total}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          ActionsComponent={() => (
-            <Grid container justifyContent='end' width='100%'>
-              <Pagination
-                variant='tonal'
-                shape='rounded'
-                page={page + 1}
-                onChange={handleChangePage}
-                count={Math.ceil(total / rowsPerPage)}
-                color='primary'
-              />
-            </Grid>
-          )}
-        />
-      </Paper>
-    </Box>
+          </Grid>
+        )}
+      />
+    </Card>
   )
 }
