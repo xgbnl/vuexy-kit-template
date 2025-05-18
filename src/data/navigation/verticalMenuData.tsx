@@ -10,12 +10,27 @@ const verticalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>>)
   },
   {
     label: dictionary['navigation'].example,
-    href: `/${dictionary['locale']}/example`,
     icon: 'tabler-info-circle',
     children: [
       {
         label: dictionary['navigation'].empty,
         href: `/${dictionary['locale']}/example/empty`
+      },
+      {
+        label: dictionary['navigation'].table,
+        href: `/${dictionary['locale']}/example/table`
+      },
+      {
+        label: dictionary['navigation'].picker,
+        href: `/${dictionary['locale']}/example/picker`
+      },
+      {
+        label: dictionary['navigation'].autoComplete,
+        href: `/${dictionary['locale']}/example/complete`
+      },
+      {
+        label: dictionary['navigation'].enumOption,
+        href: `/${dictionary['locale']}/example/enum-option`
       }
     ]
   }
