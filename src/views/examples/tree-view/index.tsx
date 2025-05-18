@@ -34,7 +34,11 @@ const TreeViewExample = (): ReactElement => {
         <Typography variant='subtitle2'>Normal tree</Typography>
       </Grid>
       <Grid size={{ xs: 12 }}>
-        <MuiTreeView options={options} label='cities' onChange={(id): void => console.log(id)} />
+        <MuiTreeView
+          options={[{ label: '四川', value: 51, children: [{ label: '成都', value: 5010 }] }]}
+          label='cities'
+          onChange={(id): void => console.log(id)}
+        />
       </Grid>
       <Grid size={{ xs: 12 }}>
         <Typography variant='subtitle2'>Replacer field name</Typography>
