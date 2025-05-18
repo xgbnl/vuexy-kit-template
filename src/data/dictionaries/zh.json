@@ -11,6 +11,7 @@
     "picker":"时间选择器",
     "autoComplete":"AutoComplete",
     "enumOption":"枚举选项",
+    "treeView":"级联选择器",
     "crm": "CRM",
     "analytics": "Analytics",
     "eCommerce": "eCommerce",

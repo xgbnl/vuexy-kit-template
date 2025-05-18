@@ -31,6 +31,10 @@ const verticalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>>)
       {
         label: dictionary['navigation'].enumOption,
         href: `/${dictionary['locale']}/example/enum-option`
+      },
+      {
+        label: dictionary['navigation'].treeView,
+        href: `/${dictionary['locale']}/example/tree-view`
       }
     ]
   }
