@@ -22,7 +22,7 @@ type EnhancedTableToolbarProps<T> = {
   selected: T[]
 } & TableSlotProp<T>
 
-export default function MuiTableToolbar<T>(props: EnhancedTableToolbarProps<T>) {
+export default function MuiTableToolbar<T>(props: EnhancedTableToolbarProps<T>): ReactElement {
   const { numSelected, onDelete, slotProps, selected, onFilter } = props
 
   const render = (): ReactElement => {
