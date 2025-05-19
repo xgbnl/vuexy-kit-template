@@ -60,11 +60,11 @@ export default function MuiTableToolbar<T>(props: EnhancedTableToolbarProps<T>) 
       ]}
     >
       {numSelected > 0 ? (
-        <Typography sx={{ flex: '1 1 100%' }} color='inherit' variant='subtitle1' component='div'>
+        <Typography sx={{ flex: '1 1 50%' }} color='inherit' variant='subtitle1' component='div'>
           {numSelected} selected
         </Typography>
       ) : (
-        <Typography sx={{ flex: '1 1 100%' }} variant='h6' id='tableTitle' component='div'>
+        <Typography sx={{ flex: '1 1 50%' }} variant='h6' id='tableTitle' component='div'>
           {slotProps?.slot ? slotProps.slot() : 'Nutrition'}
         </Typography>
       )}
