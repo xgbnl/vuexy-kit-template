@@ -19,14 +19,6 @@ import type {
   Throwable
 } from '@/libs/fetch/types'
 
-type FetchBaseConfig = {
-  signal: AbortSignal | null
-  mode?: string
-  cache?: string
-  body?: string | object
-} & Pick<BaseRequestOptions, 'method' | 'headers' | 'url'>
-
-// Abort
 const pendingRequests: Record<string, null | AbortController> = {}
 
 const AbortWhiteList: string[] = []
@@ -51,7 +43,7 @@ export async function fetcher<T>(
     pendingRequests[options.url] = controller
   }
 
-  const baseConfig: FetchBaseConfig = {
+  const baseConfig: RequestInit & { url: string } = {
     signal: controller ? controller.signal : null,
     method: options.method,
     headers: await makeHeader(options, auth),
@@ -61,8 +53,6 @@ export async function fetcher<T>(
   }
 
   if (options.method !== 'GET') {
-    baseConfig.body = {}
-
     if (isPlainObject(options.body)) {
       baseConfig.body = JSON.stringify(options.body)
     } else if (options.body instanceof FormData) {
@@ -70,7 +60,7 @@ export async function fetcher<T>(
     }
   }
 
-  return fetch(baseConfig.url, baseConfig as RequestInit)
+  return fetch(baseConfig.url, baseConfig)
     .then((response: Response): Promise<TResponse<T> | Throwable> => {
       if (!response.ok) {
         return Promise.reject<Throwable>({
