@@ -6,11 +6,13 @@ import { useState } from 'react'
 
 // MUI Imports
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView'
-import { TreeItem } from '@mui/x-tree-view/TreeItem'
 
 // Components Imports
 import CustomTextField from '@/@core/components/mui/TextField'
 import EmptyState from '../empty-state'
+
+// Styled Components Imports
+import TreeItemStyled from './TreeItemStyled'
 
 // Hooks Imports
 import useFieldName from './useFieldName'
@@ -21,9 +23,9 @@ import type { Option, MuiTreeViewParameters, FieldNames } from './types'
 
 const treeItem = (options: Option[]): ReactElement[] => {
   return options.map<ReactElement>(option => (
-    <TreeItem key={option.value} itemId={option.value as string} label={option.label}>
+    <TreeItemStyled key={option.value} itemId={option.value as string} label={option.label}>
       {option.children && option.children?.length > 0 ? treeItem(option.children) : null}
-    </TreeItem>
+    </TreeItemStyled>
   ))
 }
 
@@ -111,11 +113,6 @@ const MuiTreeView = (props: MuiTreeViewParameters): ReactElement => {
           <SimpleTreeView
             multiSelect
             selectedItems={selected.map<string>(value => String(value))}
-            sx={{
-              '& .MuiTreeItem-content': {
-                flexDirection: 'row-reverse'
-              }
-            }}
             id={id}
             onItemClick={handleTreeItemClick}
             onItemExpansionToggle={(_, id): void => handleRootExpansionToggle(id)}
