@@ -1,20 +1,18 @@
-// NextAuth Imports
+// Next Imports
+import { redirect } from 'next/navigation'
+
+// Third-party Imports
 import type { Session } from 'next-auth'
 
 // Libs Imports
 import { auth } from '@/libs/auth'
 
-// Configs Imports
-import { HttpStatus } from '@/configs/fetch'
-
 // Fetch Imports
-import { fetcher } from '../index'
+import { fetcher } from '../fetcher'
 
 // Types Imports
 import type {
-  Renderable,
   Authenticatable,
-  JsonResponse,
   Passport,
   HttpGet,
   HttpPost,
@@ -30,25 +28,16 @@ import type {
   Throwable
 } from '@/libs/fetch/types'
 
-// Abstract implements
-const render: Renderable = async <T>(promise: Response): Promise<JsonResponse<T> | Error> => {
-  const response: JsonResponse<T> = await promise.json()
-
-  if (HttpStatus.includes(response.code)) {
-    return Promise.reject(new Error(response.msg))
-  }
-
-  return response
-}
-
 const authorization: Authenticatable = async (): Promise<Passport | null> => {
   const session: Session | null = await auth()
 
   return session?.user?.passport ? { bearerToken: session.user.passport } : null
 }
 
-const report: Reportable = (error: Throwable): Promise<Throwable> => {
-  return Promise.reject(error)
+const report: Reportable = (error: Throwable): void => {
+  if (error.code === 404) {
+    redirect('not-found')
+  }
 }
 
 export const get: HttpGet = <T>(
@@ -65,7 +54,6 @@ export const get: HttpGet = <T>(
       pathVariables: params.pathVariables,
       body: params.body
     },
-    render,
     authorization,
     report
   )
@@ -83,7 +71,6 @@ export const post: HttpPost = <T>(
       method: 'POST',
       body: params.body
     },
-    render,
     authorization,
     report
   )
@@ -102,7 +89,6 @@ export const patch: HttpPatch = <T>(
       body: params.body,
       pathVariables: params.pathVariables
     },
-    render,
     authorization,
     report
   )
@@ -120,7 +106,6 @@ export const destroy: HttpDelete = <T>(
       method: 'DELETE',
       pathVariables: params.pathVariables
     },
-    render,
     authorization,
     report
   )

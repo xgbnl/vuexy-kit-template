@@ -12,6 +12,7 @@
     "autoComplete": "AutoComplete",
     "enumOption": "EnumOption",
     "treeView": "TreeView",
+    "fetcher":"fetcher",
     "crm": "CRM",
     "analytics": "Analytics",
     "eCommerce": "eCommerce",

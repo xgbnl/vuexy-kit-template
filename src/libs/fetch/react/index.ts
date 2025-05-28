@@ -5,14 +5,9 @@ import type { Session } from 'next-auth'
 // ThirdParty Imports
 import { toast } from 'react-toastify'
 
-// Configs Imports
-import { HttpStatus } from '@/configs/fetch'
-
 // Types Imports
 import type {
-  Renderable,
   Authenticatable,
-  JsonResponse,
   Passport,
   HttpGet,
   HttpPost,
@@ -29,25 +24,8 @@ import type {
 } from '@/libs/fetch/types'
 
 // Fetch Imports
-import { fetcher } from '../index'
+import { fetcher } from '../fetcher'
 import { getLang } from '@/utils/getLang'
-
-const render: Renderable = async <T>(promise: Response): Promise<JsonResponse<T> | Error> => {
-  const response: JsonResponse<T> = await promise.json()
-
-  if (HttpStatus.includes(response.code)) {
-    if (response.code === 401) {
-      toast.error<string>(response.msg, {
-        delay: 1000,
-        onClose: () => window.location.replace(`/${getLang(window.location.pathname)}/login`)
-      })
-    }
-
-    return Promise.reject(new Error(response.msg))
-  }
-
-  return response
-}
 
 const authorization: Authenticatable = async (): Promise<Passport | null> => {
   const session: Session | null = await getSession()
@@ -55,12 +33,25 @@ const authorization: Authenticatable = async (): Promise<Passport | null> => {
   return session?.user?.passport ? { bearerToken: session.user.passport } : null
 }
 
-const report: Reportable = (error: Throwable): Promise<Throwable> => {
-  if (HttpStatus.includes(error.code)) {
-    toast.error<string>(error.msg)
+const report: Reportable = (error: Throwable): void => {
+  const { code, msg } = error
+
+  if (code === 401) {
+    toast.info<string>(msg, {
+      delay: 1000,
+      onClose: () => window.location.replace(`/${getLang(window.location.pathname)}/login`)
+    })
   }
 
-  return Promise.reject(error)
+  if ([422, 403].includes(code)) {
+    toast.warning<string>(msg)
+  }
+
+  if (code === 404) {
+    toast<string>(msg)
+  }
+
+  toast.error<string>(msg)
 }
 
 export const get: HttpGet = <T>(
@@ -77,7 +68,6 @@ export const get: HttpGet = <T>(
       pathVariables: params.pathVariables,
       body: params.body
     },
-    render,
     authorization,
     report
   )
@@ -95,7 +85,6 @@ export const post: HttpPost = <T>(
       method: 'POST',
       body: params.body
     },
-    render,
     authorization,
     report
   )
@@ -114,7 +103,6 @@ export const patch: HttpPatch = <T>(
       body: params.body,
       pathVariables: params.pathVariables
     },
-    render,
     authorization,
     report
   )
@@ -132,7 +120,6 @@ export const destroy: HttpDelete = <T>(
       method: 'DELETE',
       pathVariables: params.pathVariables
     },
-    render,
     authorization,
     report
   )

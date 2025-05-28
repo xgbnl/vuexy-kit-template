@@ -7,16 +7,21 @@ import type { JsonResponse, Throwable } from '@/libs/fetch/types'
 // Libs Imports
 import { post } from '@/libs/fetch/next'
 import type { Authenticatable } from '@/libs/auth'
-import { HttpStatus } from '@/configs/fetch'
+import { HttpStatus } from '@/libs/fetch/types'
 
 export async function POST(req: Request) {
-  // Vars
+  const path: string | undefined = process.env.NEXT_PUBLIC_API_AUTH
+
+  if (path === undefined) {
+    throw new Error('Please configure env.NEXT_PUBLIC_API_AUTH.')
+  }
+
   const credentials = await req.json()
 
   let response: JsonResponse<Authenticatable>
 
   try {
-    response = await post<JsonResponse<Authenticatable>>(String(process.env.NEXT_PUBLIC_API_AUTH), credentials)
+    response = await post<JsonResponse<Authenticatable>>(path, { body: credentials })
   } catch (e) {
     const error = e as Throwable
 

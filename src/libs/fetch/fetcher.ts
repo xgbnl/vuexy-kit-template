@@ -5,18 +5,18 @@ import qs from 'qs'
 import { isPlainObject } from '@utils/isPlainObject'
 import { getAppUrl } from '@/utils/url'
 
-// Configs Improts
-import { ResponseStatus } from '@/configs/fetch'
+// Configs Imports
+import { HttpStatus } from '@/libs/fetch/types'
 
 // Types Imports
 import type {
-  Renderable,
   Authenticatable,
   Reportable,
   BaseRequestOptions,
   TResponse,
   Passport,
-  Throwable
+  Throwable,
+  JsonResponse
 } from '@/libs/fetch/types'
 
 const pendingRequests: Record<string, null | AbortController> = {}
@@ -25,7 +25,6 @@ const AbortWhiteList: string[] = []
 
 export async function fetcher<T>(
   options: BaseRequestOptions,
-  render: Renderable,
   auth: Authenticatable,
   report: Reportable
 ): Promise<TResponse<T>> {
@@ -61,11 +60,11 @@ export async function fetcher<T>(
   }
 
   return fetch(baseConfig.url, baseConfig)
-    .then((response: Response): Promise<TResponse<T> | Throwable> => {
+    .then(async (response: Response): Promise<TResponse<T> | Throwable> => {
       if (!response.ok) {
         return Promise.reject<Throwable>({
           code: response.status,
-          msg: ResponseStatus[response.status] ?? response.statusText
+          msg: response.statusText
         })
       }
 
@@ -78,16 +77,22 @@ export async function fetcher<T>(
           return response.arrayBuffer() as Promise<TResponse<T>>
       }
 
-      return render<T>(response) as Promise<TResponse<T>>
-    })
-    .catch<Error | Throwable>((error: Error | Throwable) => {
-      if (error instanceof Error) {
-        const code = error.name === 'AbortError' ? 1000 : ResponseStatus.ServerError
+      const resp: JsonResponse<T> = await response.json()
 
-        return report({ code: code, msg: `[${error.name}]: ${error.message}` })
+      if (HttpStatus.includes(resp.code)) {
+        return Promise.reject(resp)
       }
 
-      return report(error)
+      return resp
+    })
+    .catch<void>((error: Error | Throwable): void => {
+      if (error instanceof Error && error.name !== 'AbortError') {
+        return report({ code: 500, msg: error.message })
+      }
+
+      if (!(error instanceof Error)) {
+        return report(error as Throwable)
+      }
     })
     .finally(() => {
       delete pendingRequests[options.url]

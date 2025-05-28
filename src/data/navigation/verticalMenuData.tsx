@@ -35,6 +35,10 @@ const verticalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>>)
       {
         label: dictionary['navigation'].treeView,
         href: `/${dictionary['locale']}/example/tree-view`
+      },
+      {
+        label: dictionary['navigation'].fetcher,
+        href: `/${dictionary['locale']}/example/fetcher`
       }
     ]
   }

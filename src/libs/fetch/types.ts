@@ -1,7 +1,6 @@
-// Response type
-export type Resource = 'json' | 'blob' | 'text' | 'buffer'
-
 type UnionRequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+
+export type Resource = 'json' | 'blob' | 'text' | 'buffer'
 
 export type Passport = {
   bearerToken: string | null
@@ -11,8 +10,7 @@ export type Passport = {
 export type FetchRequestParams = {
   pathVariables?: Record<string, string | number>
   params?: Record<string, string | number>
-  body?: Record<string, unknown> | FormData
-}
+} & Pick<RequestInit, 'body'>
 
 // Request option
 export type BaseRequestOptions = {
@@ -67,4 +65,17 @@ export type Renderable = <T>(promise: Response) => Promise<JsonResponse<T> | Err
 export type Authenticatable = () => Promise<Passport | null>
 
 // Prepare exception report
-export type Reportable = (error: Throwable) => Promise<Throwable>
+export type Reportable = (error: Throwable) => void
+
+export const HttpStatus = [
+  400, // BadRequest
+  401, // Unauthorized
+  403, // Forbidden
+  404, // NotFound
+  405, // MethodNotAllowed
+  419, // PageExpired
+  422, // Validation
+  429, // TooManyRequests
+  500, // ServerError
+  502 // BadGateway
+]
