@@ -10,7 +10,7 @@ import NextAuth from 'next-auth'
 import InvalidLoginError from './InvalidLoginError'
 
 // Configs Imports
-import { HttpStatus, ResponseStatus } from '@/configs/fetch'
+import { HttpStatus } from '@/libs/fetch/types'
 
 // Types Imports
 import type { JsonResponse } from '@/libs/fetch/types'
@@ -49,7 +49,7 @@ const nextConfig: NextAuthConfig = {
         if (HttpStatus.includes(code)) {
           throw new InvalidLoginError(msg, code)
         } else if (code === 1000) {
-          throw new InvalidLoginError(msg, ResponseStatus.TooManyRequests)
+          throw new InvalidLoginError(msg, 429)
         }
 
         return {
