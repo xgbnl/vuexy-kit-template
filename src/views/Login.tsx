@@ -42,7 +42,7 @@ import CustomTextField from '@core/components/mui/TextField'
 
 // Config Imports
 import themeConfig from '@configs/themeConfig'
-import { HttpStatus } from '@/configs/fetch'
+import { HttpStatus } from '@/libs/fetch/types'
 
 // Hook Imports
 import { useImageVariant } from '@core/hooks/useImageVariant'
