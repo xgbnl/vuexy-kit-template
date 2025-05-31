@@ -1,20 +1,20 @@
-'use client'
-
 // React Imports
-import { useEffect, type ReactElement } from 'react'
+import type { ReactElement } from 'react'
 
 // Libs Imports
-import { get } from '@/libs/fetch/react'
+import { get, scope } from '@/libs/fetch/next'
 import type { JsonResponse } from '@/libs/fetch/types'
 
-const Page = () => {
-  useEffect((): void => {
-    const getPage = async () => {
-      const res = await get<JsonResponse<null>>('errors/404')
-    }
+const Page = async (): Promise<ReactElement> => {
+  let res: JsonResponse<null> | undefined
 
-    getPage()
-  }, [])
+  try {
+    res = await get<JsonResponse<null>>('errors/422')
+  } catch (err) {
+    console.log(scope(err))
+  }
+
+  console.log(res)
 
   return (
     <div>
