@@ -46,6 +46,8 @@ const report: Reportable = (error: Throwable): void => {
   if (error.code === 404) {
     redirect('not-found')
   }
+
+  throw new Error(JSON.stringify({ msg: error.msg, code: error.code }))
 }
 
 export const get: HttpGet = <T>(
@@ -117,4 +119,10 @@ export const destroy: HttpDelete = <T>(
     authorization,
     report
   )
+}
+
+export const scope = (error: unknown): Throwable => {
+  const err = error as Error
+
+  return JSON.parse(err.message)
 }
