@@ -36,7 +36,11 @@ const authorization: Authenticatable = async (): Promise<Passport | null> => {
 
 const report: Reportable = (error: Throwable): void => {
   if (error.code === 401) {
-    console.log('xxxx')
+    redirect('authenticated')
+  }
+
+  if (error.code === 403) {
+    redirect('authorized')
   }
 
   if (error.code === 404) {

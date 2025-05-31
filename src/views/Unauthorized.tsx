@@ -31,7 +31,7 @@ const MaskImg = styled('img')({
   zIndex: -1
 })
 
-const NotFound = ({ mode, lang }: { mode: SystemMode; lang: Locale }) => {
+const Unauthorized = ({ mode, lang }: { mode: SystemMode; lang: Locale }) => {
   // Vars
   const darkImg = '/images/pages/misc-mask-dark.png'
   const lightImg = '/images/pages/misc-mask-light.png'
@@ -46,13 +46,13 @@ const NotFound = ({ mode, lang }: { mode: SystemMode; lang: Locale }) => {
       <div className='flex items-center flex-col text-center'>
         <div className='flex flex-col gap-2 is-[90vw] sm:is-[unset] mbe-6'>
           <Typography className='font-medium text-8xl' color='text.primary'>
-            404
+            403
           </Typography>
-          <Typography variant='h4'>{lang === i18n.defaultLocale ? '页面走丢了' : 'Page Not Found'} ⚠️</Typography>
+          <Typography variant='h4'>{lang === i18n.defaultLocale ? '您无权访问此页面' : 'Page Forbidden'} ⚠️</Typography>
           <Typography>
             {lang === i18n.defaultLocale
-              ? '我们无法找到您要查找的页面'
-              : 'we couldn&#39;t find the page you are looking for.'}
+              ? '您的访问被拒绝，您无权查看此内容'
+              : 'Your access has been denied. You do not have permission to view this content.'}
           </Typography>
         </div>
         <Button href='/' component={Link} variant='contained'>
@@ -60,7 +60,7 @@ const NotFound = ({ mode, lang }: { mode: SystemMode; lang: Locale }) => {
         </Button>
         <img
           alt='error-404-illustration'
-          src='/images/illustrations/characters/1.png'
+          src='/images/illustrations/characters/3.png'
           className='object-cover bs-[400px] md:bs-[450px] lg:bs-[500px] mbs-10 md:mbs-14 lg:mbs-20'
         />
       </div>
@@ -75,4 +75,4 @@ const NotFound = ({ mode, lang }: { mode: SystemMode; lang: Locale }) => {
   )
 }
 
-export default NotFound
+export default Unauthorized

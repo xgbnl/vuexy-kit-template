@@ -1,3 +1,6 @@
+// NEXT Imports
+import { redirect } from 'next/navigation'
+
 // NextAuth Imports
 import { getSession } from 'next-auth/react'
 import type { Session } from 'next-auth'
@@ -25,7 +28,6 @@ import type {
 
 // Fetch Imports
 import { fetcher } from '../fetcher'
-import { getLang } from '@/utils/getLang'
 
 const authorization: Authenticatable = async (): Promise<Passport | null> => {
   const session: Session | null = await getSession()
@@ -39,19 +41,13 @@ const report: Reportable = (error: Throwable): void => {
   if (code === 401) {
     toast.info<string>(msg, {
       delay: 1000,
-      onClose: () => window.location.replace(`/${getLang(window.location.pathname)}/login`)
+      onClose: () => redirect('authenticated')
     })
-  }
-
-  if ([422, 403].includes(code)) {
+  } else if (code === 422) {
     toast.warning<string>(msg)
+  } else {
+    toast.error<string>(msg)
   }
-
-  if (code === 404) {
-    toast<string>(msg)
-  }
-
-  toast.error<string>(msg)
 }
 
 export const get: HttpGet = <T>(

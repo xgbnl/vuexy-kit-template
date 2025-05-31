@@ -1,7 +1,7 @@
 'use client'
 
-// Next Imports
-import Link from 'next/link'
+// Next-auth Imports
+import { signOut } from 'next-auth/react'
 
 // MUI Imports
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -31,7 +31,7 @@ const MaskImg = styled('img')({
   zIndex: -1
 })
 
-const NotFound = ({ mode, lang }: { mode: SystemMode; lang: Locale }) => {
+const Unauthenticated = ({ mode, lang }: { mode: SystemMode; lang: Locale }) => {
   // Vars
   const darkImg = '/images/pages/misc-mask-dark.png'
   const lightImg = '/images/pages/misc-mask-light.png'
@@ -41,26 +41,31 @@ const NotFound = ({ mode, lang }: { mode: SystemMode; lang: Locale }) => {
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
   const miscBackground = useImageVariant(mode, lightImg, darkImg)
 
+  const handleSignOut = async (): Promise<void> => {
+    await signOut({
+      redirectTo: `/${lang}/login`,
+      redirect: true
+    })
+  }
+
   return (
     <div className='flex items-center justify-center min-bs-[100dvh] relative p-6 overflow-x-hidden'>
       <div className='flex items-center flex-col text-center'>
         <div className='flex flex-col gap-2 is-[90vw] sm:is-[unset] mbe-6'>
           <Typography className='font-medium text-8xl' color='text.primary'>
-            404
+            401
           </Typography>
-          <Typography variant='h4'>{lang === i18n.defaultLocale ? '页面走丢了' : 'Page Not Found'} ⚠️</Typography>
+          <Typography variant='h4'>{lang === i18n.defaultLocale ? '会话已过过期' : 'Unauthenticated'} ⚠️</Typography>
           <Typography>
-            {lang === i18n.defaultLocale
-              ? '我们无法找到您要查找的页面'
-              : 'we couldn&#39;t find the page you are looking for.'}
+            {lang === i18n.defaultLocale ? '身份验证失败，令牌已过期' : 'authentication failed. Token has expired.'}
           </Typography>
         </div>
-        <Button href='/' component={Link} variant='contained'>
-          {lang === i18n.defaultLocale ? '回到首页' : 'Back To Home'}
+        <Button onClick={handleSignOut} variant='contained'>
+          {lang === i18n.defaultLocale ? '去登录' : 'Go to Login'}
         </Button>
         <img
           alt='error-404-illustration'
-          src='/images/illustrations/characters/1.png'
+          src='/images/illustrations/characters/2.png'
           className='object-cover bs-[400px] md:bs-[450px] lg:bs-[500px] mbs-10 md:mbs-14 lg:mbs-20'
         />
       </div>
@@ -75,4 +80,4 @@ const NotFound = ({ mode, lang }: { mode: SystemMode; lang: Locale }) => {
   )
 }
 
-export default NotFound
+export default Unauthenticated
