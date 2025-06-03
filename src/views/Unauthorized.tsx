@@ -59,7 +59,7 @@ const Unauthorized = ({ mode, lang }: { mode: SystemMode; lang: Locale }) => {
           {lang === i18n.defaultLocale ? '回到首页' : 'Back To Home'}
         </Button>
         <img
-          alt='error-404-illustration'
+          alt='error-403-illustration'
           src='/images/illustrations/characters/3.png'
           className='object-cover bs-[400px] md:bs-[450px] lg:bs-[500px] mbs-10 md:mbs-14 lg:mbs-20'
         />
